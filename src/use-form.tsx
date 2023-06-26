@@ -67,8 +67,9 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
 
     return fields.map((field) => (
       <div key={field.propertyPath.join(".")}>
-        <label>{field.name}</label>
+        <label htmlFor={field.propertyPath.join(".")}>{field.name}</label>
         <input
+          name={field.propertyPath.join(".")}
           style={{ display: "block" }}
           value={getValueOnPath(formState as object, field.propertyPath)}
           placeholder={field.name}

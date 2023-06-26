@@ -28,20 +28,19 @@ const testCompanyInformation: CompanyInformation = {
   },
 };
 
-const App = () => {
-  const [companyInformation] = useLocalStorage<CompanyInformation>(
-    "companyInformation",
-    testCompanyInformation
-  );
-  const [customerInformation] = useLocalStorage<CompanyInformation>(
-    "customerInformation",
-    testCompanyInformation
-  );
+const forms = {
+  company: "company",
+  customer: "customer",
+  rows: "rows",
+} as const;
 
-  const [form, formData] = useForm<CompanyInformation>(
-    "companyInformation",
-    testCompanyInformation
-  );
+const App = () => {
+  const [companyInformationForm, companyInformation] =
+    useForm<CompanyInformation>("companyInformation", testCompanyInformation);
+  const [customerInformationForm, customerInformation] =
+    useForm<CompanyInformation>("customerInformation", testCompanyInformation);
+
+  const [form, setForm] = useState<string>(forms.company);
 
   const [file, setFile] = useState<File>();
 
@@ -56,19 +55,34 @@ const App = () => {
 
   return (
     <>
+      <button onClick={() => setForm(forms.company)}>Redigera företag</button>
+      <button onClick={() => setForm(forms.customer)}>Redigera kund</button>
+      <button onClick={() => setForm(forms.rows)}>Redigera rader</button>
       <button
         onClick={() =>
           generatePdf(companyInformation, customerInformation, file)
         }
       >
-        generate pdf
+        Generera PDF
       </button>
-      <input type="file" onChange={onFileSelected}></input>
+      <input type="file" onChange={onFileSelected} name="arst" />
       <div>{file?.name}</div>
-      <br></br>
-      <div>{form}</div>
-      <br></br>
-      <div>{JSON.stringify(formData)}</div>
+
+      {form === forms.company ? (
+        <div className="company-information-form-container">
+          {companyInformationForm}
+        </div>
+      ) : (
+        <></>
+      )}
+
+      {form === forms.customer ? (
+        <div className="customer-information-form-container">
+          {customerInformationForm}
+        </div>
+      ) : (
+        <></>
+      )}
     </>
   );
 };

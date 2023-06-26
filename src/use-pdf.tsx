@@ -520,7 +520,7 @@ const usePdf = () => {
         },
       ]);
 
-      doc.save("a4.pdf");
+      doc.save("kvitto.pdf");
     },
     []
   );
