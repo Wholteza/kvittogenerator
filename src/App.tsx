@@ -104,10 +104,11 @@ const fontSizes = {
   title: 46,
   subtitle: 14,
   footer: 10,
+  table: 8,
 } as const;
 
 const lineHeightFactors = {
-  body: 1,
+  body: 0.5,
   title: 2,
   subtitle: 0.5,
   footer: 0.5,
@@ -122,48 +123,54 @@ type PdfText = {
 };
 
 type ReceiptRow = {
-  articleNumber: string;
+  date: string;
   description: string;
   amount: string;
   pricePerPiece: string;
   total: string;
+  vatPercentage: string;
+  vat: string;
 };
 
 const createReceiptRow = (
-  articleNumber: string,
+  date: string,
   description: string,
   amount: string,
   pricePerPiece: string,
-  total: string
+  total: string,
+  vatPercentage: string,
+  vat: string
 ): ReceiptRow => ({
-  articleNumber,
+  date,
   description,
   amount,
   pricePerPiece,
   total,
+  vatPercentage,
+  vat,
 });
 
 const tableHeaders: CellConfig[] = [
   {
-    name: "articleNumber",
-    prompt: "Artikelnummer",
+    name: "date",
+    prompt: "Datum",
     align: "left",
     padding: 0,
-    width: 50,
+    width: 35,
   },
   {
     name: "description",
     prompt: "Beskrivning",
     align: "left",
     padding: 0,
-    width: 100,
+    width: 83,
   },
   {
     name: "amount",
     prompt: "Antal",
     align: "left",
     padding: 0,
-    width: 28,
+    width: 20,
   },
   {
     name: "pricePerPiece",
@@ -171,6 +178,20 @@ const tableHeaders: CellConfig[] = [
     align: "left",
     padding: 0,
     width: 28,
+  },
+  {
+    name: "vatPercentage",
+    prompt: "Moms %",
+    align: "left",
+    padding: 0,
+    width: 20,
+  },
+  {
+    name: "vat",
+    prompt: "Moms",
+    align: "left",
+    padding: 0,
+    width: 20,
   },
   {
     name: "total",
@@ -206,7 +227,10 @@ const App = () => {
     const data = (await file?.stream().getReader().read())?.value ?? undefined;
     if (data) doc.addImage(data, "png", doc.canvas.width, 10, 50, 50);
 
-    const writeOnNewLine = (textRows: PdfText[]) => {
+    const writeOnNewLine = (
+      textRows: PdfText[],
+      customMarginBottom?: number
+    ) => {
       textRows.forEach((textRow) => {
         const lineHeightFactorToRestore = doc.getLineHeightFactor();
 
@@ -224,9 +248,8 @@ const App = () => {
 
         doc.setTextColor(DefaultTextColor);
         doc.setFontSize(fontSizes.body);
-        //doc.setLineHeightFactor(lineHeightFactorToRestore);
       });
-      y += doc.getLineHeight();
+      y += customMarginBottom ?? doc.getLineHeight();
     };
     const drawLineOnNewLine = () => {
       const lineHeight = doc.getLineHeightFactor();
@@ -265,11 +288,28 @@ const App = () => {
       },
 
       {
-        text: customerInformation.Identity.Name,
+        text: `${customerInformation.Identity.Name} (${customerInformation.Identity.OrganizationNumber})`,
         x: columns.right.left,
         type: "body",
       },
     ]);
+    writeOnNewLine([
+      {
+        text: `${customerInformation.Address.Street}`,
+        x: columns.right.left,
+        type: "body",
+      },
+    ]);
+    writeOnNewLine(
+      [
+        {
+          text: `${customerInformation.Address.ZipCode} ${customerInformation.Address.City}`,
+          x: columns.right.left,
+          type: "body",
+        },
+      ],
+      10
+    );
     writeOnNewLine([
       {
         text: "Betalningsvilkor",
@@ -296,23 +336,97 @@ const App = () => {
     ]);
 
     const receiptRows = [
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
+      createReceiptRow(
+        "2023-01-01",
+        "Massage 60 min",
+        "2",
+        "200,00",
+        "400,00",
+        "25%",
+        "10,00"
+      ),
+      createReceiptRow(
+        "2023-01-01",
+        "Massage 60 min",
+        "2",
+        "200,00",
+        "400,00",
+        "25%",
+        "10,00"
+      ),
+      createReceiptRow(
+        "2023-01-01",
+        "Massage 60 min",
+        "2",
+        "200,00",
+        "400,00",
+        "25%",
+        "10,00"
+      ),
+      createReceiptRow(
+        "2023-01-01",
+        "Massage 60 min",
+        "2",
+        "200,00",
+        "400,00",
+        "25%",
+        "10,00"
+      ),
+      createReceiptRow(
+        "2023-01-01",
+        "Massage 60 min",
+        "2",
+        "200,00",
+        "400,00",
+        "25%",
+        "10,00"
+      ),
+      createReceiptRow(
+        "2023-01-01",
+        "Massage 60 min",
+        "2",
+        "200,00",
+        "400,00",
+        "25%",
+        "10,00"
+      ),
+      createReceiptRow(
+        "2023-01-01",
+        "Massage 60 min",
+        "2",
+        "200,00",
+        "400,00",
+        "25%",
+        "10,00"
+      ),
+      createReceiptRow(
+        "2023-01-01",
+        "Massage 60 min",
+        "2",
+        "200,00",
+        "400,00",
+        "25%",
+        "10,00"
+      ),
+      createReceiptRow(
+        "2023-01-01",
+        "Massage 60 min",
+        "2",
+        "200,00",
+        "400,00",
+        "25%",
+        "10,00"
+      ),
     ];
 
     doc.setLineHeightFactor(1);
     doc.table(columns.table.articleNumber, y, receiptRows, tableHeaders, {
       headerBackgroundColor: "black",
       headerTextColor: "white",
-      fontSize: 10,
+      fontSize: fontSizes.table,
     });
+    doc.setFontSize(fontSizes.body);
+    doc.setLineHeightFactor(1);
 
     // recalc y based on table height, modulus a4 height to get size relative to page break
     y = (y + (receiptRows.length + 1) * doc.getLineHeight()) % canvasSize.y.end;
@@ -482,7 +596,11 @@ const App = () => {
     companyInformation.PaymentInformation.Iban,
     companyInformation.PaymentInformation.Plusgiro,
     companyInformation.PaymentInformation.Swift,
+    customerInformation.Address.City,
+    customerInformation.Address.Street,
+    customerInformation.Address.ZipCode,
     customerInformation.Identity.Name,
+    customerInformation.Identity.OrganizationNumber,
     file,
   ]);
 
