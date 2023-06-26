@@ -492,30 +492,12 @@ const usePdf = () => {
           x: columns.footer.center,
           type: "footer",
         },
-        {
-          text: `Plusgiro: ${companyInformation.PaymentInformation.Plusgiro}`,
-          x: columns.footer.right,
-          type: "footer",
-        },
       ]);
 
       writeOnNewLine([
         {
           text: `E-post: ${companyInformation.ContactInformation.Email}`,
           x: columns.footer.left,
-          type: "footer",
-        },
-        {
-          text: `SWIFT: ${companyInformation.PaymentInformation.Swift}`,
-          x: columns.footer.center,
-          type: "footer",
-        },
-      ]);
-
-      writeOnNewLine([
-        {
-          text: `IBAN: ${companyInformation.PaymentInformation.Iban}`,
-          x: columns.footer.center,
           type: "footer",
         },
       ]);

@@ -29,3 +29,9 @@ export type CompanyInformation = {
   ContactInformation: ContactInformation;
   PaymentInformation: PaymentInformation;
 };
+
+export type ReceiptInformation = {
+  date: Date;
+  number: string;
+  paymentTerms: string;
+};

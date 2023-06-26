@@ -1,7 +1,6 @@
 import { ChangeEventHandler, useState } from "react";
 import { CompanyInformation } from "./types";
 import useForm from "./use-form";
-import useLocalStorage from "./use-local-storage";
 import usePdf from "./use-pdf";
 
 const testCompanyInformation: CompanyInformation = {
