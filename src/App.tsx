@@ -95,6 +95,9 @@ const columns = {
 
 const rows = {
   title: 20,
+
+  aboveTable: 50,
+
   recieptNumber: 20,
   company: 50,
   paymentTerms: 90,
@@ -208,135 +211,10 @@ const App = () => {
   const generatePdf = useCallback(async () => {
     const doc = new jsPDF();
 
-    let nextLineYCoordinate = 0;
-    console.warn((doc.internal as any).events.getTopics());
-    (doc.internal as any).events.subscribe("postProcessText", (x: any) => {
-      console.warn(x);
-      nextLineYCoordinate = x.y + doc.getLineHeight();
-    });
-
+    // logotype, break out
     const data = (await file?.stream().getReader().read())?.value ?? undefined;
     if (data) doc.addImage(data, "png", doc.canvas.width, 10, 50, 50);
 
-    const textRows: PdfText[] = [
-      { text: "Kvitto", x: columns.left, y: rows.title, type: "title" },
-      {
-        text: "Företag",
-        x: columns.left,
-        y: rows.company,
-        type: "subtitle",
-      },
-      {
-        text: companyInformation.Identity.Name,
-        x: columns.left,
-        y: getNextRow(rows.company),
-        type: "body",
-      },
-      {
-        text: "Kund",
-        x: columns.right.left,
-        y: rows.company,
-        type: "subtitle",
-      },
-      {
-        text: customerInformation.Identity.Name,
-        x: columns.right.left,
-        y: getNextRow(rows.company),
-        type: "body",
-      },
-      {
-        text: "Betalningsvilkor",
-        x: columns.left,
-        y: rows.paymentTerms,
-        type: "subtitle",
-      },
-      {
-        text: "Kvittonummer",
-        x: columns.right.left,
-        y: rows.paymentTerms,
-        type: "subtitle",
-      },
-      {
-        text: "A1",
-        x: columns.right.right,
-        y: rows.paymentTerms,
-        type: "body",
-      },
-      {
-        text: "Kontantbetalning",
-        x: columns.left,
-        y: getNextRow(rows.paymentTerms),
-        type: "body",
-      },
-      {
-        text: "Datum",
-        x: columns.right.left,
-        y: getNextRow(rows.paymentTerms),
-        type: "subtitle",
-      },
-      {
-        text: "2023-01-01",
-        x: columns.right.right,
-        y: getNextRow(rows.paymentTerms),
-        type: "body",
-      },
-    ];
-
-    textRows.forEach((textRow) => {
-      const lineHeightFactorToRestore = doc.getLineHeightFactor();
-
-      doc.setTextColor(textRow.color ?? DefaultTextColor);
-      doc.setFontSize(textRow.type ? fontSizes[textRow.type] : fontSizes.body);
-      doc.setLineHeightFactor(
-        textRow.type
-          ? lineHeightFactors[textRow.type]
-          : lineHeightFactorToRestore
-      );
-
-      doc.text(textRow.text, textRow.x, textRow.y, { align: "left" });
-
-      // reset style
-      doc.setTextColor(DefaultTextColor);
-      doc.setLineHeightFactor(lineHeightFactorToRestore);
-    });
-
-    const receiptRows = [
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-    ];
-
-    doc.table(
-      columns.table.articleNumber,
-      rows.tableHead,
-      receiptRows,
-      tableHeaders,
-      {
-        headerBackgroundColor: "black",
-        headerTextColor: "white",
-        fontSize: 10,
-      }
-    );
-
-    // Figure out if we need to add another page
-    let y =
-      (rows.tableHead + (receiptRows.length + 1) * doc.getLineHeight()) %
-      canvasSize.y.end;
-    const needToInsertNewPage = canvasSize.y.end - y < footer.height;
-    if (needToInsertNewPage) {
-      doc.addPage();
-      y = 10;
-    }
-
-    // create method for writing row
     const writeOnNewLine = (textRows: PdfText[]) => {
       textRows.forEach((textRow) => {
         const lineHeightFactorToRestore = doc.getLineHeightFactor();
@@ -366,6 +244,113 @@ const App = () => {
       y += doc.getLineHeight();
       doc.setLineHeightFactor(lineHeight);
     };
+
+    let y = rows.title;
+    writeOnNewLine([
+      { text: "Kvitto", x: columns.left, y: rows.title, type: "title" },
+    ]);
+
+    y = rows.aboveTable;
+    writeOnNewLine([
+      {
+        text: "Företag",
+        x: columns.left,
+        y: rows.company,
+        type: "subtitle",
+      },
+      {
+        text: "Kund",
+        x: columns.right.left,
+        y: rows.company,
+        type: "subtitle",
+      },
+    ]);
+    writeOnNewLine([
+      {
+        text: companyInformation.Identity.Name,
+        x: columns.left,
+        y: getNextRow(rows.company),
+        type: "body",
+      },
+
+      {
+        text: customerInformation.Identity.Name,
+        x: columns.right.left,
+        y: getNextRow(rows.company),
+        type: "body",
+      },
+    ]);
+    writeOnNewLine([
+      {
+        text: "Betalningsvilkor",
+        x: columns.left,
+        y: rows.paymentTerms,
+        type: "subtitle",
+      },
+      {
+        text: "Kvittonummer",
+        x: columns.right.left,
+        y: rows.paymentTerms,
+        type: "subtitle",
+      },
+      {
+        text: "A1",
+        x: columns.right.right,
+        y: rows.paymentTerms,
+        type: "body",
+      },
+    ]);
+    writeOnNewLine([
+      {
+        text: "Kontantbetalning",
+        x: columns.left,
+        y: getNextRow(rows.paymentTerms),
+        type: "body",
+      },
+      {
+        text: "Datum",
+        x: columns.right.left,
+        y: getNextRow(rows.paymentTerms),
+        type: "subtitle",
+      },
+      {
+        text: "2023-01-01",
+        x: columns.right.right,
+        y: getNextRow(rows.paymentTerms),
+        type: "body",
+      },
+    ]);
+
+    const receiptRows = [
+      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
+      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
+      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
+      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
+      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
+      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
+      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
+      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
+      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
+    ];
+
+    doc.table(columns.table.articleNumber, y, receiptRows, tableHeaders, {
+      headerBackgroundColor: "black",
+      headerTextColor: "white",
+      fontSize: 10,
+    });
+
+    // recalc y based on table height, modulus a4 height to get size relative to page break
+    y = (y + (receiptRows.length + 1) * doc.getLineHeight()) % canvasSize.y.end;
+
+    // Figure out if we need to add another page
+    const needToInsertNewPage = canvasSize.y.end - y < footer.height;
+    if (needToInsertNewPage) {
+      doc.addPage();
+      y = 10;
+    }
+
+    // create method for writing row
+
     doc.setLineHeightFactor(0.5);
     // draw line to separate footer from content
     drawLineOnNewLine();
