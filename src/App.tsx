@@ -95,13 +95,8 @@ const columns = {
 
 const rows = {
   title: 20,
-
+  date: 30,
   aboveTable: 50,
-
-  recieptNumber: 20,
-  company: 50,
-  paymentTerms: 90,
-  tableHead: 130,
 };
 
 const fontSizes = {
@@ -114,17 +109,13 @@ const fontSizes = {
 const lineHeightFactors = {
   body: 1,
   title: 2,
-  subtitle: 1,
+  subtitle: 0.5,
   footer: 0.5,
 } as const;
-
-const getNextRow = (ySpacing: number, multiplier = 1): number =>
-  ySpacing + 10 * multiplier;
 
 type PdfText = {
   text: string;
   x: number;
-  y: number;
   color?: "black" | "white";
   type?: "body" | "title" | "subtitle" | "footer";
   options?: TextOptionsLight;
@@ -233,7 +224,7 @@ const App = () => {
 
         doc.setTextColor(DefaultTextColor);
         doc.setFontSize(fontSizes.body);
-        doc.setLineHeightFactor(lineHeightFactorToRestore);
+        //doc.setLineHeightFactor(lineHeightFactorToRestore);
       });
       y += doc.getLineHeight();
     };
@@ -246,8 +237,11 @@ const App = () => {
     };
 
     let y = rows.title;
+    writeOnNewLine([{ text: "Kvitto", x: columns.left, type: "title" }]);
+
+    y = rows.date;
     writeOnNewLine([
-      { text: "Kvitto", x: columns.left, y: rows.title, type: "title" },
+      { text: `Datum 2023-01-01`, x: columns.left, type: "footer" },
     ]);
 
     y = rows.aboveTable;
@@ -255,13 +249,11 @@ const App = () => {
       {
         text: "Företag",
         x: columns.left,
-        y: rows.company,
         type: "subtitle",
       },
       {
         text: "Kund",
         x: columns.right.left,
-        y: rows.company,
         type: "subtitle",
       },
     ]);
@@ -269,14 +261,12 @@ const App = () => {
       {
         text: companyInformation.Identity.Name,
         x: columns.left,
-        y: getNextRow(rows.company),
         type: "body",
       },
 
       {
         text: customerInformation.Identity.Name,
         x: columns.right.left,
-        y: getNextRow(rows.company),
         type: "body",
       },
     ]);
@@ -284,39 +274,23 @@ const App = () => {
       {
         text: "Betalningsvilkor",
         x: columns.left,
-        y: rows.paymentTerms,
         type: "subtitle",
       },
       {
         text: "Kvittonummer",
         x: columns.right.left,
-        y: rows.paymentTerms,
         type: "subtitle",
-      },
-      {
-        text: "A1",
-        x: columns.right.right,
-        y: rows.paymentTerms,
-        type: "body",
       },
     ]);
     writeOnNewLine([
       {
         text: "Kontantbetalning",
         x: columns.left,
-        y: getNextRow(rows.paymentTerms),
         type: "body",
       },
       {
-        text: "Datum",
+        text: "A1",
         x: columns.right.left,
-        y: getNextRow(rows.paymentTerms),
-        type: "subtitle",
-      },
-      {
-        text: "2023-01-01",
-        x: columns.right.right,
-        y: getNextRow(rows.paymentTerms),
         type: "body",
       },
     ]);
@@ -333,6 +307,7 @@ const App = () => {
       createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
     ];
 
+    doc.setLineHeightFactor(1);
     doc.table(columns.table.articleNumber, y, receiptRows, tableHeaders, {
       headerBackgroundColor: "black",
       headerTextColor: "white",
@@ -360,7 +335,6 @@ const App = () => {
       {
         text: "Momsunderlag",
         x: columns.total.left.left,
-        y: y,
         type: "footer",
       },
     ]);
@@ -368,13 +342,11 @@ const App = () => {
       {
         text: "Moms 25%",
         x: columns.total.left.left,
-        y: y,
         type: "footer",
       },
       {
         text: "123,00",
         x: columns.total.left.right,
-        y: y,
         type: "footer",
       },
     ]);
@@ -382,13 +354,11 @@ const App = () => {
       {
         text: "Moms 12%",
         x: columns.total.left.left,
-        y: y,
         type: "footer",
       },
       {
         text: "",
         x: columns.total.left.right,
-        y: y,
         type: "footer",
       },
     ]);
@@ -396,43 +366,37 @@ const App = () => {
       {
         text: "Moms 6%",
         x: columns.total.left.left,
-        y: y,
         type: "footer",
       },
       {
         text: "",
         x: columns.total.left.right,
-        y: y,
         type: "footer",
       },
       {
         text: "Belopp före moms",
         x: columns.total.right.left,
-        y: y,
         type: "footer",
       },
-      { text: "123,00", x: columns.total.right.right, y: y, type: "footer" },
+      { text: "123,00", x: columns.total.right.right, type: "footer" },
     ]);
     writeOnNewLine([
       {
         text: "Momsfritt",
         x: columns.total.left.left,
-        y: y,
         type: "footer",
       },
       {
         text: "",
         x: columns.total.left.right,
-        y: y,
         type: "footer",
       },
       {
         text: "Total moms",
         x: columns.total.right.left,
-        y: y,
         type: "footer",
       },
-      { text: "123,00", x: columns.total.right.right, y: y, type: "footer" },
+      { text: "123,00", x: columns.total.right.right, type: "footer" },
     ]);
 
     writeOnNewLine([]);
@@ -441,10 +405,9 @@ const App = () => {
       {
         text: "Att betala (SEK)",
         x: columns.total.right.left,
-        y: y,
         type: "footer",
       },
-      { text: "123,00", x: columns.total.right.right, y: y, type: "footer" },
+      { text: "123,00", x: columns.total.right.right, type: "footer" },
     ]);
 
     // print out footer information
@@ -454,19 +417,16 @@ const App = () => {
       {
         text: `Tel.nr: ${companyInformation.ContactInformation.Phone}`,
         x: columns.footer.left,
-        y: y,
         type: "footer",
       },
       {
         text: `Org.nr: ${companyInformation.Identity.OrganizationNumber}`,
         x: columns.footer.center,
-        y: y,
         type: "footer",
       },
       {
         text: `Bankgiro: ${companyInformation.PaymentInformation.Bankgiro}`,
         x: columns.footer.right,
-        y: y,
         type: "footer",
       },
     ]);
@@ -475,19 +435,16 @@ const App = () => {
       {
         text: `Webb: ${companyInformation.ContactInformation.Website}`,
         x: columns.footer.left,
-        y: y,
         type: "footer",
       },
       {
         text: `VAT.nr: ${companyInformation.Identity.VatNumber}`,
         x: columns.footer.center,
-        y: y,
         type: "footer",
       },
       {
         text: `Plusgiro: ${companyInformation.PaymentInformation.Plusgiro}`,
         x: columns.footer.right,
-        y: y,
         type: "footer",
       },
     ]);
@@ -496,13 +453,11 @@ const App = () => {
       {
         text: `E-post: ${companyInformation.ContactInformation.Email}`,
         x: columns.footer.left,
-        y: y,
         type: "footer",
       },
       {
         text: `SWIFT: ${companyInformation.PaymentInformation.Swift}`,
         x: columns.footer.center,
-        y: y,
         type: "footer",
       },
     ]);
@@ -511,7 +466,6 @@ const App = () => {
       {
         text: `IBAN: ${companyInformation.PaymentInformation.Iban}`,
         x: columns.footer.center,
-        y: y,
         type: "footer",
       },
     ]);
