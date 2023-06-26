@@ -8,7 +8,7 @@ const canvasSize = {
 };
 
 const footer = {
-  height: 60,
+  height: 80,
 };
 
 type Identity = {
@@ -75,7 +75,7 @@ const columns = {
     right: 170,
   },
   table: {
-    articleNumber: 12,
+    articleNumber: 10,
   },
   total: {
     left: {
@@ -95,12 +95,26 @@ const columns = {
 };
 
 const rows = {
-  title: 10,
+  title: 20,
   recieptNumber: 20,
   company: 50,
   paymentTerms: 90,
   tableHead: 130,
 };
+
+const fontSizes = {
+  body: 10,
+  title: 46,
+  subtitle: 14,
+  footer: 10,
+} as const;
+
+const lineHeightFactors = {
+  body: 1,
+  title: 2,
+  subtitle: 1,
+  footer: 0.5,
+} as const;
 
 const getNextRow = (ySpacing: number, multiplier = 1): number =>
   ySpacing + 10 * multiplier;
@@ -110,6 +124,7 @@ type PdfText = {
   x: number;
   y: number;
   color?: "black" | "white";
+  type?: "body" | "title" | "subtitle" | "footer";
   options?: TextOptionsLight;
 };
 
@@ -173,6 +188,7 @@ const tableHeaders: CellConfig[] = [
   },
 ];
 
+const DefaultTextColor = "black";
 const App = () => {
   const [companyInformation] = useState<CompanyInformation>(
     testCompanyInformation
@@ -204,64 +220,88 @@ const App = () => {
     if (data) doc.addImage(data, "png", doc.canvas.width, 10, 50, 50);
 
     const textRows: PdfText[] = [
-      { text: "Kvitto", x: columns.leftMain, y: rows.title },
+      { text: "Kvitto", x: columns.leftMain, y: rows.title, type: "title" },
       {
-        text: "Kvittonummer",
-        x: columns.rightMain.middle,
-        y: rows.paymentTerms,
-      },
-      { text: "A1", x: columns.rightMain.right, y: rows.paymentTerms },
-      {
-        text: "Datum",
-        x: columns.rightMain.middle,
-        y: getNextRow(rows.paymentTerms),
-      },
-      {
-        text: "2023-01-01",
-        x: columns.rightMain.right,
-        y: getNextRow(rows.paymentTerms),
-      },
-      {
-        text: "Säljare",
+        text: "Företag",
         x: columns.leftMain,
         y: rows.company,
+        type: "subtitle",
       },
       {
         text: companyInformation.Identity.Name,
         x: columns.leftMain,
         y: getNextRow(rows.company),
+        type: "body",
       },
       {
-        text: "Köpare",
+        text: "Kund",
         x: columns.rightMain.left,
         y: rows.company,
+        type: "subtitle",
       },
       {
         text: customerInformation.Identity.Name,
         x: columns.rightMain.left,
         y: getNextRow(rows.company),
+        type: "body",
       },
       {
         text: "Betalningsvilkor",
         x: columns.leftMain,
         y: rows.paymentTerms,
+        type: "subtitle",
+      },
+      {
+        text: "Kvittonummer",
+        x: columns.rightMain.middle,
+        y: rows.paymentTerms,
+        type: "subtitle",
+      },
+      {
+        text: "A1",
+        x: columns.rightMain.right,
+        y: rows.paymentTerms,
+        type: "body",
       },
       {
         text: "Kontantbetalning",
         x: columns.leftMain,
         y: getNextRow(rows.paymentTerms),
+        type: "body",
+      },
+      {
+        text: "Datum",
+        x: columns.rightMain.middle,
+        y: getNextRow(rows.paymentTerms),
+        type: "subtitle",
+      },
+      {
+        text: "2023-01-01",
+        x: columns.rightMain.right,
+        y: getNextRow(rows.paymentTerms),
+        type: "body",
       },
     ];
 
     textRows.forEach((textRow) => {
-      doc.setTextColor(textRow.color ?? "black");
+      const lineHeightFactorToRestore = doc.getLineHeightFactor();
+
+      doc.setTextColor(textRow.color ?? DefaultTextColor);
+      doc.setFontSize(textRow.type ? fontSizes[textRow.type] : fontSizes.body);
+      doc.setLineHeightFactor(
+        textRow.type
+          ? lineHeightFactors[textRow.type]
+          : lineHeightFactorToRestore
+      );
+
       doc.text(textRow.text, textRow.x, textRow.y);
+
+      // reset style
+      doc.setTextColor(DefaultTextColor);
+      doc.setLineHeightFactor(lineHeightFactorToRestore);
     });
 
-    const ReceiptRows = [
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
-      createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
+    const receiptRows = [
       createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
       createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
       createReceiptRow("20", "Massage 60 min", "2", "200,00", "400,00"),
@@ -278,16 +318,19 @@ const App = () => {
     doc.table(
       columns.table.articleNumber,
       rows.tableHead,
-      ReceiptRows,
+      receiptRows,
       tableHeaders,
       {
         headerBackgroundColor: "black",
         headerTextColor: "white",
+        fontSize: 10,
       }
     );
 
     // Figure out if we need to add another page
-    let y = nextLineYCoordinate;
+    let y =
+      (rows.tableHead + (receiptRows.length + 1) * doc.getLineHeight()) %
+      canvasSize.y.end;
     const needToInsertNewPage = canvasSize.y.end - y < footer.height;
     if (needToInsertNewPage) {
       doc.addPage();
@@ -297,8 +340,24 @@ const App = () => {
     // create method for writing row
     const writeOnNewLine = (textRows: PdfText[]) => {
       textRows.forEach((textRow) => {
-        doc.setTextColor(textRow.color ?? "black");
+        const lineHeightFactorToRestore = doc.getLineHeightFactor();
+
+        doc.setTextColor(textRow.color ?? DefaultTextColor);
+        doc.setFontSize(
+          textRow.type ? fontSizes[textRow.type] : fontSizes.body
+        );
+        doc.setLineHeightFactor(
+          textRow.type
+            ? lineHeightFactors[textRow.type]
+            : lineHeightFactorToRestore
+        );
+
         doc.text(textRow.text, textRow.x, y);
+
+        // reset style
+        doc.setTextColor(DefaultTextColor);
+        doc.setFontSize(fontSizes.body);
+        doc.setLineHeightFactor(lineHeightFactorToRestore);
       });
       y += doc.getLineHeight();
     };
@@ -319,6 +378,7 @@ const App = () => {
         text: "Momsunderlag",
         x: columns.total.left.left,
         y: y,
+        type: "footer",
       },
     ]);
     writeOnNewLine([
@@ -326,11 +386,13 @@ const App = () => {
         text: "Moms 25%",
         x: columns.total.left.left,
         y: y,
+        type: "footer",
       },
       {
         text: "123,00",
         x: columns.total.left.right,
         y: y,
+        type: "footer",
       },
     ]);
     writeOnNewLine([
@@ -338,11 +400,13 @@ const App = () => {
         text: "Moms 12%",
         x: columns.total.left.left,
         y: y,
+        type: "footer",
       },
       {
         text: "",
         x: columns.total.left.right,
         y: y,
+        type: "footer",
       },
     ]);
     writeOnNewLine([
@@ -350,36 +414,42 @@ const App = () => {
         text: "Moms 6%",
         x: columns.total.left.left,
         y: y,
+        type: "footer",
       },
       {
         text: "",
         x: columns.total.left.right,
         y: y,
+        type: "footer",
       },
       {
         text: "Belopp före moms",
         x: columns.total.right.left,
         y: y,
+        type: "footer",
       },
-      { text: "123,00", x: columns.total.right.right, y: y },
+      { text: "123,00", x: columns.total.right.right, y: y, type: "footer" },
     ]);
     writeOnNewLine([
       {
         text: "Momsfritt",
         x: columns.total.left.left,
         y: y,
+        type: "footer",
       },
       {
         text: "",
         x: columns.total.left.right,
         y: y,
+        type: "footer",
       },
       {
         text: "Total moms",
         x: columns.total.right.left,
         y: y,
+        type: "footer",
       },
-      { text: "123,00", x: columns.total.right.right, y: y },
+      { text: "123,00", x: columns.total.right.right, y: y, type: "footer" },
     ]);
 
     writeOnNewLine([]);
@@ -389,8 +459,9 @@ const App = () => {
         text: "Att betala (SEK)",
         x: columns.total.right.left,
         y: y,
+        type: "footer",
       },
-      { text: "123,00", x: columns.total.right.right, y: y },
+      { text: "123,00", x: columns.total.right.right, y: y, type: "footer" },
     ]);
 
     // print out footer information
@@ -401,16 +472,19 @@ const App = () => {
         text: `Tel.nr: ${companyInformation.ContactInformation.Phone}`,
         x: columns.footer.left,
         y: y,
+        type: "footer",
       },
       {
         text: `Org.nr: ${companyInformation.Identity.OrganizationNumber}`,
         x: columns.footer.center,
         y: y,
+        type: "footer",
       },
       {
         text: `Bankgiro: ${companyInformation.PaymentInformation.Bankgiro}`,
         x: columns.footer.right,
         y: y,
+        type: "footer",
       },
     ]);
 
@@ -419,16 +493,19 @@ const App = () => {
         text: `Webb: ${companyInformation.ContactInformation.Website}`,
         x: columns.footer.left,
         y: y,
+        type: "footer",
       },
       {
         text: `VAT.nr: ${companyInformation.Identity.VatNumber}`,
         x: columns.footer.center,
         y: y,
+        type: "footer",
       },
       {
         text: `Plusgiro: ${companyInformation.PaymentInformation.Plusgiro}`,
         x: columns.footer.right,
         y: y,
+        type: "footer",
       },
     ]);
 
@@ -437,11 +514,13 @@ const App = () => {
         text: `E-post: ${companyInformation.ContactInformation.Email}`,
         x: columns.footer.left,
         y: y,
+        type: "footer",
       },
       {
         text: `SWIFT: ${companyInformation.PaymentInformation.Swift}`,
         x: columns.footer.center,
         y: y,
+        type: "footer",
       },
     ]);
 
@@ -450,6 +529,7 @@ const App = () => {
         text: `IBAN: ${companyInformation.PaymentInformation.Iban}`,
         x: columns.footer.center,
         y: y,
+        type: "footer",
       },
     ]);
 
