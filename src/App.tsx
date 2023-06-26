@@ -21,9 +21,6 @@ const testCompanyInformation: CompanyInformation = {
   },
   PaymentInformation: {
     Bankgiro: "0000-000",
-    Plusgiro: "0000-000",
-    Iban: "0000000",
-    Swift: "0000000",
   },
 };
 

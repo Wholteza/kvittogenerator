@@ -18,9 +18,6 @@ type ContactInformation = {
 
 type PaymentInformation = {
   Bankgiro: string;
-  Plusgiro: string;
-  Swift: string;
-  Iban: string;
 };
 
 export type CompanyInformation = {
