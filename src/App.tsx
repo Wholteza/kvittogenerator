@@ -1,5 +1,6 @@
 import { ChangeEventHandler, useState } from "react";
 import { CompanyInformation } from "./types";
+import useForm from "./use-form";
 import useLocalStorage from "./use-local-storage";
 import usePdf from "./use-pdf";
 
@@ -37,6 +38,11 @@ const App = () => {
     testCompanyInformation
   );
 
+  const [form, formData] = useForm<CompanyInformation>(
+    "companyInformation",
+    testCompanyInformation
+  );
+
   const [file, setFile] = useState<File>();
 
   const { generatePdf } = usePdf();
@@ -59,6 +65,10 @@ const App = () => {
       </button>
       <input type="file" onChange={onFileSelected}></input>
       <div>{file?.name}</div>
+      <br></br>
+      <div>{form}</div>
+      <br></br>
+      <div>{JSON.stringify(formData)}</div>
     </>
   );
 };
