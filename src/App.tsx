@@ -68,11 +68,10 @@ const testCompanyInformation: CompanyInformation = {
 };
 
 const columns = {
-  leftMain: 10,
-  rightMain: {
+  left: 10,
+  right: {
     left: 90,
-    middle: 120,
-    right: 170,
+    right: 130,
   },
   table: {
     articleNumber: 10,
@@ -220,64 +219,64 @@ const App = () => {
     if (data) doc.addImage(data, "png", doc.canvas.width, 10, 50, 50);
 
     const textRows: PdfText[] = [
-      { text: "Kvitto", x: columns.leftMain, y: rows.title, type: "title" },
+      { text: "Kvitto", x: columns.left, y: rows.title, type: "title" },
       {
         text: "Företag",
-        x: columns.leftMain,
+        x: columns.left,
         y: rows.company,
         type: "subtitle",
       },
       {
         text: companyInformation.Identity.Name,
-        x: columns.leftMain,
+        x: columns.left,
         y: getNextRow(rows.company),
         type: "body",
       },
       {
         text: "Kund",
-        x: columns.rightMain.left,
+        x: columns.right.left,
         y: rows.company,
         type: "subtitle",
       },
       {
         text: customerInformation.Identity.Name,
-        x: columns.rightMain.left,
+        x: columns.right.left,
         y: getNextRow(rows.company),
         type: "body",
       },
       {
         text: "Betalningsvilkor",
-        x: columns.leftMain,
+        x: columns.left,
         y: rows.paymentTerms,
         type: "subtitle",
       },
       {
         text: "Kvittonummer",
-        x: columns.rightMain.middle,
+        x: columns.right.left,
         y: rows.paymentTerms,
         type: "subtitle",
       },
       {
         text: "A1",
-        x: columns.rightMain.right,
+        x: columns.right.right,
         y: rows.paymentTerms,
         type: "body",
       },
       {
         text: "Kontantbetalning",
-        x: columns.leftMain,
+        x: columns.left,
         y: getNextRow(rows.paymentTerms),
         type: "body",
       },
       {
         text: "Datum",
-        x: columns.rightMain.middle,
+        x: columns.right.left,
         y: getNextRow(rows.paymentTerms),
         type: "subtitle",
       },
       {
         text: "2023-01-01",
-        x: columns.rightMain.right,
+        x: columns.right.right,
         y: getNextRow(rows.paymentTerms),
         type: "body",
       },
@@ -294,7 +293,7 @@ const App = () => {
           : lineHeightFactorToRestore
       );
 
-      doc.text(textRow.text, textRow.x, textRow.y);
+      doc.text(textRow.text, textRow.x, textRow.y, { align: "left" });
 
       // reset style
       doc.setTextColor(DefaultTextColor);
@@ -354,7 +353,6 @@ const App = () => {
 
         doc.text(textRow.text, textRow.x, y);
 
-        // reset style
         doc.setTextColor(DefaultTextColor);
         doc.setFontSize(fontSizes.body);
         doc.setLineHeightFactor(lineHeightFactorToRestore);
