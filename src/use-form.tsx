@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from "react";
+import translate from "./translate";
 import useLocalStorage from "./use-local-storage";
 
 type Field = {
@@ -67,7 +68,9 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
 
     return fields.map((field) => (
       <div key={field.propertyPath.join(".")}>
-        <label htmlFor={field.propertyPath.join(".")}>{field.name}</label>
+        <label htmlFor={field.propertyPath.join(".")}>
+          {translate(field.name)}
+        </label>
         <input
           name={field.propertyPath.join(".")}
           style={{ display: "block" }}
