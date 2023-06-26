@@ -1,5 +1,5 @@
 import { ChangeEventHandler, useState } from "react";
-import { CompanyInformation } from "./types";
+import { CompanyInformation, CustomerInformation } from "./types";
 import useForm from "./use-form";
 import usePdf from "./use-pdf";
 
@@ -24,6 +24,21 @@ const testCompanyInformation: CompanyInformation = {
   },
 };
 
+const testCustomerInformation: CustomerInformation = {
+  Identity: {
+    Name: "Arst Arstsson",
+    OrganizationNumber: "0000000000",
+  },
+  Contact: {
+    Phone: "0700000000",
+  },
+  Address: {
+    City: "Testy",
+    Street: "Testenton st. 12",
+    ZipCode: "00000",
+  },
+};
+
 const forms = {
   company: "company",
   customer: "customer",
@@ -34,7 +49,10 @@ const App = () => {
   const [companyInformationForm, companyInformation] =
     useForm<CompanyInformation>("companyInformation", testCompanyInformation);
   const [customerInformationForm, customerInformation] =
-    useForm<CompanyInformation>("customerInformation", testCompanyInformation);
+    useForm<CustomerInformation>(
+      "customerInformation",
+      testCustomerInformation
+    );
 
   const [form, setForm] = useState<string>(forms.company);
 
@@ -62,7 +80,6 @@ const App = () => {
         Generera PDF
       </button>
       <input type="file" onChange={onFileSelected} name="arst" />
-      <div>{file?.name}</div>
 
       {form === forms.company ? (
         <div className="company-information-form-container">

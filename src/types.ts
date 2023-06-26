@@ -1,6 +1,9 @@
 type Identity = {
   Name: string;
   OrganizationNumber: string;
+};
+
+type CompanyIdentity = Identity & {
   VatNumber: string;
 };
 
@@ -10,8 +13,11 @@ type Address = {
   ZipCode: string;
 };
 
-type ContactInformation = {
+type Contact = {
   Phone: string;
+};
+
+type CompanyContact = Contact & {
   Email: string;
   Website: string;
 };
@@ -21,10 +27,16 @@ type PaymentInformation = {
 };
 
 export type CompanyInformation = {
+  Identity: CompanyIdentity;
+  Address: Address;
+  ContactInformation: CompanyContact;
+  PaymentInformation: PaymentInformation;
+};
+
+export type CustomerInformation = {
   Identity: Identity;
   Address: Address;
-  ContactInformation: ContactInformation;
-  PaymentInformation: PaymentInformation;
+  Contact: Contact;
 };
 
 export type ReceiptInformation = {

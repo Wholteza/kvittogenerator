@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { CellConfig, jsPDF, TextOptionsLight } from "jspdf";
-import { CompanyInformation } from "./types";
+import { CompanyInformation, CustomerInformation } from "./types";
 
 const canvasSize = {
   y: { start: 0, end: 297 },
@@ -151,7 +151,7 @@ const usePdf = () => {
   const generatePdf = useCallback(
     async (
       companyInformation: CompanyInformation,
-      customerInformation: CompanyInformation,
+      customerInformation: CustomerInformation,
       logotype: File | undefined
     ) => {
       const doc = new jsPDF();
