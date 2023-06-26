@@ -12,6 +12,9 @@ const dictionary: { [key: string]: { [key: string]: string } } = {
     Email: "E-postadress",
     Website: "Webbsida",
     Bankgiro: "Bankgiro",
+    number: "Nummer",
+    paymentTerms: "Betalningsvilkor",
+    date: "Datum",
   },
 };
 export default translate;

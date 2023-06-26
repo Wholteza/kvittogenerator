@@ -12,6 +12,16 @@ const generateFieldsForObject = (obj: object, propertyPath: string[] = []) => {
   const fields: Field[] = [];
   Object.keys(obj).forEach((key) => {
     const property = (obj as { [key: string]: any })[key];
+    console.warn(property);
+    if (property["constructor"] === new Date().constructor) {
+      console.warn("arst");
+      fields.push({
+        name: key,
+        type: "date",
+        propertyPath: [...propertyPath, key],
+      });
+      return fields;
+    }
     if (typeof property === "object") {
       generateFieldsForObject(property, [...propertyPath, key]).forEach(
         (field) => fields.push(field)
@@ -77,6 +87,7 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
           value={getValueOnPath(formState as object, field.propertyPath)}
           placeholder={field.name}
           onChange={(event) => handleOnChange(field, event)}
+          type={field.type === "date" ? "date" : "text"}
         />
       </div>
     ));

@@ -1,6 +1,10 @@
 import { useCallback } from "react";
 import { CellConfig, jsPDF, TextOptionsLight } from "jspdf";
-import { CompanyInformation, CustomerInformation } from "./types";
+import {
+  CompanyInformation,
+  CustomerInformation,
+  ReceiptInformation,
+} from "./types";
 
 const canvasSize = {
   y: { start: 0, end: 297 },
@@ -152,7 +156,8 @@ const usePdf = () => {
     async (
       companyInformation: CompanyInformation,
       customerInformation: CustomerInformation,
-      logotype: File | undefined
+      logotype: File | undefined,
+      receiptInformation: ReceiptInformation
     ) => {
       const doc = new jsPDF();
 
@@ -199,7 +204,13 @@ const usePdf = () => {
 
       y = rows.date;
       writeOnNewLine([
-        { text: `Datum 2023-01-01`, x: columns.left, type: "footer" },
+        {
+          text: `Datum ${Intl.DateTimeFormat("se").format(
+            new Date(receiptInformation.date)
+          )}`,
+          x: columns.left,
+          type: "footer",
+        },
       ]);
 
       y = rows.aboveTable;
@@ -259,12 +270,12 @@ const usePdf = () => {
       ]);
       writeOnNewLine([
         {
-          text: "Kontantbetalning",
+          text: receiptInformation.paymentTerms,
           x: columns.left,
           type: "body",
         },
         {
-          text: "A1",
+          text: receiptInformation.number,
           x: columns.right.left,
           type: "body",
         },

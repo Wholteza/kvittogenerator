@@ -33,3 +33,14 @@ body {
     background-color: lightcyan;
   }
 }
+
+.receipt-information-form-container {
+  background-color: burlywood;
+  display: flex;
+  flex-direction: column;
+  input {
+    width: 100%;
+    height: 1.5rem;
+    background-color: lightcyan;
+  }
+}

@@ -1,11 +1,15 @@
 import { ChangeEventHandler, useState } from "react";
-import { CompanyInformation, CustomerInformation } from "./types";
+import {
+  CompanyInformation,
+  CustomerInformation,
+  ReceiptInformation,
+} from "./types";
 import useForm from "./use-form";
 import usePdf from "./use-pdf";
 
 const testCompanyInformation: CompanyInformation = {
   Identity: {
-    Name: "Arst Arstsson",
+    Name: "Company Companysson",
     OrganizationNumber: "0000000000",
     VatNumber: "000000",
   },
@@ -26,7 +30,7 @@ const testCompanyInformation: CompanyInformation = {
 
 const testCustomerInformation: CustomerInformation = {
   Identity: {
-    Name: "Arst Arstsson",
+    Name: "Customer Customersson",
     OrganizationNumber: "0000000000",
   },
   Contact: {
@@ -39,9 +43,16 @@ const testCustomerInformation: CustomerInformation = {
   },
 };
 
+const testReceiptInformation: ReceiptInformation = {
+  date: new Date(Date.now()),
+  number: "A1",
+  paymentTerms: "Kontantbetalning",
+};
+
 const forms = {
   company: "company",
   customer: "customer",
+  receipt: "receipt",
   rows: "rows",
 } as const;
 
@@ -53,6 +64,8 @@ const App = () => {
       "customerInformation",
       testCustomerInformation
     );
+  const [receiptInformationForm, receiptInformation] =
+    useForm<ReceiptInformation>("receiptInformation", testReceiptInformation);
 
   const [form, setForm] = useState<string>(forms.company);
 
@@ -71,10 +84,16 @@ const App = () => {
     <>
       <button onClick={() => setForm(forms.company)}>Redigera företag</button>
       <button onClick={() => setForm(forms.customer)}>Redigera kund</button>
+      <button onClick={() => setForm(forms.receipt)}>Redigera kvitto</button>
       <button onClick={() => setForm(forms.rows)}>Redigera rader</button>
       <button
         onClick={() =>
-          generatePdf(companyInformation, customerInformation, file)
+          generatePdf(
+            companyInformation,
+            customerInformation,
+            file,
+            receiptInformation
+          )
         }
       >
         Generera PDF
@@ -92,6 +111,14 @@ const App = () => {
       {form === forms.customer ? (
         <div className="customer-information-form-container">
           {customerInformationForm}
+        </div>
+      ) : (
+        <></>
+      )}
+
+      {form === forms.receipt ? (
+        <div className="receipt-information-form-container">
+          {receiptInformationForm}
         </div>
       ) : (
         <></>
