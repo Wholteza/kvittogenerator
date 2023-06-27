@@ -7,7 +7,7 @@ import {
   RecieptTotalInformation,
 } from "./types";
 import useForm from "./use-form";
-import useLocalStorage from "./use-local-storage";
+import useLocalStorage, { parseWithDate } from "./use-local-storage";
 import usePdf, { ReceiptRow } from "./use-pdf";
 
 const getVatTotalForItems = (
@@ -121,7 +121,7 @@ const App = () => {
   const handleOnAddRow = useCallback(() => {
     setReceiptRows([
       ...receiptRows,
-      JSON.parse(JSON.stringify(currentReceiptRow)),
+      parseWithDate(JSON.stringify(currentReceiptRow)),
     ]);
   }, [currentReceiptRow, receiptRows, setReceiptRows]);
 
@@ -154,7 +154,7 @@ const App = () => {
 
   const handleOnRemoveRow = useCallback(
     (index: number) => {
-      const copyOfRows = JSON.parse(JSON.stringify(receiptRows));
+      const copyOfRows = parseWithDate(JSON.stringify(receiptRows));
       copyOfRows.splice(index, 1);
       setReceiptRows(copyOfRows);
     },

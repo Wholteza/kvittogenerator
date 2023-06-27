@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import translate from "./translate";
-import useLocalStorage from "./use-local-storage";
+import useLocalStorage, { parseWithDate } from "./use-local-storage";
 
 type Field = {
   name: string;
@@ -44,7 +44,7 @@ const mutatePropOnPath = (obj: object, propertyPath: string[], value: any) => {
   mutatePropOnPath((obj as { [key: string]: any })[key], rest, value);
 };
 
-const getValueOnPath = (obj: object, propertyPath: string[]): string => {
+const getValueOnPath = (obj: object, propertyPath: string[]): any => {
   const [key, ...rest] = propertyPath;
   if (!rest.length) {
     return (obj as { [key: string]: string })[key];
@@ -60,12 +60,12 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
 
   const handleOnChange = useCallback(
     (field: Field, event: React.ChangeEvent<HTMLInputElement>) => {
-      const oldState = JSON.parse(JSON.stringify(formState));
+      const oldState = parseWithDate(JSON.stringify(formState));
       const value =
         field.type === "date"
-          ? new Date(event.target.value)
+          ? event.target.valueAsDate
           : field.type === "number"
-          ? Number(event.target.value)
+          ? event.target.valueAsNumber
           : event.target.value;
       mutatePropOnPath(oldState, field.propertyPath, value);
       setFormState(oldState);
@@ -76,21 +76,26 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
   const form = useMemo<JSX.Element[]>(() => {
     const fields = generateFieldsForObject(initialState as object);
 
-    return fields.map((field) => (
-      <div key={field.propertyPath.join(".")}>
-        <label htmlFor={field.propertyPath.join(".")}>
-          {translate(field.name)}
-        </label>
-        <input
-          name={field.propertyPath.join(".")}
-          style={{ display: "block" }}
-          value={getValueOnPath(formState as object, field.propertyPath)}
-          placeholder={field.name}
-          onChange={(event) => handleOnChange(field, event)}
-          type={field.type === "date" ? "date" : "text"}
-        />
-      </div>
-    ));
+    return fields.map((field) => {
+      const value = getValueOnPath(formState as object, field.propertyPath);
+      const parsedValue =
+        field.type === "date" ? (value as Date).toLocaleDateString() : value;
+      return (
+        <div key={field.propertyPath.join(".")}>
+          <label htmlFor={field.propertyPath.join(".")}>
+            {translate(field.name)}
+          </label>
+          <input
+            name={field.propertyPath.join(".")}
+            style={{ display: "block" }}
+            value={parsedValue}
+            placeholder={field.name}
+            onChange={(event) => handleOnChange(field, event)}
+            type={field.type === "date" ? "date" : "text"}
+          />
+        </div>
+      );
+    });
   }, [formState, handleOnChange, initialState]);
 
   return [form, formState];

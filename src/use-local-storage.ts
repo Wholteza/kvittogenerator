@@ -1,5 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 
+export function parseWithDate(jsonString: string): any {
+  const reDateDetect = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/; // startswith: 2015-04-29T22:06:55
+  const resultObject = JSON.parse(jsonString, (key: any, value: any) => {
+    if (typeof value == "string" && reDateDetect.exec(value)) {
+      return new Date(value);
+    }
+    return value;
+  });
+  return resultObject;
+}
+
 const useLocalStorage = <T>(
   key: string,
   initialValue: T
@@ -23,7 +34,7 @@ const useLocalStorage = <T>(
       return;
     }
     try {
-      const parsedValue = JSON.parse(rawValue) as T;
+      const parsedValue = parseWithDate(rawValue);
       setValue(parsedValue);
     } catch {
       handleValueSet(internalInitialValue);
