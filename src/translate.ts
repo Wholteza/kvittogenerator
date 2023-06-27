@@ -15,6 +15,12 @@ const dictionary: { [key: string]: { [key: string]: string } } = {
     number: "Nummer",
     paymentTerms: "Betalningsvilkor",
     date: "Datum",
+    amount: "Antal",
+    description: "Beskrivning",
+    pricePerPiece: "À-pris",
+    vatPercentage: "Moms %",
+    vat: "Moms (SEK)",
+    total: "Total (utan moms)",
   },
 };
 export default translate;

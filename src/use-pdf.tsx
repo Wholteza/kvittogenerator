@@ -68,6 +68,7 @@ type PdfText = {
   x: number;
   color?: "black" | "white";
   type?: "body" | "title" | "subtitle" | "footer";
+  align?: "left" | "right";
   options?: TextOptionsLight;
 };
 
@@ -185,7 +186,9 @@ const usePdf = () => {
               : lineHeightFactorToRestore
           );
 
-          doc.text(textRow.text, textRow.x, y);
+          doc.text(textRow.text, textRow.x, y, {
+            align: textRow.align ?? "left",
+          });
 
           doc.setTextColor(DefaultTextColor);
           doc.setFontSize(fontSizes.body);
@@ -323,9 +326,10 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: `${receiptTotalInformation.vat25}`,
+          text: `${receiptTotalInformation.vat25} kr`,
           x: columns.total.left.right,
           type: "footer",
+          align: "right",
         },
       ]);
       writeOnNewLine([
@@ -335,9 +339,10 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: `${receiptTotalInformation.vat12}`,
+          text: `${receiptTotalInformation.vat12} kr`,
           x: columns.total.left.right,
           type: "footer",
+          align: "right",
         },
       ]);
       writeOnNewLine([
@@ -347,9 +352,10 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: `${receiptTotalInformation.vat6}`,
+          text: `${receiptTotalInformation.vat6} kr`,
           x: columns.total.left.right,
           type: "footer",
+          align: "right",
         },
         {
           text: "Belopp före moms",
@@ -357,9 +363,10 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: `${receiptTotalInformation.totalBeforeVat}`,
+          text: `${receiptTotalInformation.totalBeforeVat} kr`,
           x: columns.total.right.right,
           type: "footer",
+          align: "right",
         },
       ]);
       writeOnNewLine([
@@ -369,9 +376,10 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: "",
+          text: `${receiptTotalInformation.vat0} kr`,
           x: columns.total.left.right,
           type: "footer",
+          align: "right",
         },
         {
           text: "Total moms",
@@ -379,9 +387,10 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: `${receiptTotalInformation.totalVat}`,
+          text: `${receiptTotalInformation.totalVat} kr`,
           x: columns.total.right.right,
           type: "footer",
+          align: "right",
         },
       ]);
 
@@ -394,9 +403,10 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: `${receiptTotalInformation.total}`,
+          text: `${receiptTotalInformation.total} kr`,
           x: columns.total.right.right,
           type: "footer",
+          align: "right",
         },
       ]);
 

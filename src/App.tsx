@@ -18,7 +18,10 @@ const getVatTotalForItems = (
     .filter((row) => row.vat === vatPercentage)
     .reduce(
       (aggregate, current) =>
-        aggregate + current.total * Number(`0.${vatPercentage}`),
+        aggregate +
+        current.pricePerPiece *
+          Number(`0.${vatPercentage.toString().padStart(2, "0")}`) *
+          current.amount,
       0
     );
 
@@ -126,12 +129,18 @@ const App = () => {
     const vat25 = getVatTotalForItems(receiptRows, 25);
     const vat12 = getVatTotalForItems(receiptRows, 12);
     const vat6 = getVatTotalForItems(receiptRows, 6);
-    const vat0 = getVatTotalForItems(receiptRows, 0);
+    const vat0 = receiptRows
+      .filter((row) => row.vatPercentage === 0)
+      .reduce(
+        (total, current) => total + current.amount * current.pricePerPiece,
+        0
+      );
     const totalBeforeVat = receiptRows.reduce(
       (total, current) => total + current.total,
       0
     );
     const totalVat = vat25 + vat12 + vat6;
+
     return {
       vat25,
       vat12,

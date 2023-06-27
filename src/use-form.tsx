@@ -61,7 +61,13 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
   const handleOnChange = useCallback(
     (field: Field, event: React.ChangeEvent<HTMLInputElement>) => {
       const oldState = JSON.parse(JSON.stringify(formState));
-      mutatePropOnPath(oldState, field.propertyPath, event.target.value);
+      const value =
+        field.type === "date"
+          ? new Date(event.target.value)
+          : field.type === "number"
+          ? Number(event.target.value)
+          : event.target.value;
+      mutatePropOnPath(oldState, field.propertyPath, value);
       setFormState(oldState);
     },
     [formState, setFormState]
