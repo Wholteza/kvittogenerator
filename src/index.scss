@@ -3,12 +3,13 @@
   padding: 0;
   width: 100vw;
   overflow: hidden;
+  overflow-y: auto;
 }
 
 body { 
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden;
   width: 100vw;
   @media (min-width: 768px) {
     width: 500px;
@@ -39,6 +40,16 @@ body {
 }
 
 .receipt-information-form-container {
+  background-color: burlywood;
+  display: flex;
+  flex-direction: column;
+  input {
+    width: 100%;
+    height: 1.5rem;
+    background-color: lightcyan;
+  }
+}
+.receipt-rows-form-container {
   background-color: burlywood;
   display: flex;
   flex-direction: column;

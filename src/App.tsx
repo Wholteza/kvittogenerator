@@ -1,4 +1,5 @@
 import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
+import translate from "./translate";
 import {
   CompanyInformation,
   CustomerInformation,
@@ -218,7 +219,7 @@ const App = () => {
       )}
 
       {form === forms.rows ? (
-        <div className="rows-information-form-container">
+        <div className="receipt-rows-form-container">
           {currentReceiptRowForm}
           <button onClick={handleOnAddRow}>Lägg till</button>
           {receiptRows.map((row, index) => (
@@ -229,6 +230,32 @@ const App = () => {
               <button onClick={() => handleOnRemoveRow(index)}>Ta bort</button>
             </div>
           ))}
+          <table>
+            <thead>
+              <tr>
+                <td>{translate("date")}</td>
+                <td>{translate("description")}</td>
+                <td>{translate("amount")}</td>
+                <td>{translate("pricePerPiece")}</td>
+                <td>{translate("vatPercentage")}</td>
+                <td>{translate("vat")}</td>
+                <td>{translate("total")}</td>
+              </tr>
+            </thead>
+            <tbody>
+              {receiptRows.map((row) => (
+                <tr>
+                  <td>{Intl.DateTimeFormat("sv-SE").format(row.date)}</td>
+                  <td>{row.description}</td>
+                  <td>{row.amount}</td>
+                  <td>{row.pricePerPiece}</td>
+                  <td>{row.vatPercentage}</td>
+                  <td>{row.vat}</td>
+                  <td>{row.total}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       ) : (
         <></>
