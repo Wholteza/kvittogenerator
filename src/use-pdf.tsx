@@ -4,6 +4,7 @@ import {
   CompanyInformation,
   CustomerInformation,
   ReceiptInformation,
+  RecieptTotalInformation,
 } from "./types";
 
 const canvasSize = {
@@ -70,7 +71,7 @@ type PdfText = {
   options?: TextOptionsLight;
 };
 
-type ReceiptRow = {
+export type ReceiptRow = {
   date: string;
   description: string;
   amount: string;
@@ -157,7 +158,9 @@ const usePdf = () => {
       companyInformation: CompanyInformation,
       customerInformation: CustomerInformation,
       logotype: string,
-      receiptInformation: ReceiptInformation
+      receiptInformation: ReceiptInformation,
+      receiptRows: ReceiptRow[],
+      receiptTotalInformation: RecieptTotalInformation
     ) => {
       const doc = new jsPDF();
 
@@ -279,90 +282,6 @@ const usePdf = () => {
         },
       ]);
 
-      const receiptRows = [
-        createReceiptRow(
-          "2023-01-01",
-          "Massage 60 min",
-          "2",
-          "200,00",
-          "400,00",
-          "25%",
-          "10,00"
-        ),
-        createReceiptRow(
-          "2023-01-01",
-          "Massage 60 min",
-          "2",
-          "200,00",
-          "400,00",
-          "25%",
-          "10,00"
-        ),
-        createReceiptRow(
-          "2023-01-01",
-          "Massage 60 min",
-          "2",
-          "200,00",
-          "400,00",
-          "25%",
-          "10,00"
-        ),
-        createReceiptRow(
-          "2023-01-01",
-          "Massage 60 min",
-          "2",
-          "200,00",
-          "400,00",
-          "25%",
-          "10,00"
-        ),
-        createReceiptRow(
-          "2023-01-01",
-          "Massage 60 min",
-          "2",
-          "200,00",
-          "400,00",
-          "25%",
-          "10,00"
-        ),
-        createReceiptRow(
-          "2023-01-01",
-          "Massage 60 min",
-          "2",
-          "200,00",
-          "400,00",
-          "25%",
-          "10,00"
-        ),
-        createReceiptRow(
-          "2023-01-01",
-          "Massage 60 min",
-          "2",
-          "200,00",
-          "400,00",
-          "25%",
-          "10,00"
-        ),
-        createReceiptRow(
-          "2023-01-01",
-          "Massage 60 min",
-          "2",
-          "200,00",
-          "400,00",
-          "25%",
-          "10,00"
-        ),
-        createReceiptRow(
-          "2023-01-01",
-          "Massage 60 min",
-          "2",
-          "200,00",
-          "400,00",
-          "25%",
-          "10,00"
-        ),
-      ];
-
       doc.setLineHeightFactor(1);
       doc.table(columns.table.articleNumber, y, receiptRows, tableHeaders, {
         headerBackgroundColor: "black",
@@ -404,7 +323,7 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: "123,00",
+          text: `${receiptTotalInformation.vat25}`,
           x: columns.total.left.right,
           type: "footer",
         },
@@ -416,7 +335,7 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: "",
+          text: `${receiptTotalInformation.vat12}`,
           x: columns.total.left.right,
           type: "footer",
         },
@@ -428,7 +347,7 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: "",
+          text: `${receiptTotalInformation.vat6}`,
           x: columns.total.left.right,
           type: "footer",
         },
@@ -437,7 +356,11 @@ const usePdf = () => {
           x: columns.total.right.left,
           type: "footer",
         },
-        { text: "123,00", x: columns.total.right.right, type: "footer" },
+        {
+          text: `${receiptTotalInformation.totalBeforeVat}`,
+          x: columns.total.right.right,
+          type: "footer",
+        },
       ]);
       writeOnNewLine([
         {
@@ -455,7 +378,11 @@ const usePdf = () => {
           x: columns.total.right.left,
           type: "footer",
         },
-        { text: "123,00", x: columns.total.right.right, type: "footer" },
+        {
+          text: `${receiptTotalInformation.totalVat}`,
+          x: columns.total.right.right,
+          type: "footer",
+        },
       ]);
 
       writeOnNewLine([]);
@@ -466,7 +393,11 @@ const usePdf = () => {
           x: columns.total.right.left,
           type: "footer",
         },
-        { text: "123,00", x: columns.total.right.right, type: "footer" },
+        {
+          text: `${receiptTotalInformation.total}`,
+          x: columns.total.right.right,
+          type: "footer",
+        },
       ]);
 
       // print out footer information

@@ -1,12 +1,26 @@
-import { ChangeEventHandler, useState } from "react";
+import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
 import {
   CompanyInformation,
   CustomerInformation,
   ReceiptInformation,
+  ReceiptFormRow,
+  RecieptTotalInformation,
 } from "./types";
 import useForm from "./use-form";
 import useLocalStorage from "./use-local-storage";
-import usePdf from "./use-pdf";
+import usePdf, { ReceiptRow } from "./use-pdf";
+
+const getVatTotalForItems = (
+  items: ReceiptFormRow[],
+  vatPercentage: number
+): number =>
+  items
+    .filter((row) => row.vat === vatPercentage)
+    .reduce(
+      (aggregate, current) =>
+        aggregate + current.total * Number(`0.${vatPercentage}`),
+      0
+    );
 
 const testCompanyInformation: CompanyInformation = {
   Identity: {
@@ -50,6 +64,15 @@ const testReceiptInformation: ReceiptInformation = {
   paymentTerms: "Kontantbetalning",
 };
 
+const testReceiptRow: ReceiptFormRow = {
+  date: new Date(Date.now()),
+  amount: 1,
+  description: "",
+  pricePerPiece: 0,
+  vatPercentage: 25,
+  vat: 0,
+  total: 0,
+};
 const forms = {
   company: "company",
   customer: "customer",
@@ -65,14 +88,20 @@ const App = () => {
       "customerInformation",
       testCustomerInformation
     );
+  const [receiptRows, setReceiptRows] = useLocalStorage<ReceiptFormRow[]>(
+    "receiptRows",
+    []
+  );
   const [receiptInformationForm, receiptInformation] =
     useForm<ReceiptInformation>("receiptInformation", testReceiptInformation);
-
+  const [currentReceiptRowForm, currentReceiptRow] = useForm<ReceiptFormRow>(
+    "currentReceiptRow",
+    testReceiptRow
+  );
   const [form, setForm] = useLocalStorage<string>(
     "selectedForm",
     forms.company
   );
-
   const [file, setFile] = useLocalStorage<string>("logotype", "");
 
   const { generatePdf } = usePdf();
@@ -86,6 +115,43 @@ const App = () => {
       setFile(typeof reader.result === "string" ? reader.result : "");
   };
 
+  const handleOnAddRow = useCallback(() => {
+    setReceiptRows([
+      ...receiptRows,
+      JSON.parse(JSON.stringify(currentReceiptRow)),
+    ]);
+  }, [currentReceiptRow, receiptRows, setReceiptRows]);
+
+  const receiptTotalInformation = useMemo<RecieptTotalInformation>(() => {
+    const vat25 = getVatTotalForItems(receiptRows, 25);
+    const vat12 = getVatTotalForItems(receiptRows, 12);
+    const vat6 = getVatTotalForItems(receiptRows, 6);
+    const vat0 = getVatTotalForItems(receiptRows, 0);
+    const totalBeforeVat = receiptRows.reduce(
+      (total, current) => total + current.total,
+      0
+    );
+    const totalVat = vat25 + vat12 + vat6;
+    return {
+      vat25,
+      vat12,
+      vat6,
+      vat0,
+      totalBeforeVat,
+      total: totalBeforeVat + totalVat,
+      totalVat,
+    };
+  }, [receiptRows]);
+
+  const handleOnRemoveRow = useCallback(
+    (index: number) => {
+      const copyOfRows = JSON.parse(JSON.stringify(receiptRows));
+      copyOfRows.splice(index, 1);
+      setReceiptRows(copyOfRows);
+    },
+    [receiptRows, setReceiptRows]
+  );
+
   return (
     <>
       <button onClick={() => setForm(forms.company)}>Redigera företag</button>
@@ -98,7 +164,19 @@ const App = () => {
             companyInformation,
             customerInformation,
             file,
-            receiptInformation
+            receiptInformation,
+            receiptRows.map(
+              (row): ReceiptRow => ({
+                date: Intl.DateTimeFormat("sv-SE").format(new Date(row.date)),
+                description: row.description || " ",
+                amount: `${row.amount} st`,
+                pricePerPiece: `${row.pricePerPiece} kr`,
+                vatPercentage: `${row.vatPercentage} %`,
+                vat: `${row.vat} kr`,
+                total: `${row.total} kr`,
+              })
+            ),
+            receiptTotalInformation
           )
         }
       >
@@ -125,6 +203,23 @@ const App = () => {
       {form === forms.receipt ? (
         <div className="receipt-information-form-container">
           {receiptInformationForm}
+        </div>
+      ) : (
+        <></>
+      )}
+
+      {form === forms.rows ? (
+        <div className="rows-information-form-container">
+          {currentReceiptRowForm}
+          <button onClick={handleOnAddRow}>Lägg till</button>
+          {receiptRows.map((row, index) => (
+            <div>
+              {Intl.DateTimeFormat("sv-SE").format(new Date(row.date))},{" "}
+              {row.description}, {row.amount}, {row.pricePerPiece},{" "}
+              {row.vatPercentage}, {row.vat}, {row.total}{" "}
+              <button onClick={() => handleOnRemoveRow(index)}>Ta bort</button>
+            </div>
+          ))}
         </div>
       ) : (
         <></>
