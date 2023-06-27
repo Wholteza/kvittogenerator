@@ -137,7 +137,7 @@ const App = () => {
         0
       );
     const totalBeforeVat = receiptRows.reduce(
-      (total, current) => total + current.total,
+      (total, current) => total + current.total * current.amount,
       0
     );
     const totalVat = vat25 + vat12 + vat6;
