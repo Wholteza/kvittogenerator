@@ -12,9 +12,7 @@ const generateFieldsForObject = (obj: object, propertyPath: string[] = []) => {
   const fields: Field[] = [];
   Object.keys(obj).forEach((key) => {
     const property = (obj as { [key: string]: any })[key];
-    console.warn(property);
     if (property["constructor"] === new Date().constructor) {
-      console.warn("arst");
       fields.push({
         name: key,
         type: "date",
@@ -37,11 +35,7 @@ const generateFieldsForObject = (obj: object, propertyPath: string[] = []) => {
   return fields;
 };
 
-const mutatePropOnPath = (
-  obj: object,
-  propertyPath: string[],
-  value: string
-) => {
+const mutatePropOnPath = (obj: object, propertyPath: string[], value: any) => {
   const [key, ...rest] = propertyPath;
   if (!rest.length) {
     (obj as { [key: string]: any })[key] = value;

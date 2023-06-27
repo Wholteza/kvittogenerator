@@ -5,6 +5,7 @@ import {
   ReceiptInformation,
 } from "./types";
 import useForm from "./use-form";
+import useLocalStorage from "./use-local-storage";
 import usePdf from "./use-pdf";
 
 const testCompanyInformation: CompanyInformation = {
@@ -44,8 +45,8 @@ const testCustomerInformation: CustomerInformation = {
 };
 
 const testReceiptInformation: ReceiptInformation = {
-  date: new Date(Date.now()),
   number: "A1",
+  date: new Date(Date.now()),
   paymentTerms: "Kontantbetalning",
 };
 
@@ -67,17 +68,22 @@ const App = () => {
   const [receiptInformationForm, receiptInformation] =
     useForm<ReceiptInformation>("receiptInformation", testReceiptInformation);
 
-  const [form, setForm] = useState<string>(forms.company);
+  const [form, setForm] = useLocalStorage<string>(
+    "selectedForm",
+    forms.company
+  );
 
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useLocalStorage<string>("logotype", "");
 
   const { generatePdf } = usePdf();
 
   const onFileSelected: ChangeEventHandler<HTMLInputElement> = (event) => {
-    console.warn(event);
     const file = event.target?.files?.[0];
     if (!file) return;
-    setFile(file);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () =>
+      setFile(typeof reader.result === "string" ? reader.result : "");
   };
 
   return (

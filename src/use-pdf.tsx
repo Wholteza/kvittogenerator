@@ -156,16 +156,14 @@ const usePdf = () => {
     async (
       companyInformation: CompanyInformation,
       customerInformation: CustomerInformation,
-      logotype: File | undefined,
+      logotype: string,
       receiptInformation: ReceiptInformation
     ) => {
       const doc = new jsPDF();
 
       // logotype, break out
-      const logotypeData =
-        (await logotype?.stream().getReader().read())?.value ?? undefined;
-      if (logotypeData)
-        doc.addImage(logotypeData, "png", doc.canvas.width, 10, 50, 50);
+      if (logotype.length)
+        doc.addImage(logotype, "png", doc.canvas.width, 10, 50, 50);
 
       const writeOnNewLine = (
         textRows: PdfText[],
@@ -205,7 +203,7 @@ const usePdf = () => {
       y = rows.date;
       writeOnNewLine([
         {
-          text: `Datum ${Intl.DateTimeFormat("se").format(
+          text: `Datum ${Intl.DateTimeFormat("sv-SE").format(
             new Date(receiptInformation.date)
           )}`,
           x: columns.left,
