@@ -82,24 +82,6 @@ export type ReceiptRow = {
   vat: string;
 };
 
-const createReceiptRow = (
-  date: string,
-  description: string,
-  amount: string,
-  pricePerPiece: string,
-  total: string,
-  vatPercentage: string,
-  vat: string
-): ReceiptRow => ({
-  date,
-  description,
-  amount,
-  pricePerPiece,
-  total,
-  vatPercentage,
-  vat,
-});
-
 const tableHeaders: CellConfig[] = [
   {
     name: "date",

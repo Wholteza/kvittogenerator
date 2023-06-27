@@ -1,4 +1,4 @@
-import { ChangeEventHandler, useCallback, useMemo, useState } from "react";
+import { ChangeEventHandler, useCallback, useMemo } from "react";
 import translate from "./translate";
 import {
   CompanyInformation,
@@ -164,10 +164,18 @@ const App = () => {
 
   return (
     <>
-      <button onClick={() => setForm(forms.company)}>Redigera företag</button>
-      <button onClick={() => setForm(forms.customer)}>Redigera kund</button>
-      <button onClick={() => setForm(forms.receipt)}>Redigera kvitto</button>
-      <button onClick={() => setForm(forms.rows)}>Redigera rader</button>
+      <button className="button" onClick={() => setForm(forms.company)}>
+        Redigera företag
+      </button>
+      <button className="button" onClick={() => setForm(forms.customer)}>
+        Redigera kund
+      </button>
+      <button className="button" onClick={() => setForm(forms.receipt)}>
+        Redigera kvitto
+      </button>
+      <button className="button" onClick={() => setForm(forms.rows)}>
+        Redigera rader
+      </button>
       <button
         onClick={() =>
           generatePdf(
