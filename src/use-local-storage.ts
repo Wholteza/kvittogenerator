@@ -4,30 +4,31 @@ const useLocalStorage = <T>(
   key: string,
   initialValue: T
 ): [T, (newValue: T) => void] => {
-  const [value, setValue] = useState<T>(initialValue);
+  const [internalKey] = useState<string>(key);
+  const [internalInitialValue] = useState<T>(initialValue);
+  const [value, setValue] = useState<T>(internalInitialValue);
   const handleValueSet = useCallback(
     (newValue: T): void => {
       setValue(newValue);
-      localStorage.setItem(key, JSON.stringify(newValue));
+      localStorage.setItem(internalKey, JSON.stringify(newValue));
     },
-    [key]
+    [internalKey]
   );
 
   useEffect(() => {
-    const rawValue = localStorage.getItem(key);
-    console.log(rawValue);
+    const rawValue = localStorage.getItem(internalKey);
     if (rawValue === null) {
-      if (!initialValue) return;
-      handleValueSet(initialValue);
+      if (!internalInitialValue) return;
+      handleValueSet(internalInitialValue);
       return;
     }
     try {
       const parsedValue = JSON.parse(rawValue) as T;
       setValue(parsedValue);
     } catch {
-      handleValueSet(initialValue);
+      handleValueSet(internalInitialValue);
     }
-  }, [handleValueSet, initialValue, key]);
+  }, [handleValueSet, internalInitialValue, internalKey]);
 
   return [value, handleValueSet];
 };
