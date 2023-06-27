@@ -89,9 +89,15 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
             name={field.propertyPath.join(".")}
             style={{ display: "block" }}
             value={parsedValue}
-            placeholder={field.name}
+            placeholder={translate(field.name)}
             onChange={(event) => handleOnChange(field, event)}
-            type={field.type === "date" ? "date" : "text"}
+            type={
+              field.type === "date"
+                ? "date"
+                : field.type === "number"
+                ? "number"
+                : "text"
+            }
           />
         </div>
       );
