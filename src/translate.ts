@@ -17,10 +17,10 @@ const dictionary: { [key: string]: { [key: string]: string } } = {
     date: "Datum",
     amount: "Antal",
     description: "Beskrivning",
-    pricePerPiece: "À-pris",
+    pricePerPiece: "À-pris (exkl. moms)",
     vatPercentage: "Moms %",
     vat: "Moms (SEK)",
-    total: "Total (utan moms)",
+    total: "Total (inkl. moms)",
   },
 };
 export default translate;

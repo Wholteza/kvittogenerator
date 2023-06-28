@@ -214,7 +214,7 @@ const usePdf = () => {
       ]);
       writeOnNewLine([
         {
-          text: companyInformation.Identity.Name,
+          text: `${companyInformation.Identity.Name} (${companyInformation.Identity.OrganizationNumber})`,
           x: columns.left,
           type: "body",
         },
@@ -227,6 +227,11 @@ const usePdf = () => {
       ]);
       writeOnNewLine([
         {
+          text: `${companyInformation.Address.Street}`,
+          x: columns.left,
+          type: "body",
+        },
+        {
           text: `${customerInformation.Address.Street}`,
           x: columns.right.left,
           type: "body",
@@ -234,6 +239,11 @@ const usePdf = () => {
       ]);
       writeOnNewLine(
         [
+          {
+            text: `${companyInformation.Address.ZipCode} ${companyInformation.Address.City}`,
+            x: columns.left,
+            type: "body",
+          },
           {
             text: `${customerInformation.Address.ZipCode} ${customerInformation.Address.City}`,
             x: columns.right.left,

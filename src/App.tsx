@@ -14,17 +14,18 @@ import usePdf, { ReceiptRow } from "./use-pdf";
 const getVatTotalForItems = (
   items: ReceiptFormRow[],
   vatPercentage: number
-): number =>
-  items
-    .filter((row) => row.vat === vatPercentage)
-    .reduce(
-      (aggregate, current) =>
-        aggregate +
-        current.pricePerPiece *
-          Number(`0.${vatPercentage.toString().padStart(2, "0")}`) *
-          current.amount,
-      0
-    );
+): number => {
+  const filteredItems = items.filter(
+    (row) => row.vatPercentage === vatPercentage
+  );
+  const total = filteredItems.reduce(
+    (aggregate, current) =>
+      aggregate +
+      current.pricePerPiece * (0.01 * vatPercentage) * current.amount,
+    0
+  );
+  return total;
+};
 
 const testCompanyInformation: CompanyInformation = {
   Identity: {
@@ -137,7 +138,7 @@ const App = () => {
         0
       );
     const totalBeforeVat = receiptRows.reduce(
-      (total, current) => total + current.total * current.amount,
+      (total, current) => total + current.pricePerPiece * current.amount,
       0
     );
     const totalVat = vat25 + vat12 + vat6;
