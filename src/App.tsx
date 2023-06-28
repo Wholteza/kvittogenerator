@@ -4,15 +4,19 @@ import {
   CompanyInformation,
   CustomerInformation,
   ReceiptInformation,
-  ReceiptFormRow,
   RecieptTotalInformation,
 } from "./types";
 import useForm from "./use-form";
 import useLocalStorage, { parseWithDate } from "./use-local-storage";
-import usePdf, { ReceiptRow } from "./use-pdf";
+import usePdf from "./use-pdf";
+import {
+  ReceiptRow,
+  ReceiptRowFormModel,
+  ReceiptRowViewModel,
+} from "./types/receipt-row";
 
 const getVatTotalForItems = (
-  items: ReceiptFormRow[],
+  items: ReceiptRowFormModel[],
   vatPercentage: number
 ): number => {
   const filteredItems = items.filter(
@@ -21,7 +25,9 @@ const getVatTotalForItems = (
   const total = filteredItems.reduce(
     (aggregate, current) =>
       aggregate +
-      current.pricePerPiece * (0.01 * vatPercentage) * current.amount,
+      current.pricePerPieceVatIncluded *
+        (0.01 * vatPercentage) *
+        current.amount,
     0
   );
   return total;
@@ -69,14 +75,12 @@ const testReceiptInformation: ReceiptInformation = {
   paymentTerms: "Kontantbetalning",
 };
 
-const testReceiptRow: ReceiptFormRow = {
+const testReceiptRow: ReceiptRowFormModel = {
   date: new Date(Date.now()),
   amount: 1,
   description: "",
-  pricePerPiece: 0,
+  pricePerPieceVatIncluded: 0,
   vatPercentage: 25,
-  vat: 0,
-  total: 0,
 };
 const forms = {
   company: "company",
@@ -93,16 +97,13 @@ const App = () => {
       "customerInformation",
       testCustomerInformation
     );
-  const [receiptRows, setReceiptRows] = useLocalStorage<ReceiptFormRow[]>(
-    "receiptRows",
-    []
-  );
+  const [receiptFormRows, setReceiptRows] = useLocalStorage<
+    ReceiptRowFormModel[]
+  >("receiptRows", []);
   const [receiptInformationForm, receiptInformation] =
     useForm<ReceiptInformation>("receiptInformation", testReceiptInformation);
-  const [currentReceiptRowForm, currentReceiptRow] = useForm<ReceiptFormRow>(
-    "currentReceiptRow",
-    testReceiptRow
-  );
+  const [currentReceiptRowForm, currentReceiptRow] =
+    useForm<ReceiptRowFormModel>("currentReceiptRow", testReceiptRow);
   const [form, setForm] = useLocalStorage<string>(
     "selectedForm",
     forms.company
@@ -122,23 +123,25 @@ const App = () => {
 
   const handleOnAddRow = useCallback(() => {
     setReceiptRows([
-      ...receiptRows,
+      ...receiptFormRows,
       parseWithDate(JSON.stringify(currentReceiptRow)),
     ]);
-  }, [currentReceiptRow, receiptRows, setReceiptRows]);
+  }, [currentReceiptRow, receiptFormRows, setReceiptRows]);
 
   const receiptTotalInformation = useMemo<RecieptTotalInformation>(() => {
-    const vat25 = getVatTotalForItems(receiptRows, 25);
-    const vat12 = getVatTotalForItems(receiptRows, 12);
-    const vat6 = getVatTotalForItems(receiptRows, 6);
-    const vat0 = receiptRows
+    const vat25 = getVatTotalForItems(receiptFormRows, 25);
+    const vat12 = getVatTotalForItems(receiptFormRows, 12);
+    const vat6 = getVatTotalForItems(receiptFormRows, 6);
+    const vat0 = receiptFormRows
       .filter((row) => row.vatPercentage === 0)
       .reduce(
-        (total, current) => total + current.amount * current.pricePerPiece,
+        (total, current) =>
+          total + current.amount * current.pricePerPieceVatIncluded,
         0
       );
-    const totalBeforeVat = receiptRows.reduce(
-      (total, current) => total + current.pricePerPiece * current.amount,
+    const totalBeforeVat = receiptFormRows.reduce(
+      (total, current) =>
+        total + current.pricePerPieceVatIncluded * current.amount,
       0
     );
     const totalVat = vat25 + vat12 + vat6;
@@ -152,16 +155,49 @@ const App = () => {
       total: totalBeforeVat + totalVat,
       totalVat,
     };
-  }, [receiptRows]);
+  }, [receiptFormRows]);
 
   const handleOnRemoveRow = useCallback(
     (index: number) => {
-      const copyOfRows = parseWithDate(JSON.stringify(receiptRows));
+      const copyOfRows = parseWithDate(JSON.stringify(receiptFormRows));
       copyOfRows.splice(index, 1);
       setReceiptRows(copyOfRows);
     },
-    [receiptRows, setReceiptRows]
+    [receiptFormRows, setReceiptRows]
   );
+
+  const receiptRows = useMemo<ReceiptRow[]>(
+    () => receiptFormRows.map(ReceiptRow.fromFormModel),
+    [receiptFormRows]
+  );
+  const handleOnClickGeneratePdf = useCallback(() => {
+    generatePdf(
+      companyInformation,
+      customerInformation,
+      file,
+      receiptInformation,
+      receiptRows.map(
+        (row): ReceiptRowViewModel => ({
+          date: Intl.DateTimeFormat("sv-SE").format(new Date(row.date)),
+          description: row.description || " ",
+          amount: `${row.amount} st`,
+          pricePerPiece: `${row.pricePerPieceVatExcluded} kr`,
+          vatPercentage: `${row.vatPercentage} %`,
+          vat: `${row.vatPerPiece} kr`,
+          total: `${row.totalWithVatIncluded} kr`,
+        })
+      ),
+      receiptTotalInformation
+    );
+  }, [
+    generatePdf,
+    companyInformation,
+    customerInformation,
+    file,
+    receiptInformation,
+    receiptRows,
+    receiptTotalInformation,
+  ]);
 
   return (
     <>
@@ -177,30 +213,7 @@ const App = () => {
       <button className="button" onClick={() => setForm(forms.rows)}>
         Redigera rader
       </button>
-      <button
-        onClick={() =>
-          generatePdf(
-            companyInformation,
-            customerInformation,
-            file,
-            receiptInformation,
-            receiptRows.map(
-              (row): ReceiptRow => ({
-                date: Intl.DateTimeFormat("sv-SE").format(new Date(row.date)),
-                description: row.description || " ",
-                amount: `${row.amount} st`,
-                pricePerPiece: `${row.pricePerPiece} kr`,
-                vatPercentage: `${row.vatPercentage} %`,
-                vat: `${row.vat} kr`,
-                total: `${row.total} kr`,
-              })
-            ),
-            receiptTotalInformation
-          )
-        }
-      >
-        Generera PDF
-      </button>
+      <button onClick={handleOnClickGeneratePdf}>Generera PDF</button>
       <input type="file" onChange={onFileSelected} name="arst" />
 
       {form === forms.company ? (
@@ -234,8 +247,8 @@ const App = () => {
           {receiptRows.map((row, index) => (
             <div>
               {Intl.DateTimeFormat("sv-SE").format(new Date(row.date))},{" "}
-              {row.description}, {row.amount}, {row.pricePerPiece},{" "}
-              {row.vatPercentage}, {row.vat}, {row.total}{" "}
+              {row.description}, {row.amount}, {row.pricePerPieceVatExcluded},{" "}
+              {row.vatPercentage}, {row.vatPerPiece}, {row.totalWithVatIncluded}{" "}
               <button onClick={() => handleOnRemoveRow(index)}>Ta bort</button>
             </div>
           ))}
@@ -257,10 +270,10 @@ const App = () => {
                   <td>{Intl.DateTimeFormat("sv-SE").format(row.date)}</td>
                   <td>{row.description}</td>
                   <td>{row.amount}</td>
-                  <td>{row.pricePerPiece}</td>
+                  <td>{row.pricePerPieceVatExcluded}</td>
                   <td>{row.vatPercentage}</td>
-                  <td>{row.vat}</td>
-                  <td>{row.total}</td>
+                  <td>{row.vatPerPiece}</td>
+                  <td>{row.totalWithVatIncluded}</td>
                 </tr>
               ))}
             </tbody>

@@ -6,6 +6,7 @@ import {
   ReceiptInformation,
   RecieptTotalInformation,
 } from "./types";
+import { ReceiptRowViewModel } from "./types/receipt-row";
 
 const canvasSize = {
   y: { start: 0, end: 297 },
@@ -72,16 +73,6 @@ type PdfText = {
   options?: TextOptionsLight;
 };
 
-export type ReceiptRow = {
-  date: string;
-  description: string;
-  amount: string;
-  pricePerPiece: string;
-  total: string;
-  vatPercentage: string;
-  vat: string;
-};
-
 const tableHeaders: CellConfig[] = [
   {
     name: "date",
@@ -142,7 +133,7 @@ const usePdf = () => {
       customerInformation: CustomerInformation,
       logotype: string,
       receiptInformation: ReceiptInformation,
-      receiptRows: ReceiptRow[],
+      receiptRows: ReceiptRowViewModel[],
       receiptTotalInformation: RecieptTotalInformation
     ) => {
       const doc = new jsPDF();

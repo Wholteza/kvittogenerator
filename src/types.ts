@@ -45,16 +45,6 @@ export type ReceiptInformation = {
   paymentTerms: string;
 };
 
-export type ReceiptFormRow = {
-  date: Date;
-  description: string;
-  amount: number;
-  pricePerPiece: number;
-  total: number;
-  vatPercentage: number;
-  vat: number;
-};
-
 export type RecieptTotalInformation = {
   vat25: number;
   vat12: number;
