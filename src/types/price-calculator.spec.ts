@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import { PriceCalculator } from "./price-calculator";
+import { PriceCalculator, VatIsDecimalValueError } from "./price-calculator";
 const ClassName = "PriceCalculator";
 
 describe(`${ClassName} - constructor`, () => {
@@ -17,6 +17,14 @@ describe(`${ClassName} - constructor`, () => {
     expect(() => {
       new PriceCalculator(vatPercentage);
     }).toThrowError();
+  });
+
+  test("throws if provided vat percentage is a decimal", () => {
+    const vatPercentage = 0.1;
+
+    expect(() => {
+      new PriceCalculator(vatPercentage);
+    }).toThrow(VatIsDecimalValueError);
   });
 });
 
@@ -123,7 +131,6 @@ describe(`${ClassName} - getVatMultiplierFromPercentage`, () => {
     { vatPercentage: 0, expectedVatMultiplier: 1 },
     { vatPercentage: 100, expectedVatMultiplier: 2 },
     { vatPercentage: 311, expectedVatMultiplier: 4.11 },
-    { vatPercentage: 31.1, expectedVatMultiplier: 1.31 },
   ];
   testInputs.forEach((input) =>
     test("returns expected vat multiplier rounded to two decimals", () => {
@@ -237,64 +244,4 @@ describe(`${ClassName} - calculateTotalWithVatIncluded`, () => {
     expect(result).not.toBe(483.996);
     expect(result).toBe(484);
   });
-});
-
-describe(`${ClassName} - roundToTwoDecimals`, () => {
-  test("rounds value with more than 2 decimals to 2 decimals", () => {
-    const vatThatDoesNotMatter = 0;
-    const unit = new PriceCalculator(vatThatDoesNotMatter);
-
-    const result = unit.roundToTwoDecimals(0.919);
-
-    expect(result).toBe(0.92);
-  });
-
-  test("does not rounds value with 2 decimals", () => {
-    const vatThatDoesNotMatter = 0;
-    const unit = new PriceCalculator(vatThatDoesNotMatter);
-
-    const result = unit.roundToTwoDecimals(0.99);
-
-    expect(result).toBe(0.99);
-  });
-
-  test("does not rounds value with 1 decimals", () => {
-    const vatThatDoesNotMatter = 0;
-    const unit = new PriceCalculator(vatThatDoesNotMatter);
-
-    const result = unit.roundToTwoDecimals(0.9);
-
-    expect(result).toBe(0.9);
-  });
-
-  test("does not rounds value with 0 decimals", () => {
-    const vatThatDoesNotMatter = 0;
-    const unit = new PriceCalculator(vatThatDoesNotMatter);
-
-    const result = unit.roundToTwoDecimals(1);
-
-    expect(result).toBe(1);
-  });
-
-  [0.111, 0.112, 0.113, 0.114].forEach((num) =>
-    test("rounds 1-4 down", () => {
-      const vatThatDoesNotMatter = 0;
-      const unit = new PriceCalculator(vatThatDoesNotMatter);
-
-      const result = unit.roundToTwoDecimals(num);
-
-      expect(result).toBe(0.11);
-    })
-  );
-
-  [0.115, 0.116, 0.117, 0.118, 0.119].forEach((num) =>
-    test("rounds 5-9 up", () => {
-      const vatThatDoesNotMatter = 0;
-      const unit = new PriceCalculator(vatThatDoesNotMatter);
-
-      const result = unit.roundToTwoDecimals(num);
-
-      expect(result).toBe(0.12);
-    })
-  );
 });

@@ -1,8 +1,14 @@
+import { roundToTwoDecimals } from "../helpers/rounding-helpers";
+
+export class VatIsDecimalValueError extends Error {}
+
 export class PriceCalculator {
   public vatPercentage: number;
 
   public constructor(vatPercentage: number) {
-    // TODO: Make sure to throw if vat is a decimal value and write a test for it
+    // TODO: Make sure that the user cannot input values with decimals
+    const vatPercentageIsADecimal = vatPercentage.toString().includes(".");
+    if (vatPercentageIsADecimal) throw new VatIsDecimalValueError();
 
     // TODO: make sure that the user cannot input values less than 0
     if (vatPercentage < 0)
@@ -11,24 +17,24 @@ export class PriceCalculator {
   }
 
   public getPriceWithoutVat(priceWithVat: number) {
-    return this.roundToTwoDecimals(
+    return roundToTwoDecimals(
       priceWithVat / this.getVatMultiplierFromPercentage()
     );
   }
 
   public getPriceWithVat(priceWithoutVat: number) {
-    return this.roundToTwoDecimals(
+    return roundToTwoDecimals(
       priceWithoutVat * this.getVatMultiplierFromPercentage()
     );
   }
 
   public getVatMultiplierFromPercentage() {
     if (this.vatPercentage === 0) return 1;
-    return this.roundToTwoDecimals(1 + parseFloat(this.vatPercentage + "e-2"));
+    return roundToTwoDecimals(1 + parseFloat(this.vatPercentage + "e-2"));
   }
 
   public calculateVat(pricePerPieceVatExcluded: number) {
-    return this.roundToTwoDecimals(
+    return roundToTwoDecimals(
       this.getPriceWithVat(pricePerPieceVatExcluded) - pricePerPieceVatExcluded
     );
   }
@@ -37,16 +43,8 @@ export class PriceCalculator {
     pricePerPieceVatExcluded: number,
     amount: number
   ) {
-    return this.roundToTwoDecimals(
+    return roundToTwoDecimals(
       this.getPriceWithVat(pricePerPieceVatExcluded) * amount
     );
-  }
-
-  public roundToTwoDecimals(value: number): number {
-    // I use a workaround from the stack overflow link below
-    //   since there is a rounding error in some js engines
-    //   that incorrectly rounds 1.005 etc down instead of up.
-    // https://stackoverflow.com/questions/6134039/format-number-to-always-show-2-decimal-places
-    return Number(Math.round(parseFloat(value + "e" + 2)) + "e-" + 2);
   }
 }
