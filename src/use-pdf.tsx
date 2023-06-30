@@ -4,9 +4,9 @@ import {
   CompanyInformation,
   CustomerInformation,
   ReceiptInformation,
-  RecieptTotalInformation,
 } from "./types";
-import { ReceiptRowViewModel } from "./types/receipt-row";
+import { ReceiptRowViewModel } from "./domain/receipt-row";
+import { RecieptTotalInformation } from "./domain/receipt-total";
 
 const canvasSize = {
   y: { start: 0, end: 297 },
@@ -359,7 +359,7 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: `${receiptTotalInformation.vat0} kr`,
+          text: `${receiptTotalInformation.totalVatFreeAmount} kr`,
           x: columns.total.left.right,
           type: "footer",
           align: "right",

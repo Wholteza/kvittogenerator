@@ -44,13 +44,3 @@ export type ReceiptInformation = {
   number: string;
   paymentTerms: string;
 };
-
-export type RecieptTotalInformation = {
-  vat25: number;
-  vat12: number;
-  vat6: number;
-  vat0: number;
-  totalBeforeVat: number;
-  totalVat: number;
-  total: number;
-};

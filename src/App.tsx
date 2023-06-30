@@ -4,7 +4,6 @@ import {
   CompanyInformation,
   CustomerInformation,
   ReceiptInformation,
-  RecieptTotalInformation,
 } from "./types";
 import useForm from "./use-form";
 import useLocalStorage, { parseWithDate } from "./use-local-storage";
@@ -13,7 +12,8 @@ import {
   ReceiptRow,
   ReceiptRowFormModel,
   ReceiptRowViewModel,
-} from "./types/receipt-row";
+} from "./domain/receipt-row";
+import { RecieptTotalInformation } from "./domain/receipt-total";
 
 const getVatTotalForItems = (
   items: ReceiptRowFormModel[],
@@ -150,7 +150,7 @@ const App = () => {
       vat25,
       vat12,
       vat6,
-      vat0,
+      totalVatFreeAmount: vat0,
       totalBeforeVat,
       total: totalBeforeVat + totalVat,
       totalVat,
