@@ -63,10 +63,10 @@ const testReceiptInformation: ReceiptInformation = {
 
 const testReceiptRow: ReceiptRowFormModel = {
   date: new Date(Date.now()),
-  amount: 1,
   description: "",
   pricePerPieceVatIncluded: 0,
   vatPercentage: 25,
+  amount: 1,
 };
 const forms = {
   company: "company",
@@ -166,8 +166,15 @@ const App = () => {
       <button className="button" onClick={() => setForm(forms.rows)}>
         Redigera rader
       </button>
-      <button onClick={handleOnClickGeneratePdf}>Generera PDF</button>
-      <input type="file" onChange={onFileSelected} name="arst" />
+      <button className="button" onClick={handleOnClickGeneratePdf}>
+        Generera PDF
+      </button>
+      <input
+        className="button "
+        type="file"
+        onChange={onFileSelected}
+        name="arst"
+      />
 
       {form === forms.company ? (
         <div className="company-information-form-container">
@@ -195,8 +202,13 @@ const App = () => {
 
       {form === forms.rows ? (
         <div className="receipt-rows-form-container">
-          {currentReceiptRowForm}
-          <button onClick={handleOnAddRow}>Lägg till</button>
+          <div className="inputs">
+            {currentReceiptRowForm}
+            <button className="button primary" onClick={handleOnAddRow}>
+              Lägg till
+            </button>
+          </div>
+
           {receiptRows.map((row, index) => (
             <div>
               {Intl.DateTimeFormat("sv-SE").format(new Date(row.date))},{" "}
