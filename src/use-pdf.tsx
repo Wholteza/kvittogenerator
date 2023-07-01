@@ -434,7 +434,11 @@ const usePdf = () => {
         },
       ]);
 
-      doc.save("kvitto.pdf");
+      doc.save(
+        `${receiptInformation.number ?? "kvitto"} - ${
+          customerInformation.Identity.Name
+        }`
+      );
     },
     []
   );
