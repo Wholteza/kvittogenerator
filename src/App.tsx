@@ -11,32 +11,13 @@ import usePdf from "./use-pdf";
 import {
   ReceiptRow,
   ReceiptRowFormModel,
-  ReceiptRowViewModel,
+  toViewModel,
 } from "./domain/receipt-row";
 import {
-  RecieptTotalInformation,
   RecieptTotalInformationViewModel,
   calculateReceiptTotal,
   toReceiptTotalViewModel,
 } from "./domain/receipt-total";
-
-const getVatTotalForItems = (
-  items: ReceiptRowFormModel[],
-  vatPercentage: number
-): number => {
-  const filteredItems = items.filter(
-    (row) => row.vatPercentage === vatPercentage
-  );
-  const total = filteredItems.reduce(
-    (aggregate, current) =>
-      aggregate +
-      current.pricePerPieceVatIncluded *
-        (0.01 * vatPercentage) *
-        current.amount,
-    0
-  );
-  return total;
-};
 
 const testCompanyInformation: CompanyInformation = {
   Identity: {
@@ -158,17 +139,7 @@ const App = () => {
       customerInformation,
       file,
       receiptInformation,
-      receiptRows.map(
-        (row): ReceiptRowViewModel => ({
-          date: Intl.DateTimeFormat("sv-SE").format(new Date(row.date)),
-          description: row.description || " ",
-          amount: `${row.amount} st`,
-          pricePerPiece: `${row.pricePerPieceVatExcluded} kr`,
-          vatPercentage: `${row.vatPercentage} %`,
-          vat: `${row.vatPerPiece} kr`,
-          total: `${row.totalWithVatIncluded} kr`,
-        })
-      ),
+      receiptRows.map(toViewModel),
       receiptTotalInformation
     );
   }, [

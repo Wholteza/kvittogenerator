@@ -1,3 +1,4 @@
+import { toTwoDecimalString } from "../helpers/price-helpers";
 import { PriceCalculator } from "./price-calculator";
 
 export type ReceiptRowFormModel = {
@@ -47,6 +48,18 @@ export class ReceiptRow {
     return row;
   };
 }
+
+export const toViewModel = (receiptRow: ReceiptRow): ReceiptRowViewModel => {
+  return {
+    date: Intl.DateTimeFormat("sv-SE").format(receiptRow.date),
+    description: receiptRow.description,
+    amount: receiptRow.amount.toString(),
+    pricePerPiece: toTwoDecimalString(receiptRow.pricePerPieceVatExcluded),
+    total: toTwoDecimalString(receiptRow.totalWithVatIncluded),
+    vatPercentage: receiptRow.vatPercentage.toString(),
+    vat: toTwoDecimalString(receiptRow.vatPerPiece),
+  };
+};
 
 export type ReceiptRowViewModel = {
   date: string;
