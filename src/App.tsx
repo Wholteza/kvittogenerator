@@ -13,7 +13,12 @@ import {
   ReceiptRowFormModel,
   ReceiptRowViewModel,
 } from "./domain/receipt-row";
-import { RecieptTotalInformation } from "./domain/receipt-total";
+import {
+  RecieptTotalInformation,
+  RecieptTotalInformationViewModel,
+  calculateReceiptTotal,
+  toReceiptTotalViewModel,
+} from "./domain/receipt-total";
 
 const getVatTotalForItems = (
   items: ReceiptRowFormModel[],
@@ -128,34 +133,15 @@ const App = () => {
     ]);
   }, [currentReceiptRow, receiptFormRows, setReceiptRows]);
 
-  const receiptTotalInformation = useMemo<RecieptTotalInformation>(() => {
-    const vat25 = getVatTotalForItems(receiptFormRows, 25);
-    const vat12 = getVatTotalForItems(receiptFormRows, 12);
-    const vat6 = getVatTotalForItems(receiptFormRows, 6);
-    const vat0 = receiptFormRows
-      .filter((row) => row.vatPercentage === 0)
-      .reduce(
-        (total, current) =>
-          total + current.amount * current.pricePerPieceVatIncluded,
-        0
-      );
-    const totalBeforeVat = receiptFormRows.reduce(
-      (total, current) =>
-        total + current.pricePerPieceVatIncluded * current.amount,
-      0
-    );
-    const totalVat = vat25 + vat12 + vat6;
+  const receiptRows = useMemo<ReceiptRow[]>(
+    () => receiptFormRows.map(ReceiptRow.fromFormModel),
+    [receiptFormRows]
+  );
 
-    return {
-      vat25,
-      vat12,
-      vat6,
-      totalVatFreeAmount: vat0,
-      totalBeforeVat,
-      total: totalBeforeVat + totalVat,
-      totalVat,
-    };
-  }, [receiptFormRows]);
+  const receiptTotalInformation = useMemo<RecieptTotalInformationViewModel>(
+    () => toReceiptTotalViewModel(calculateReceiptTotal(receiptRows), "kr"),
+    [receiptRows]
+  );
 
   const handleOnRemoveRow = useCallback(
     (index: number) => {
@@ -166,10 +152,6 @@ const App = () => {
     [receiptFormRows, setReceiptRows]
   );
 
-  const receiptRows = useMemo<ReceiptRow[]>(
-    () => receiptFormRows.map(ReceiptRow.fromFormModel),
-    [receiptFormRows]
-  );
   const handleOnClickGeneratePdf = useCallback(() => {
     generatePdf(
       companyInformation,

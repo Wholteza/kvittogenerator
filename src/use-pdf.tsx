@@ -6,7 +6,7 @@ import {
   ReceiptInformation,
 } from "./types";
 import { ReceiptRowViewModel } from "./domain/receipt-row";
-import { RecieptTotalInformation } from "./domain/receipt-total";
+import { RecieptTotalInformationViewModel } from "./domain/receipt-total";
 
 const canvasSize = {
   y: { start: 0, end: 297 },
@@ -48,7 +48,6 @@ const rows = {
   date: 30,
   aboveTable: 50,
 };
-
 const fontSizes = {
   body: 10,
   title: 46,
@@ -134,7 +133,7 @@ const usePdf = () => {
       logotype: string,
       receiptInformation: ReceiptInformation,
       receiptRows: ReceiptRowViewModel[],
-      receiptTotalInformation: RecieptTotalInformation
+      receiptTotalInformation: RecieptTotalInformationViewModel
     ) => {
       const doc = new jsPDF();
 
@@ -309,7 +308,7 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: `${receiptTotalInformation.vat25} kr`,
+          text: `${receiptTotalInformation.vat25} ${receiptTotalInformation.unit}`,
           x: columns.total.left.right,
           type: "footer",
           align: "right",
@@ -322,7 +321,7 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: `${receiptTotalInformation.vat12} kr`,
+          text: `${receiptTotalInformation.vat12} ${receiptTotalInformation.unit}`,
           x: columns.total.left.right,
           type: "footer",
           align: "right",
@@ -335,7 +334,7 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: `${receiptTotalInformation.vat6} kr`,
+          text: `${receiptTotalInformation.vat6} ${receiptTotalInformation.unit}`,
           x: columns.total.left.right,
           type: "footer",
           align: "right",
@@ -346,7 +345,7 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: `${receiptTotalInformation.totalBeforeVat} kr`,
+          text: `${receiptTotalInformation.totalBeforeVat} ${receiptTotalInformation.unit}`,
           x: columns.total.right.right,
           type: "footer",
           align: "right",
@@ -359,7 +358,7 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: `${receiptTotalInformation.totalVatFreeAmount} kr`,
+          text: `${receiptTotalInformation.totalVatFreeAmount} ${receiptTotalInformation.unit}`,
           x: columns.total.left.right,
           type: "footer",
           align: "right",
@@ -370,7 +369,7 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: `${receiptTotalInformation.totalVat} kr`,
+          text: `${receiptTotalInformation.totalVat} ${receiptTotalInformation.unit}`,
           x: columns.total.right.right,
           type: "footer",
           align: "right",
@@ -386,7 +385,7 @@ const usePdf = () => {
           type: "footer",
         },
         {
-          text: `${receiptTotalInformation.total} kr`,
+          text: `${receiptTotalInformation.total} ${receiptTotalInformation.unit}`,
           x: columns.total.right.right,
           type: "footer",
           align: "right",
