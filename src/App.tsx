@@ -154,27 +154,31 @@ const App = () => {
 
   return (
     <>
-      <button className="button" onClick={() => setForm(forms.company)}>
+    <div className="receipt-rows-form-container">
+    <div className="inputs">
+      <button className="button primary" onClick={() => setForm(forms.company)}>
         Redigera företag
       </button>
-      <button className="button" onClick={() => setForm(forms.customer)}>
+      <button className="button primary" onClick={() => setForm(forms.customer)}>
         Redigera kund
       </button>
-      <button className="button" onClick={() => setForm(forms.receipt)}>
+      <button className="button primary" onClick={() => setForm(forms.receipt)}>
         Redigera kvitto
       </button>
-      <button className="button" onClick={() => setForm(forms.rows)}>
+      <button className="button primary" onClick={() => setForm(forms.rows)}>
         Redigera rader
       </button>
-      <button className="button" onClick={handleOnClickGeneratePdf}>
+      <button className="button primary" onClick={handleOnClickGeneratePdf}>
         Generera PDF
       </button>
       <input
-        className="button "
+        className="button primary"
         type="file"
         onChange={onFileSelected}
         name="arst"
       />
+      </div>
+      </div>
 
       {form === forms.company ? (
         <div className="company-information-form-container">
@@ -204,45 +208,19 @@ const App = () => {
         <div className="receipt-rows-form-container">
           <div className="inputs">
             {currentReceiptRowForm}
-            <button className="button primary" onClick={handleOnAddRow}>
+            <button className="button primary add-button" onClick={handleOnAddRow}>
               Lägg till
             </button>
-          </div>
-
-          {receiptRows.map((row, index) => (
-            <div>
-              {Intl.DateTimeFormat("sv-SE").format(new Date(row.date))},{" "}
-              {row.description}, {row.amount}, {row.pricePerPieceVatExcluded},{" "}
-              {row.vatPercentage}, {row.vatPerPiece}, {row.totalWithVatIncluded}{" "}
-              <button onClick={() => handleOnRemoveRow(index)}>Ta bort</button>
-            </div>
-          ))}
-          <table>
-            <thead>
-              <tr>
-                <td>{translate("date")}</td>
-                <td>{translate("description")}</td>
-                <td>{translate("amount")}</td>
-                <td>{translate("pricePerPiece")}</td>
-                <td>{translate("vatPercentage")}</td>
-                <td>{translate("vat")}</td>
-                <td>{translate("total")}</td>
-              </tr>
-            </thead>
-            <tbody>
-              {receiptRows.map((row) => (
-                <tr>
-                  <td>{Intl.DateTimeFormat("sv-SE").format(row.date)}</td>
-                  <td>{row.description}</td>
-                  <td>{row.amount}</td>
-                  <td>{row.pricePerPieceVatExcluded}</td>
-                  <td>{row.vatPercentage}</td>
-                  <td>{row.vatPerPiece}</td>
-                  <td>{row.totalWithVatIncluded}</td>
-                </tr>
+            <hr/>
+            {receiptRows.map((row,index) => (
+                <div className="receipt-row">
+                  <div className="description">{row.description}</div>
+                  <div className="amount">{row.amount}st</div>
+                  <button className="receipt-row-remove-button" onClick={() => handleOnRemoveRow(index)}>X</button>
+                </div>
               ))}
-            </tbody>
-          </table>
+
+          </div>
         </div>
       ) : (
         <></>
