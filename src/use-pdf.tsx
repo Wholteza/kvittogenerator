@@ -106,7 +106,7 @@ const tableHeaders: CellConfig[] = [
     prompt: "Moms %",
     align: "left",
     padding: 0,
-    width: 20,
+    width: 25,
   },
   {
     name: "vat",
@@ -120,7 +120,7 @@ const tableHeaders: CellConfig[] = [
     prompt: "Belopp (SEK)",
     align: "left",
     padding: 0,
-    width: 45,
+    width: 42,
   },
 ];
 

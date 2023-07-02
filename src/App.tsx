@@ -154,7 +154,7 @@ const App = () => {
   return (
     <>
       {form !== forms.menu ? (
-        <div className="container">
+        <div className="container-without-padding">
           <div className="inputs">
             <button
               className="button primary"
