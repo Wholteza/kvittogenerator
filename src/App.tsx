@@ -20,44 +20,41 @@ import {
 
 const testCompanyInformation: CompanyInformation = {
   Identity: {
-    Name: "Company Companysson",
-    OrganizationNumber: "0000000000",
-    VatNumber: "000000",
+    Name: "",
+    OrganizationNumber: "",
+    VatNumber: "",
   },
   ContactInformation: {
-    Email: "test@example.org",
-    Phone: "0700000000",
-    Website: "example.org",
+    Email: "",
+    Phone: "",
+    Website: "",
   },
   Address: {
-    City: "Testy",
-    Street: "Testenton st. 12",
-    ZipCode: "00000",
+    City: "",
+    Street: "",
+    ZipCode: "",
   },
   PaymentInformation: {
-    Bankgiro: "0000-000",
+    Bankgiro: "",
   },
 };
 
 const testCustomerInformation: CustomerInformation = {
   Identity: {
-    Name: "Customer Customersson",
-    OrganizationNumber: "0000000000",
-  },
-  Contact: {
-    Phone: "0700000000",
+    Name: "",
+    OrganizationNumber: "",
   },
   Address: {
-    City: "Testy",
-    Street: "Testenton st. 12",
-    ZipCode: "00000",
+    City: "",
+    Street: "",
+    ZipCode: "",
   },
 };
 
 const testReceiptInformation: ReceiptInformation = {
-  number: "A1",
+  number: "",
   date: new Date(Date.now()),
-  paymentTerms: "Kontantbetalning",
+  paymentTerms: "",
 };
 
 const testReceiptRow: ReceiptRowFormModel = {

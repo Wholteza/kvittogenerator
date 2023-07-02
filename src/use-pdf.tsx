@@ -204,13 +204,21 @@ const usePdf = () => {
       ]);
       writeOnNewLine([
         {
-          text: `${companyInformation.Identity.Name} (${companyInformation.Identity.OrganizationNumber})`,
+          text: `${companyInformation.Identity.Name} ${
+            companyInformation.Identity.OrganizationNumber
+              ? "(" + companyInformation.Identity.OrganizationNumber + ")"
+              : ""
+          }`,
           x: columns.left,
           type: "body",
         },
 
         {
-          text: `${customerInformation.Identity.Name} (${customerInformation.Identity.OrganizationNumber})`,
+          text: `${customerInformation.Identity.Name} ${
+            customerInformation.Identity.OrganizationNumber
+              ? "(" + customerInformation.Identity.OrganizationNumber + ")"
+              : ""
+          }`,
           x: columns.right.left,
           type: "body",
         },

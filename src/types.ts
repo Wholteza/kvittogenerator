@@ -36,7 +36,6 @@ export type CompanyInformation = {
 export type CustomerInformation = {
   Identity: Identity;
   Address: Address;
-  Contact: Contact;
 };
 
 export type ReceiptInformation = {
