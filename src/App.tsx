@@ -154,35 +154,41 @@ const App = () => {
 
   return (
     <>
-    <div className="receipt-rows-form-container">
-    <div className="inputs">
-      <button className="button primary" onClick={() => setForm(forms.company)}>
-        Redigera företag
-      </button>
-      <button className="button primary" onClick={() => setForm(forms.customer)}>
-        Redigera kund
-      </button>
-      <button className="button primary" onClick={() => setForm(forms.receipt)}>
-        Redigera kvitto
-      </button>
-      <button className="button primary" onClick={() => setForm(forms.rows)}>
-        Redigera rader
-      </button>
-      <button className="button primary" onClick={handleOnClickGeneratePdf}>
-        Generera PDF
-      </button>
-      <input
-        className="button primary"
-        type="file"
-        onChange={onFileSelected}
-        name="arst"
-      />
-      </div>
+      <div className="receipt-rows-form-container">
+        <div className="inputs">
+          <button
+            className="button primary"
+            onClick={() => setForm(forms.company)}
+          >
+            Redigera företag
+          </button>
+          <button
+            className="button primary"
+            onClick={() => setForm(forms.customer)}
+          >
+            Redigera kund
+          </button>
+          <button
+            className="button primary"
+            onClick={() => setForm(forms.receipt)}
+          >
+            Redigera kvitto
+          </button>
+          <button
+            className="button primary"
+            onClick={() => setForm(forms.rows)}
+          >
+            Redigera rader
+          </button>
+          <button className="button primary" onClick={handleOnClickGeneratePdf}>
+            Generera PDF
+          </button>
+        </div>
       </div>
 
       {form === forms.company ? (
         <div className="company-information-form-container">
-          {companyInformationForm}
+          <div className="inputs">{companyInformationForm}</div>
         </div>
       ) : (
         <></>
@@ -190,7 +196,7 @@ const App = () => {
 
       {form === forms.customer ? (
         <div className="customer-information-form-container">
-          {customerInformationForm}
+          <div className="inputs">{customerInformationForm}</div>
         </div>
       ) : (
         <></>
@@ -198,7 +204,16 @@ const App = () => {
 
       {form === forms.receipt ? (
         <div className="receipt-information-form-container">
-          {receiptInformationForm}
+          <div className="inputs">
+            {receiptInformationForm}
+            <label htmlFor="logotype">test</label>
+            <input
+              className="button"
+              type="file"
+              onChange={onFileSelected}
+              name="logotype"
+            />
+          </div>
         </div>
       ) : (
         <></>
@@ -208,18 +223,25 @@ const App = () => {
         <div className="receipt-rows-form-container">
           <div className="inputs">
             {currentReceiptRowForm}
-            <button className="button primary add-button" onClick={handleOnAddRow}>
+            <button
+              className="button primary add-button"
+              onClick={handleOnAddRow}
+            >
               Lägg till
             </button>
-            <hr/>
-            {receiptRows.map((row,index) => (
-                <div className="receipt-row">
-                  <div className="description">{row.description}</div>
-                  <div className="amount">{row.amount}st</div>
-                  <button className="receipt-row-remove-button" onClick={() => handleOnRemoveRow(index)}>X</button>
-                </div>
-              ))}
-
+            <hr />
+            {receiptRows.map((row, index) => (
+              <div className="receipt-row">
+                <div className="description">{row.description}</div>
+                <div className="amount">{row.amount}st</div>
+                <button
+                  className="receipt-row-remove-button"
+                  onClick={() => handleOnRemoveRow(index)}
+                >
+                  X
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       ) : (
