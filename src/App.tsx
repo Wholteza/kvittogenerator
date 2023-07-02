@@ -1,10 +1,4 @@
-import {
-  ChangeEventHandler,
-  createRef,
-  useCallback,
-  useMemo,
-  useRef,
-} from "react";
+import { ChangeEventHandler, useCallback, useMemo, useRef } from "react";
 import {
   CompanyInformation,
   CustomerInformation,
@@ -96,10 +90,7 @@ const App = () => {
     useForm<ReceiptInformation>("receiptInformation", testReceiptInformation);
   const [currentReceiptRowForm, currentReceiptRow] =
     useForm<ReceiptRowFormModel>("currentReceiptRow", testReceiptRow);
-  const [form, setForm] = useLocalStorage<string>(
-    "selectedForm",
-    forms.company
-  );
+  const [form, setForm] = useLocalStorage<string>("selectedForm", forms.menu);
   const [file, setFile] = useLocalStorage<string>("logotype", "");
 
   const formElementRef = useRef<HTMLInputElement>(null);
@@ -163,13 +154,13 @@ const App = () => {
   return (
     <>
       {form !== forms.menu ? (
-        <div className="receipt-rows-form-container">
+        <div className="container">
           <div className="inputs">
             <button
               className="button primary"
               onClick={() => setForm(forms.menu)}
             >
-              Öppna meny
+              Tillbaka till menyn
             </button>
           </div>
         </div>
@@ -178,9 +169,9 @@ const App = () => {
       )}
 
       {form === forms.menu ? (
-        <div className="receipt-rows-form-container">
+        <div className="container">
           <div className="inputs">
-            <h1>Kvitto</h1>
+            <h1>Meny</h1>
             <button className="button" onClick={() => setForm(forms.company)}>
               Redigera företag
             </button>
@@ -203,7 +194,7 @@ const App = () => {
       )}
 
       {form === forms.company ? (
-        <div className="company-information-form-container">
+        <div className="container">
           <div className="inputs">{companyInformationForm}</div>
         </div>
       ) : (
@@ -211,7 +202,7 @@ const App = () => {
       )}
 
       {form === forms.customer ? (
-        <div className="customer-information-form-container">
+        <div className="container">
           <div className="inputs">{customerInformationForm}</div>
         </div>
       ) : (
@@ -219,23 +210,35 @@ const App = () => {
       )}
 
       {form === forms.receipt ? (
-        <div className="receipt-information-form-container">
+        <div className="container">
           <div className="inputs">
             {receiptInformationForm}
-            <button
-              style={{ marginTop: "1rem" }}
-              className="button"
-              onClick={() => formElementRef?.current?.click()}
-            >
-              Ladda upp logotyp
-            </button>
-            <input
-              className="button"
-              type="file"
-              onChange={onFileSelected}
-              name="logotype"
-              ref={formElementRef}
-            />
+            {file.length ? (
+              <button
+                className="button remove-logotype-button"
+                onClick={() => setFile("")}
+              >
+                Ta bort logotyp
+              </button>
+            ) : (
+              <>
+                <button
+                  style={{ marginTop: "1rem" }}
+                  className="button"
+                  onClick={() => formElementRef?.current?.click()}
+                >
+                  Ladda upp logotyp
+                </button>
+                <input
+                  className="button"
+                  type="file"
+                  onChange={onFileSelected}
+                  name="logotype"
+                  ref={formElementRef}
+                />
+              </>
+            )}
+            {file.length ? <img src={file} className="logotype" /> : <></>}
           </div>
         </div>
       ) : (
@@ -243,7 +246,7 @@ const App = () => {
       )}
 
       {form === forms.rows ? (
-        <div className="receipt-rows-form-container">
+        <div className="container">
           <div className="inputs">
             {currentReceiptRowForm}
             <button
@@ -252,7 +255,7 @@ const App = () => {
             >
               Lägg till
             </button>
-            <hr />
+            {receiptRows.length ? <hr /> : <></>}
             {receiptRows.map((row, index) => (
               <div className="receipt-row">
                 <div className="description">{row.description}</div>
