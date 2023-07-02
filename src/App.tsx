@@ -1,4 +1,10 @@
-import { ChangeEventHandler, useCallback, useMemo } from "react";
+import {
+  ChangeEventHandler,
+  createRef,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
 import {
   CompanyInformation,
   CustomerInformation,
@@ -95,6 +101,8 @@ const App = () => {
     forms.company
   );
   const [file, setFile] = useLocalStorage<string>("logotype", "");
+
+  const formElementRef = useRef<HTMLInputElement>(null);
 
   const { generatePdf } = usePdf();
 
@@ -214,12 +222,19 @@ const App = () => {
         <div className="receipt-information-form-container">
           <div className="inputs">
             {receiptInformationForm}
-            <label htmlFor="logotype">test</label>
+            <button
+              style={{ marginTop: "1rem" }}
+              className="button"
+              onClick={() => formElementRef?.current?.click()}
+            >
+              Ladda upp logotyp
+            </button>
             <input
               className="button"
               type="file"
               onChange={onFileSelected}
               name="logotype"
+              ref={formElementRef}
             />
           </div>
         </div>
