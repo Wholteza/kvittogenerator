@@ -1,5 +1,4 @@
 import { ChangeEventHandler, useCallback, useMemo } from "react";
-import translate from "./translate";
 import {
   CompanyInformation,
   CustomerInformation,
@@ -73,6 +72,7 @@ const forms = {
   customer: "customer",
   receipt: "receipt",
   rows: "rows",
+  menu: "menu",
 } as const;
 
 const App = () => {
@@ -154,37 +154,45 @@ const App = () => {
 
   return (
     <>
-      <div className="receipt-rows-form-container">
-        <div className="inputs">
-          <button
-            className="button primary"
-            onClick={() => setForm(forms.company)}
-          >
-            Redigera företag
-          </button>
-          <button
-            className="button primary"
-            onClick={() => setForm(forms.customer)}
-          >
-            Redigera kund
-          </button>
-          <button
-            className="button primary"
-            onClick={() => setForm(forms.receipt)}
-          >
-            Redigera kvitto
-          </button>
-          <button
-            className="button primary"
-            onClick={() => setForm(forms.rows)}
-          >
-            Redigera rader
-          </button>
-          <button className="button primary" onClick={handleOnClickGeneratePdf}>
-            Generera PDF
-          </button>
+      {form !== forms.menu ? (
+        <div className="receipt-rows-form-container">
+          <div className="inputs">
+            <button
+              className="button primary"
+              onClick={() => setForm(forms.menu)}
+            >
+              Öppna meny
+            </button>
+          </div>
         </div>
-      </div>
+      ) : (
+        <></>
+      )}
+
+      {form === forms.menu ? (
+        <div className="receipt-rows-form-container">
+          <div className="inputs">
+            <h1>Kvitto</h1>
+            <button className="button" onClick={() => setForm(forms.company)}>
+              Redigera företag
+            </button>
+            <button className="button" onClick={() => setForm(forms.customer)}>
+              Redigera kund
+            </button>
+            <button className="button" onClick={() => setForm(forms.receipt)}>
+              Redigera kvitto
+            </button>
+            <button className="button" onClick={() => setForm(forms.rows)}>
+              Redigera rader
+            </button>
+            <button className="button" onClick={handleOnClickGeneratePdf}>
+              Generera PDF
+            </button>
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
 
       {form === forms.company ? (
         <div className="company-information-form-container">
