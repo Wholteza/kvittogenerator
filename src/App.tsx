@@ -4,7 +4,7 @@ import {
   CustomerInformation,
   ReceiptInformation,
 } from "./types";
-import useForm from "./use-form";
+import useForm from "./hooks/use-form";
 import useLocalStorage, { parseWithDate } from "./use-local-storage";
 import usePdf from "./use-pdf";
 import {

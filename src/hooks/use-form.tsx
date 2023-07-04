@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
-import translate from "./translate";
-import useLocalStorage, { parseWithDate } from "./use-local-storage";
+import translate from "../translate";
+import useLocalStorage, { parseWithDate } from "../use-local-storage";
 
 type Field = {
   name: string;
