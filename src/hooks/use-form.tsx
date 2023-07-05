@@ -82,11 +82,11 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
         field.type === "date" ? (value as Date).toLocaleDateString() : value;
       return (
         <div key={field.propertyPath.join(".")}>
-          <label htmlFor={field.propertyPath.join(".")}>
+          <label htmlFor={translate(field.propertyPath.join("."))}>
             {translate(field.name)}
           </label>
           <input
-            name={field.propertyPath.join(".")}
+            name={translate(field.propertyPath.join("."))}
             style={{ display: "block" }}
             value={parsedValue}
             placeholder={translate(field.name)}
