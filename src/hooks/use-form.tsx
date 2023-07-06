@@ -84,8 +84,8 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
         <div key={field.propertyPath.join(".")}>
           <label htmlFor={translate(field.propertyPath.join("."))}>
             {translate(field.name)}
-          </label>
           <input
+          id={translate(field.propertyPath.join("."))}
             name={translate(field.propertyPath.join("."))}
             style={{ display: "block" }}
             value={parsedValue}
@@ -99,6 +99,7 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
                 : "text"
             }
           />
+          </label>
         </div>
       );
     });

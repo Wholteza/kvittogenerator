@@ -16,8 +16,8 @@ type TestType = {
   date: Date;
 };
 
-const TestComponent = ({ input }: { input: TestType }) => {
-  const [form] = useForm<TestType>(getPsuedoRandomKey(), input);
+const TestComponent = <T,>({ input }: { input: T }) => {
+  const [form] = useForm<T>(getPsuedoRandomKey(), input);
 
   return <>{form}</>;
 };
@@ -38,5 +38,38 @@ describe("use-form ui tests", () => {
         screen.getByPlaceholderText(translate(property))
       ).toBeInTheDocument();
     });
+  });
+
+  test("it renders a text input for strings", () => {
+    const key = "string";
+    const input: {[key]: string} = {
+      [key]: "description",
+    };
+
+    render(<TestComponent input={input} />);
+
+    expect(screen.getByPlaceholderText(translate(key))).toHaveProperty("type", "text")
+  });
+
+  test("it renders a number input for numbers", () => {
+    const key = "number";
+    const input: {[key]: number} = {
+      [key]: 1,
+    };
+
+    render(<TestComponent input={input} />);
+
+    expect(screen.getByPlaceholderText(translate(key))).toHaveProperty("type", "number")
+  });
+
+  test("it renders a date input for dates", () => {
+    const key = "date";
+    const input: {[key]: Date} = {
+      [key]: new Date(Date.now()),
+    };
+
+    render(<TestComponent input={input} />);
+
+    expect(screen.getByPlaceholderText(translate(key))).toHaveProperty("type", "date")
   });
 });
