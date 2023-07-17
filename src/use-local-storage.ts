@@ -1,15 +1,5 @@
+import { parseWithDateHydration } from "./helpers/parse-helpers";
 import { useCallback, useEffect, useState } from "react";
-
-export function parseWithDate(jsonString: string): any {
-  const reDateDetect = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/; // startswith: 2015-04-29T22:06:55
-  const resultObject = JSON.parse(jsonString, (_key: any, value: any) => {
-    if (typeof value == "string" && reDateDetect.exec(value)) {
-      return new Date(value);
-    }
-    return value;
-  });
-  return resultObject;
-}
 
 const useLocalStorage = <T>(
   key: string,
@@ -34,7 +24,7 @@ const useLocalStorage = <T>(
       return;
     }
     try {
-      const parsedValue = parseWithDate(rawValue);
+      const parsedValue = parseWithDateHydration<T>(rawValue);
       setValue(parsedValue);
     } catch {
       handleValueSet(internalInitialValue);

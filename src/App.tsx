@@ -5,7 +5,7 @@ import {
   ReceiptInformation,
 } from "./types";
 import useForm from "./hooks/use-form";
-import useLocalStorage, { parseWithDate } from "./use-local-storage";
+import useLocalStorage from "./use-local-storage";
 import usePdf from "./use-pdf";
 import {
   ReceiptRow,
@@ -17,6 +17,7 @@ import {
   calculateReceiptTotal,
   toReceiptTotalViewModel,
 } from "./domain/receipt-total";
+import { parseWithDateHydration } from "./helpers/parse-helpers";
 
 const testCompanyInformation: CompanyInformation = {
   Identity: {
@@ -106,7 +107,9 @@ const App = () => {
   const handleOnAddRow = useCallback(() => {
     setReceiptRows([
       ...receiptFormRows,
-      parseWithDate(JSON.stringify(currentReceiptRow)),
+      parseWithDateHydration<ReceiptRowFormModel>(
+        JSON.stringify(currentReceiptRow)
+      ),
     ]);
   }, [currentReceiptRow, receiptFormRows, setReceiptRows]);
 
@@ -122,7 +125,9 @@ const App = () => {
 
   const handleOnRemoveRow = useCallback(
     (index: number) => {
-      const copyOfRows = parseWithDate(JSON.stringify(receiptFormRows));
+      const copyOfRows = parseWithDateHydration<ReceiptRowFormModel[]>(
+        JSON.stringify(receiptFormRows)
+      );
       copyOfRows.splice(index, 1);
       setReceiptRows(copyOfRows);
     },

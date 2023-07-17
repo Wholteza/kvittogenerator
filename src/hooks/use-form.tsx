@@ -1,12 +1,13 @@
 import { useCallback, useMemo } from "react";
 import translate from "../translate";
-import useLocalStorage, { parseWithDate } from "../use-local-storage";
+import useLocalStorage from "../use-local-storage";
 import {
   DynamicPropertyInformation,
   generatePropertyInformation,
   getValueOnPath,
   mutatePropOnPath,
 } from "../helpers/dynamic-object-helpers";
+import { parseWithDateHydration } from "../helpers/parse-helpers";
 
 const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
   const [formState, setFormState] = useLocalStorage<T>(
@@ -19,14 +20,19 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
       field: DynamicPropertyInformation,
       event: React.ChangeEvent<HTMLInputElement>
     ) => {
-      const oldState = parseWithDate(JSON.stringify(formState));
       const value =
         field.type === "date"
           ? event.target.valueAsDate
           : field.type === "number"
           ? event.target.valueAsNumber
           : event.target.value;
-      mutatePropOnPath(oldState, field.propertyPath, value);
+
+      const oldState = parseWithDateHydration<T>(JSON.stringify(formState));
+      mutatePropOnPath(
+        oldState as Record<string, never>,
+        field.propertyPath,
+        value
+      );
       setFormState(oldState);
     },
     [formState, setFormState]
