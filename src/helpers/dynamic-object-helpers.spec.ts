@@ -3,12 +3,18 @@ import { getValueOnPath, mutatePropOnPath } from "./dynamic-object-helpers";
 describe("mutatePropOnPath", () => {
   it("mutates prop on shallow path provided to provided value", () => {
     // arrange
-    const dynamicObject = { value: "arst" };
+    const dynamicObject: Record<string, string> = {
+      value: "arst",
+    };
     const shallowPath = ["value"];
     const newValue = "tsra";
 
     // act
-    mutatePropOnPath(dynamicObject, shallowPath, newValue);
+    mutatePropOnPath(
+      dynamicObject as Record<string, never>,
+      shallowPath,
+      newValue
+    );
 
     // assert
     expect(dynamicObject.value).toBe(newValue);
@@ -20,7 +26,11 @@ describe("mutatePropOnPath", () => {
     const newValue = "tsra";
 
     // act
-    mutatePropOnPath(dynamicObject, deepPath, newValue);
+    mutatePropOnPath(
+      dynamicObject as Record<string, object> as Record<string, never>,
+      deepPath,
+      newValue
+    );
 
     // assert
     expect(dynamicObject.deep.path.value).toBe(newValue);
@@ -34,7 +44,10 @@ describe("getValueOnPath", () => {
     const path = ["value"];
 
     // act
-    const result = getValueOnPath(dynamicObject, path);
+    const result = getValueOnPath(
+      dynamicObject as Record<string, string> as Record<string, never>,
+      path
+    );
 
     // assert
     expect(result).toBe(dynamicObject.value);
@@ -45,7 +58,10 @@ describe("getValueOnPath", () => {
     const path = ["deep", "path", "value"];
 
     // act
-    const result = getValueOnPath(dynamicObject, path);
+    const result = getValueOnPath(
+      dynamicObject as Record<string, object> as Record<string, never>,
+      path
+    );
 
     // assert
     expect(result).toBe(dynamicObject.deep.path.value);

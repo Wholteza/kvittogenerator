@@ -62,11 +62,31 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
 
   const form = useMemo<JSX.Element[]>(() => {
     const fields = generateFieldsForObject(initialState as object);
-
     return fields.map((field) => {
-      const value = getValueOnPath(formState as object, field.propertyPath);
-      const parsedValue =
-        field.type === "date" ? (value as Date).toLocaleDateString() : value;
+      let value: number | string = 0;
+      switch (field.type) {
+        case "string":
+          value = getValueOnPath<string>(
+            formState as Record<string, never>,
+            field.propertyPath
+          );
+          break;
+        case "number":
+          value = getValueOnPath<number>(
+            formState as Record<string, never>,
+            field.propertyPath
+          );
+          break;
+        case "date":
+          value = getValueOnPath<Date>(
+            formState as Record<string, never>,
+            field.propertyPath
+          ).toLocaleDateString();
+          break;
+        default:
+          throw new Error(`field type ${field.type} is not implemented`);
+      }
+
       return (
         <div key={field.propertyPath.join(".")}>
           <label htmlFor={translate(field.propertyPath.join("."))}>
@@ -75,7 +95,7 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
               id={translate(field.propertyPath.join("."))}
               name={translate(field.propertyPath.join("."))}
               style={{ display: "block" }}
-              value={parsedValue}
+              value={value}
               placeholder={translate(field.name)}
               onChange={(event) => handleOnChange(field, event)}
               type={

@@ -14,7 +14,7 @@ $color-secondary:  #FFD8BE;
 
 @mixin secondary-text-color{
   color: $color-secondary;
-  filter: brightness(50%)
+  filter: brightness(50%);
 }
 
 @mixin fade-in-animation {
@@ -43,8 +43,6 @@ $color-secondary:  #FFD8BE;
     left: 0;
   }
 }
-
-
 
 :root {
   margin: 0;
