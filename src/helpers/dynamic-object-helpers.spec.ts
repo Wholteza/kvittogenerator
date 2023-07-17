@@ -165,6 +165,19 @@ describe("generatePropertyInformation", () => {
     expect(result).toContainEqual(expectedInformationOne);
     expect(result).toContainEqual(expectedInformationTwo);
   });
+  it("throws if type support isn't implemented", () => {
+    // arrange
+    const dynamicObject = { value: true };
+
+    // act
+    const action = () =>
+      generatePropertyInformation(
+        dynamicObject as Record<string, boolean> as Record<string, never>
+      );
+
+    // assert
+    expect(action).toThrowError();
+  });
   it("returns information about deep prop", () => {
     // arrange
     const dynamicObject = { deep: { prop: { value: "string" } } };
