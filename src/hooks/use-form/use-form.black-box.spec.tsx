@@ -1,14 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import useForm from "./use-form";
-import * as translateModule from "../translate";
-
-const getPsuedoRandomKey = (): string =>
-  btoa(
-    new Array(1000)
-      .map(() => Math.random())
-      .reduce((aggregate, current) => aggregate * current, Math.random() + 1)
-      .toString()
-  );
+import * as translateModule from "../../translate";
+import { getPsuedoRandomKey } from "./use-form-helpers";
 
 type TestType = {
   string: string;

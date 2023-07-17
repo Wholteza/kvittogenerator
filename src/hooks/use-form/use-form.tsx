@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from "react";
-import translate from "../translate";
-import useLocalStorage from "../use-local-storage";
+import translate from "../../translate";
+import useLocalStorage from "../../use-local-storage";
 import {
   DynamicPropertyInformation,
   generatePropertyInformation,
-  getValueOnPath,
   mutatePropOnPath,
-} from "../helpers/dynamic-object-helpers";
-import { parseWithDateHydration } from "../helpers/parse-helpers";
+} from "../../helpers/dynamic-object-helpers";
+import { parseWithDateHydration } from "../../helpers/parse-helpers";
+import { getFormValueBasedOnPropertyInformation } from "./use-form-helpers";
 
 const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
   const [formState, setFormState] = useLocalStorage<T>(
@@ -27,6 +27,7 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
           ? event.target.valueAsNumber
           : event.target.value;
 
+      // TODO: Extract below into method that mutates a copy of the sent in object to be able to work with mutation
       const oldState = parseWithDateHydration<T>(JSON.stringify(formState));
       mutatePropOnPath(
         oldState as Record<string, never>,
@@ -39,33 +40,14 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
   );
 
   const form = useMemo<JSX.Element[]>(() => {
-    const fields = generatePropertyInformation(
+    const fieldDefinitions = generatePropertyInformation(
       initialState as Record<string, never>
     );
-    return fields.map((field) => {
-      let value: number | string = 0;
-      switch (field.type) {
-        case "string":
-          value = getValueOnPath<string>(
-            formState as Record<string, never>,
-            field.propertyPath
-          );
-          break;
-        case "number":
-          value = getValueOnPath<number>(
-            formState as Record<string, never>,
-            field.propertyPath
-          );
-          break;
-        case "date":
-          value = getValueOnPath<Date>(
-            formState as Record<string, never>,
-            field.propertyPath
-          ).toLocaleDateString();
-          break;
-        default:
-          throw new Error(`field type ${field.type} is not implemented`);
-      }
+    return fieldDefinitions.map((field) => {
+      const value = getFormValueBasedOnPropertyInformation(
+        field,
+        formState as Record<string, never>
+      );
 
       return (
         <div key={field.propertyPath.join(".")}>
