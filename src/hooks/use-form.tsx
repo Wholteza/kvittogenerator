@@ -2,42 +2,11 @@ import { useCallback, useMemo } from "react";
 import translate from "../translate";
 import useLocalStorage, { parseWithDate } from "../use-local-storage";
 import {
+  DynamicPropertyInformation,
+  generatePropertyInformation,
   getValueOnPath,
   mutatePropOnPath,
 } from "../helpers/dynamic-object-helpers";
-
-type Field = {
-  name: string;
-  type: string;
-  propertyPath: string[];
-};
-
-const generateFieldsForObject = (obj: object, propertyPath: string[] = []) => {
-  const fields: Field[] = [];
-  Object.keys(obj).forEach((key) => {
-    const property = (obj as { [key: string]: any })[key];
-    if (property["constructor"] === new Date().constructor) {
-      fields.push({
-        name: key,
-        type: "date",
-        propertyPath: [...propertyPath, key],
-      });
-      return fields;
-    }
-    if (typeof property === "object") {
-      generateFieldsForObject(property, [...propertyPath, key]).forEach(
-        (field) => fields.push(field)
-      );
-      return fields;
-    }
-    fields.push({
-      name: key,
-      type: typeof property,
-      propertyPath: [...propertyPath, key],
-    });
-  });
-  return fields;
-};
 
 const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
   const [formState, setFormState] = useLocalStorage<T>(
@@ -46,7 +15,10 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
   );
 
   const handleOnChange = useCallback(
-    (field: Field, event: React.ChangeEvent<HTMLInputElement>) => {
+    (
+      field: DynamicPropertyInformation,
+      event: React.ChangeEvent<HTMLInputElement>
+    ) => {
       const oldState = parseWithDate(JSON.stringify(formState));
       const value =
         field.type === "date"
@@ -61,7 +33,9 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
   );
 
   const form = useMemo<JSX.Element[]>(() => {
-    const fields = generateFieldsForObject(initialState as object);
+    const fields = generatePropertyInformation(
+      initialState as Record<string, never>
+    );
     return fields.map((field) => {
       let value: number | string = 0;
       switch (field.type) {

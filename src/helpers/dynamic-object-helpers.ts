@@ -31,3 +31,42 @@ export const getValueOnPath = <T>(
   }
   return getValueOnPath(dynamicObject[key], rest);
 };
+
+export type DynamicPropertyInformation = {
+  name: string;
+  type: string;
+  propertyPath: string[];
+};
+
+export const generatePropertyInformation = (
+  obj: Record<string, never>,
+  recursivePropertyPath: string[] = []
+) => {
+  const propertyInformations: DynamicPropertyInformation[] = [];
+  Object.keys(obj).forEach((key) => {
+    const property = obj[key];
+    if (property["constructor"] === new Date().constructor) {
+      propertyInformations.push({
+        name: key,
+        type: "date",
+        propertyPath: [...recursivePropertyPath, key],
+      });
+      return propertyInformations;
+    } else if (typeof property === "object") {
+      generatePropertyInformation(property, [
+        ...recursivePropertyPath,
+        key,
+      ]).forEach((field) => propertyInformations.push(field));
+      return propertyInformations;
+    } else if (["string", "number"].includes(typeof property))
+      propertyInformations.push({
+        name: key,
+        type: typeof property,
+        propertyPath: [...recursivePropertyPath, key],
+      });
+    else {
+      throw new Error(`type ${typeof property} not implemented`);
+    }
+  });
+  return propertyInformations;
+};
