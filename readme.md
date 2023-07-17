@@ -39,6 +39,8 @@ They can in turn use unit tested logic extracted into modules to do the "real wo
 
 When i test react hooks i create a barebones component to use them in, and then assert on the rendered result.
 
+When black box testing i rely on the real implementations of the extracted unit tested modules.
+
 # Todo
 
 - [ ] Date selector crashes the app if not using swedish locale.
