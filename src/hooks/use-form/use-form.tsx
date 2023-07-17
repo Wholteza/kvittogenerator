@@ -4,10 +4,12 @@ import useLocalStorage from "../../use-local-storage";
 import {
   DynamicPropertyInformation,
   generatePropertyInformation,
-  mutatePropOnPath,
 } from "../../helpers/dynamic-object-helpers";
-import { parseWithDateHydration } from "../../helpers/parse-helpers";
-import { getFormValueBasedOnPropertyInformation } from "./use-form-helpers";
+import {
+  getFormValueBasedOnPropertyInformation,
+  getNewInstanceWithUpdatedProp,
+  getTypedValueFromEvent,
+} from "./use-form-helpers";
 
 const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
   const [formState, setFormState] = useLocalStorage<T>(
@@ -20,21 +22,9 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
       field: DynamicPropertyInformation,
       event: React.ChangeEvent<HTMLInputElement>
     ) => {
-      const value =
-        field.type === "date"
-          ? event.target.valueAsDate
-          : field.type === "number"
-          ? event.target.valueAsNumber
-          : event.target.value;
-
-      // TODO: Extract below into method that mutates a copy of the sent in object to be able to work with mutation
-      const oldState = parseWithDateHydration<T>(JSON.stringify(formState));
-      mutatePropOnPath(
-        oldState as Record<string, never>,
-        field.propertyPath,
-        value
-      );
-      setFormState(oldState);
+      const value = getTypedValueFromEvent(field, event);
+      const newState = getNewInstanceWithUpdatedProp(formState, field, value);
+      setFormState(newState);
     },
     [formState, setFormState]
   );

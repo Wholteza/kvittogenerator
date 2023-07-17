@@ -1,6 +1,8 @@
+import { parseWithDateHydration } from "helpers/parse-helpers";
 import {
   DynamicPropertyInformation,
   getValueOnPath,
+  mutatePropOnPath,
 } from "../../helpers/dynamic-object-helpers";
 
 export const getFormValueBasedOnPropertyInformation = (
@@ -29,3 +31,28 @@ export const getPsuedoRandomKey = (): string =>
       .reduce((aggregate, current) => aggregate * current, Math.random() + 1)
       .toString()
   );
+
+export const getNewInstanceWithUpdatedProp = <T, K>(
+  formState: T,
+  information: DynamicPropertyInformation,
+  value: K
+) => {
+  const newState = parseWithDateHydration<T>(JSON.stringify(formState));
+  mutatePropOnPath<K>(
+    newState as Record<string, never>,
+    information.propertyPath,
+    value
+  );
+
+  return newState;
+};
+
+export const getTypedValueFromEvent = (
+  field: DynamicPropertyInformation,
+  event: React.ChangeEvent<HTMLInputElement>
+): string | number | Date | null =>
+  field.type === "date"
+    ? event.target.valueAsDate
+    : field.type === "number"
+    ? event.target.valueAsNumber
+    : event.target.value;
