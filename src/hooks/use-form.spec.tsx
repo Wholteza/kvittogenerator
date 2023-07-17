@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import useForm from "./use-form";
-import translate from "../translate";
+import * as translateModule from "../translate";
 
 const getPsuedoRandomKey = (): string =>
   btoa(
@@ -23,6 +23,14 @@ const TestComponent = <T,>({ input }: { input: T }) => {
 };
 
 describe("use-form ui tests", () => {
+  beforeEach(() => {
+    jest
+      .spyOn(translateModule, "default")
+      .mockImplementation((value: string) => value);
+  });
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
   test("it renders one input element per property", () => {
     const input: TestType = {
       number: 999,
@@ -33,43 +41,41 @@ describe("use-form ui tests", () => {
     render(<TestComponent input={input} />);
 
     Object.keys(input).forEach((property) => {
-      expect(screen.getByLabelText(translate(property))).toBeInTheDocument();
-      expect(
-        screen.getByPlaceholderText(translate(property))
-      ).toBeInTheDocument();
+      expect(screen.getByLabelText(property)).toBeInTheDocument();
+      expect(screen.getByPlaceholderText(property)).toBeInTheDocument();
     });
   });
 
   test("it renders a text input for strings", () => {
     const key = "string";
-    const input: {[key]: string} = {
+    const input: { [key]: string } = {
       [key]: "description",
     };
 
     render(<TestComponent input={input} />);
 
-    expect(screen.getByPlaceholderText(translate(key))).toHaveProperty("type", "text")
+    expect(screen.getByPlaceholderText(key)).toHaveProperty("type", "text");
   });
 
   test("it renders a number input for numbers", () => {
     const key = "number";
-    const input: {[key]: number} = {
+    const input: { [key]: number } = {
       [key]: 1,
     };
 
     render(<TestComponent input={input} />);
 
-    expect(screen.getByPlaceholderText(translate(key))).toHaveProperty("type", "number")
+    expect(screen.getByPlaceholderText(key)).toHaveProperty("type", "number");
   });
 
   test("it renders a date input for dates", () => {
     const key = "date";
-    const input: {[key]: Date} = {
+    const input: { [key]: Date } = {
       [key]: new Date(Date.now()),
     };
 
     render(<TestComponent input={input} />);
 
-    expect(screen.getByPlaceholderText(translate(key))).toHaveProperty("type", "date")
+    expect(screen.getByPlaceholderText(key)).toHaveProperty("type", "date");
   });
 });

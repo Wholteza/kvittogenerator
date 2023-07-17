@@ -1,6 +1,10 @@
 import { useCallback, useMemo } from "react";
 import translate from "../translate";
 import useLocalStorage, { parseWithDate } from "../use-local-storage";
+import {
+  getValueOnPath,
+  mutatePropOnPath,
+} from "../helpers/dynamic-object-helpers";
 
 type Field = {
   name: string;
@@ -35,23 +39,6 @@ const generateFieldsForObject = (obj: object, propertyPath: string[] = []) => {
   return fields;
 };
 
-const mutatePropOnPath = (obj: object, propertyPath: string[], value: any) => {
-  const [key, ...rest] = propertyPath;
-  if (!rest.length) {
-    (obj as { [key: string]: any })[key] = value;
-    return;
-  }
-  mutatePropOnPath((obj as { [key: string]: any })[key], rest, value);
-};
-
-const getValueOnPath = (obj: object, propertyPath: string[]): any => {
-  const [key, ...rest] = propertyPath;
-  if (!rest.length) {
-    return (obj as { [key: string]: string })[key];
-  }
-  return getValueOnPath((obj as { [key: string]: object })[key], rest);
-};
-
 const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
   const [formState, setFormState] = useLocalStorage<T>(
     `formData-${key}`,
@@ -84,21 +71,21 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
         <div key={field.propertyPath.join(".")}>
           <label htmlFor={translate(field.propertyPath.join("."))}>
             {translate(field.name)}
-          <input
-          id={translate(field.propertyPath.join("."))}
-            name={translate(field.propertyPath.join("."))}
-            style={{ display: "block" }}
-            value={parsedValue}
-            placeholder={translate(field.name)}
-            onChange={(event) => handleOnChange(field, event)}
-            type={
-              field.type === "date"
-                ? "date"
-                : field.type === "number"
-                ? "number"
-                : "text"
-            }
-          />
+            <input
+              id={translate(field.propertyPath.join("."))}
+              name={translate(field.propertyPath.join("."))}
+              style={{ display: "block" }}
+              value={parsedValue}
+              placeholder={translate(field.name)}
+              onChange={(event) => handleOnChange(field, event)}
+              type={
+                field.type === "date"
+                  ? "date"
+                  : field.type === "number"
+                  ? "number"
+                  : "text"
+              }
+            />
           </label>
         </div>
       );
