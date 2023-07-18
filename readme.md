@@ -11,21 +11,30 @@ You can read more about that below.
 
 This is the first time i decided to do extensive automated testing in a frontend application.
 
-I have started using various types of testing methods.
+I have based my testing on my previous experience in software testing which is mostly writing backend unit test and frontend UI tests using cypress and api mocking.
+
+When it comes to backend unit testing my philosophy is to test EVERYTHING. I want as close to 100% coverage as possible to be able to pinpoint exactly what is working, and what is not working when i introduce changes.
+
+To keep my unit tests robust and quick to run I am identifying and mocking all external dependencies. Either a function has important business logic to be tested, or I need to make sure that the function is orchestrating the correct calls to other functions containing that business logic.
+
+Since frontend unit testing, in this case a react application, is a different environment than what I'm used to the test code base is going to consistantly evolve as I discover new things.
 
 ### Unit
 
 I have implemented unit tests for all functionality i can easily break out into their own isolated functions.
 
 As a side effect of this a lot of functionality have their own modules and are reusable.
-
 This also makes them easy to mock when reused in other functions, hooks or components.
 
 In this project a module should be a short function that has one responsibility.
-
 Ideally it should either orchestrate different function calls, or do some kind of operation itself.
 
+I had some cases where i had orchestrating functions that passed an input value to multiple different functions, either pure functions that return a new value or functions with side effects.
+After some reading i decided that i will also do pure unit testing in the form of mocking ALL dependencies even in these cases. What i test is that the function is passing the parameters into the correct dependencies, and not what the dependencies actually return. I can then do an integration test (or component test, depending on what you want to call it), to make sure that the function has the correct integrating behavior towards the rest of the system.
+
 ### Black box testing + ui testing
+
+**I'm not so sure about this yet, but what has emerged is that i find myself breaking out more and more logic out of react components and hooks since i find them a bit problematic to test..**
 
 I am using black box tesing to test my react hooks and components.
 
