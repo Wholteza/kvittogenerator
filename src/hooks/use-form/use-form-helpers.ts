@@ -1,4 +1,4 @@
-import { parseWithDateHydration } from "helpers/parse-helpers";
+import { parseWithDateHydration } from "../../helpers/parse-helpers";
 import {
   DynamicPropertyInformation,
   getValueOnPath,
@@ -27,7 +27,8 @@ export const getFormValueBasedOnPropertyInformation = (
 export const getPsuedoRandomKey = (): string =>
   btoa(
     new Array(1000)
-      .map(() => Math.random())
+      .fill(1)
+      .map(() => Math.random() + 1)
       .reduce((aggregate, current) => aggregate * current, Math.random() + 1)
       .toString()
   );
