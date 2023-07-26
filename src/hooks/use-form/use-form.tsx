@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import translate from "../../translate";
+import translate from "../../internationalization/translate";
 import useLocalStorage from "../../use-local-storage";
 import {
   DynamicPropertyInformation,

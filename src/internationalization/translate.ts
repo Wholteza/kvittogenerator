@@ -1,6 +1,8 @@
 const translate = (key: string): string => dictionary.sv[key] ?? key;
 
-const dictionary: { [key: string]: { [key: string]: string } } = {
+export default translate;
+
+export const dictionary: { [key: string]: { [key: string]: string } } = {
   sv: {
     OrganizationNumber: "Organisation-/Personnummer",
     Name: "Namn",
@@ -24,4 +26,3 @@ const dictionary: { [key: string]: { [key: string]: string } } = {
     total: "Total (inkl. moms)",
   },
 };
-export default translate;

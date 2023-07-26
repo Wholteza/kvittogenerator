@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, createEvent } from "@testing-library/react";
 import useForm from "./use-form";
-import * as translateModule from "../../translate";
+import * as translateModule from "../../internationalization/translate";
 import { getPsuedoRandomKey } from "./use-form-helpers";
 
 type TestType = {
