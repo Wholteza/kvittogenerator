@@ -1,6 +1,7 @@
 import * as dynamicObjectHelpersModule from "../../helpers/dynamic-object-helpers";
 import { DynamicPropertyInformation } from "../../helpers/dynamic-object-helpers";
 import {
+  getFormValueBasedOnPropertyInformation,
   getNewInstanceWithUpdatedProp,
   getPsuedoRandomKey,
 } from "./use-form-helpers";
@@ -8,8 +9,91 @@ import {
 import * as parseWithHydrationModule from "../../helpers/parse-helpers";
 
 describe("getFormValueBasedOnPropertyInformation", () => {
-  it("", () => {
-    expect(true).toBe(false);
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+  it("returns the result of getValueOnPath if the type is string", () => {
+    // arrange
+    const information: DynamicPropertyInformation = {
+      name: "arst",
+      type: "string",
+      propertyPath: ["arst"],
+    };
+    const dynamicObject: Record<string, string> = { arst: "arst" };
+    const expectedValue = dynamicObject[information.name];
+    const spy = jest.spyOn(dynamicObjectHelpersModule, "getValueOnPath");
+    spy.mockReturnValue(expectedValue);
+
+    // act
+    const result = getFormValueBasedOnPropertyInformation(
+      information,
+      dynamicObject as Record<string, never>
+    );
+
+    // assert
+    expect(result).toBe(expectedValue);
+    expect(spy).toHaveBeenCalledWith(dynamicObject, information.propertyPath);
+  });
+  it("returns the result of getValueOnPath if the type is string", () => {
+    // arrange
+    const information: DynamicPropertyInformation = {
+      name: "arst",
+      type: "number",
+      propertyPath: ["arst"],
+    };
+    const dynamicObject: Record<string, number> = { arst: 1 };
+    const expectedValue = dynamicObject[information.name];
+    const spy = jest.spyOn(dynamicObjectHelpersModule, "getValueOnPath");
+    spy.mockReturnValue(expectedValue);
+
+    // act
+    const result = getFormValueBasedOnPropertyInformation(
+      information,
+      dynamicObject as Record<string, never>
+    );
+
+    // assert
+    expect(result).toBe(expectedValue);
+    expect(spy).toHaveBeenCalledWith(dynamicObject, information.propertyPath);
+  });
+  it("returns the result of getValueOnPath converted into locale date string if the type is date", () => {
+    // arrange
+    const information: DynamicPropertyInformation = {
+      name: "arst",
+      type: "date",
+      propertyPath: ["arst"],
+    };
+    const dynamicObject: Record<string, Date> = {
+      arst: new Date(Date.now()),
+    };
+    const expectedValue = dynamicObject[information.name];
+    const spy = jest.spyOn(dynamicObjectHelpersModule, "getValueOnPath");
+    spy.mockReturnValue(expectedValue);
+
+    // act
+    const result = getFormValueBasedOnPropertyInformation(
+      information,
+      dynamicObject as Record<string, never>
+    );
+
+    // assert
+    expect(result).toBe(expectedValue.toLocaleDateString());
+    expect(spy).toHaveBeenCalledWith(dynamicObject, information.propertyPath);
+  });
+  it("throws if type is anything but the implemented ones", () => {
+    // arrange
+    const information: DynamicPropertyInformation = {
+      name: "arst",
+      type: "Not Implemented",
+      propertyPath: [],
+    };
+
+    // act
+    const action = () =>
+      getFormValueBasedOnPropertyInformation(information, {});
+
+    // assert
+    expect(action).toThrowError();
   });
 });
 
