@@ -4,6 +4,7 @@ import {
   getFormValueBasedOnPropertyInformation,
   getNewInstanceWithUpdatedProp,
   getPsuedoRandomKey,
+  getTypedValueFromEvent,
 } from "./use-form-helpers";
 
 import * as parseWithHydrationModule from "../../helpers/parse-helpers";
@@ -149,7 +150,79 @@ describe("getNewInstanceWithUpdatedProp", () => {
 });
 
 describe("getTypedValueFromEvent", () => {
-  it("needs to be tested", () => {
-    expect(true).toBe(false);
+  it("returns the valueAsDate property from the change event if the type is date", () => {
+    // arrange
+    const expected = new Date(Date.now());
+    const event = createFakeHTMLInputElementEvent();
+    event.target = { valueAsDate: expected } as HTMLInputElement;
+
+    const field: DynamicPropertyInformation = {
+      name: "arst",
+      propertyPath: [],
+      type: "date",
+    };
+
+    // act
+    const result = getTypedValueFromEvent(field, event);
+
+    // assert
+    expect(result).toBe(expected);
+  });
+
+  it("returns the valueAsNumber property from the change event if the type is number", () => {
+    // arrange
+    const expected = 1;
+    const event = createFakeHTMLInputElementEvent();
+    event.target = { valueAsNumber: expected } as HTMLInputElement;
+
+    const field: DynamicPropertyInformation = {
+      name: "arst",
+      propertyPath: [],
+      type: "number",
+    };
+
+    // act
+    const result = getTypedValueFromEvent(field, event);
+
+    // assert
+    expect(result).toBe(expected);
+  });
+
+  it("returns the value property from the change event if the type is anything but number or date", () => {
+    // arrange
+    const expected = "arst";
+    const event = createFakeHTMLInputElementEvent();
+    event.target = { value: expected } as HTMLInputElement;
+
+    const field: DynamicPropertyInformation = {
+      name: "arst",
+      propertyPath: [],
+      type: "string",
+    };
+
+    // act
+    const result = getTypedValueFromEvent(field, event);
+
+    // assert
+    expect(result).toBe(expected);
   });
 });
+
+const createFakeHTMLInputElementEvent =
+  (): React.ChangeEvent<HTMLInputElement> => ({
+    bubbles: false,
+    cancelable: false,
+    currentTarget: {} as HTMLInputElement,
+    defaultPrevented: false,
+    eventPhase: 0,
+    isDefaultPrevented: () => false,
+    isPropagationStopped: () => false,
+    isTrusted: false,
+    nativeEvent: {} as Event,
+    persist: () => false,
+    preventDefault: () => false,
+    stopPropagation: () => false,
+    target: {} as HTMLInputElement,
+    timeStamp: 0,
+    type: "type",
+  });
