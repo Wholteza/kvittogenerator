@@ -1,5 +1,4 @@
 import { render, screen, fireEvent, createEvent } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import useForm from "./use-form";
 import * as translateModule from "../../translate";
 import { getPsuedoRandomKey } from "./use-form-helpers";

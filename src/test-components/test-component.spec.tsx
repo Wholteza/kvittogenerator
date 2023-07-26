@@ -15,10 +15,12 @@ describe("That UI testing is working with test component", () => {
 
   test("shows a heading when button is pressed", async () => {
     // Arrange
+    const user = userEvent.setup();
     render(<Test />);
 
     //Act
-    await userEvent.click(screen.getByText("click me"));
+    const textInput = screen.getByText("click me");
+    await user.click(textInput);
     await screen.findByRole("heading");
 
     // Assert
