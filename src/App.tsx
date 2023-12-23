@@ -4,7 +4,7 @@ import {
   CustomerInformation,
   ReceiptInformation,
 } from "./types";
-import useForm from "./hooks/use-form";
+import useForm from "./hooks/use-form/use-form";
 import useLocalStorage from "./use-local-storage";
 import usePdf from "./use-pdf";
 import {
