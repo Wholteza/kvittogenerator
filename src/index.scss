@@ -5,6 +5,7 @@ $color-primary-light:  #B8B8FF;
 $color-background:  #F8F7FF;
 $color-secondary-light:  #FFEEDD;
 $color-secondary:  #FFD8BE;
+$color-secondary-text:  color-mix(in srgb, #FFD8BE 40%, black);
 
 @mixin font-family {
   font-family: 'Ubuntu Mono';
@@ -14,7 +15,6 @@ $color-secondary:  #FFD8BE;
 
 @mixin secondary-text-color{
   color: $color-secondary;
-  filter: brightness(50%);
 }
 
 @mixin fade-in-animation {
@@ -75,7 +75,6 @@ body {
   width: 100vw;
   height: 100vh;
   @media (min-width: 768px) {
-    width: 500px;
     margin: 0 auto;
   }
 }
@@ -175,7 +174,7 @@ hr {
     width: 100%;
   }
   label {
-    @include secondary-text-color();
+    color: $color-secondary-text;
     font-weight: 600;
     text-transform: capitalize;
     position: relative;

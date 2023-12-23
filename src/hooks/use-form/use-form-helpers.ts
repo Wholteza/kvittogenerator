@@ -11,14 +11,18 @@ export const getFormValueBasedOnPropertyInformation = (
 ): string | number => {
   switch (information.type) {
     case "string":
-      return getValueOnPath<string>(dynamicObject, information.propertyPath);
+      return (
+        getValueOnPath<string>(dynamicObject, information.propertyPath) ?? ""
+      );
     case "number":
-      return getValueOnPath<number>(dynamicObject, information.propertyPath);
+      return (
+        getValueOnPath<number>(dynamicObject, information.propertyPath) ?? 0
+      );
     case "date":
-      return getValueOnPath<Date>(
-        dynamicObject,
-        information.propertyPath
-      ).toLocaleDateString();
+      return (
+        getValueOnPath<Date>(dynamicObject, information.propertyPath) ??
+        new Date(Date.now())
+      ).toLocaleDateString("se-SE");
     default:
       throw new Error(`field type ${information.type} is not implemented`);
   }

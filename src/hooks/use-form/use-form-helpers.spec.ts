@@ -78,7 +78,7 @@ describe("getFormValueBasedOnPropertyInformation", () => {
     );
 
     // assert
-    expect(result).toBe(expectedValue.toLocaleDateString());
+    expect(result).toBe(expectedValue.toLocaleDateString("sv-SE"));
     expect(spy).toHaveBeenCalledWith(dynamicObject, information.propertyPath);
   });
   it("throws if type is anything but the implemented ones", () => {

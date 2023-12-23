@@ -24,10 +24,10 @@ export const mutatePropOnPath = <K>(
 export const getValueOnPath = <T>(
   dynamicObject: Record<string, never>,
   propertyPath: string[]
-): T => {
+): T | null => {
   const [key, ...rest] = propertyPath;
   if (!rest.length) {
-    return dynamicObject[key] as T;
+    return dynamicObject[key] as T | null;
   }
   return getValueOnPath(dynamicObject[key], rest);
 };
