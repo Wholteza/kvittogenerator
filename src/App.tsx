@@ -18,6 +18,7 @@ import {
   toReceiptTotalViewModel,
 } from "./domain/receipt-total";
 import { parseWithDateHydration } from "./helpers/parse-helpers";
+import { useFormKeys } from "./hooks/use-form-keys/use-form-keys";
 
 const testCompanyInformation: CompanyInformation = {
   Identity: {
@@ -74,8 +75,9 @@ const forms = {
 } as const;
 
 const App = () => {
+  const { currentFormKey, formKeyDropdown } = useFormKeys("companyInformation");
   const [companyInformationForm, companyInformation] =
-    useForm<CompanyInformation>("companyInformation", testCompanyInformation);
+    useForm<CompanyInformation>(currentFormKey, testCompanyInformation);
   const [customerInformationForm, customerInformation] =
     useForm<CustomerInformation>(
       "customerInformation",
@@ -174,6 +176,7 @@ const App = () => {
         <div className="container">
           <div className="inputs">
             <h1>Meny</h1>
+            {formKeyDropdown}
             <button className="button" onClick={() => setForm(forms.company)}>
               Redigera företag
             </button>
