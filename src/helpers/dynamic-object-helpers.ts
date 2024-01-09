@@ -13,8 +13,10 @@ export const mutatePropOnPath = <K>(
     return;
   }
 
-  const propType = typeof dynamicObject[key];
-  if (propType !== typeof newValue) {
+  // TODO: Add a test for this
+  const oldValue = dynamicObject[key];
+  const propType = typeof oldValue;
+  if (propType !== typeof newValue && oldValue !== null) {
     throw new Error(`The provided value is not of type ${propType}`);
   }
 
