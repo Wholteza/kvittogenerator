@@ -7,6 +7,22 @@ I have used this project to start learning how to do different types of testing 
 
 You can read more about that below.
 
+## Getting started
+
+1. Install Node 20
+1. `npm install`
+1. `npm run dev`
+
+## Tasks
+
+### Improve process
+
+- [x] User types receipt number as the first field
+- [x] User selects the receipt date as the 2nd field
+- [ ] Receipt row date is autoset to receipt date upon change
+- [ ] Company information is hidden in settings after set
+- [x] Logotype is part of company information
+
 ## Testing
 
 This is the first time i decided to do extensive automated testing in a frontend application.
@@ -19,7 +35,7 @@ To keep my unit tests robust and quick to run I am identifying and mocking all e
 
 Since frontend unit testing, in this case a react application, is a different environment than what I'm used to the test code base is going to consistantly evolve as I discover new things.
 
-### Unit
+### Unit testing
 
 I have implemented unit tests for all functionality i can easily break out into their own isolated functions.
 

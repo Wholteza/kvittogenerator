@@ -2,7 +2,7 @@ import { ChangeEventHandler, useCallback, useMemo, useRef } from "react";
 import {
   CompanyInformation,
   CustomerInformation,
-  ReceiptInformation,
+  ReceiptInformationV2,
 } from "./types";
 import useForm from "./hooks/use-form/use-form";
 import useLocalStorage from "./use-local-storage";
@@ -18,6 +18,7 @@ import {
   toReceiptTotalViewModel,
 } from "./domain/receipt-total";
 import { parseWithDateHydration } from "./helpers/parse-helpers";
+import { useLocalStorageMigrations } from "./hooks/use-local-storage-migrations";
 
 const testCompanyInformation: CompanyInformation = {
   Identity: {
@@ -52,8 +53,8 @@ const testCustomerInformation: CustomerInformation = {
   },
 };
 
-const testReceiptInformation: ReceiptInformation = {
-  number: "",
+const testReceiptInformation: ReceiptInformationV2 = {
+  receiptNumber: "",
   date: new Date(Date.now()),
   paymentTerms: "",
 };
@@ -68,12 +69,13 @@ const testReceiptRow: ReceiptRowFormModel = {
 const forms = {
   company: "company",
   customer: "customer",
-  receipt: "receipt",
   rows: "rows",
   menu: "menu",
 } as const;
 
 const App = () => {
+  useLocalStorageMigrations(1);
+
   const [companyInformationForm, companyInformation] =
     useForm<CompanyInformation>("companyInformation", testCompanyInformation);
   const [customerInformationForm, customerInformation] =
@@ -85,7 +87,7 @@ const App = () => {
     ReceiptRowFormModel[]
   >("receiptRows", []);
   const [receiptInformationForm, receiptInformation] =
-    useForm<ReceiptInformation>("receiptInformation", testReceiptInformation);
+    useForm<ReceiptInformationV2>("receiptInformation", testReceiptInformation);
   const [currentReceiptRowForm, currentReceiptRow] =
     useForm<ReceiptRowFormModel>("currentReceiptRow", testReceiptRow);
   const [form, setForm] = useLocalStorage<string>("selectedForm", forms.menu);
@@ -155,7 +157,9 @@ const App = () => {
 
   return (
     <>
-      {form !== forms.menu ? (
+      {form === forms.menu ? (
+        <></>
+      ) : (
         <div className="container-without-padding">
           <div className="inputs">
             <button
@@ -166,28 +170,27 @@ const App = () => {
             </button>
           </div>
         </div>
-      ) : (
-        <></>
       )}
 
       {form === forms.menu ? (
         <div className="container">
           <div className="inputs">
             <h1>Meny</h1>
-            <button className="button" onClick={() => setForm(forms.company)}>
-              Redigera företag
-            </button>
+            <div style={{ marginBottom: 20 }}>{receiptInformationForm}</div>
             <button className="button" onClick={() => setForm(forms.customer)}>
               Redigera kund
-            </button>
-            <button className="button" onClick={() => setForm(forms.receipt)}>
-              Redigera kvitto
             </button>
             <button className="button" onClick={() => setForm(forms.rows)}>
               Redigera rader
             </button>
             <button className="button" onClick={handleOnClickGeneratePdf}>
               Generera PDF
+            </button>
+            <button
+              className="button secondary"
+              onClick={() => setForm(forms.company)}
+            >
+              Redigera företag
             </button>
           </div>
         </div>
@@ -197,24 +200,8 @@ const App = () => {
 
       {form === forms.company ? (
         <div className="container">
-          <div className="inputs">{companyInformationForm}</div>
-        </div>
-      ) : (
-        <></>
-      )}
-
-      {form === forms.customer ? (
-        <div className="container">
-          <div className="inputs">{customerInformationForm}</div>
-        </div>
-      ) : (
-        <></>
-      )}
-
-      {form === forms.receipt ? (
-        <div className="container">
           <div className="inputs">
-            {receiptInformationForm}
+            {companyInformationForm}
             {file.length ? (
               <button
                 className="button remove-logotype-button"
@@ -242,6 +229,14 @@ const App = () => {
             )}
             {file.length ? <img src={file} className="logotype" /> : <></>}
           </div>
+        </div>
+      ) : (
+        <></>
+      )}
+
+      {form === forms.customer ? (
+        <div className="container">
+          <div className="inputs">{customerInformationForm}</div>
         </div>
       ) : (
         <></>

@@ -38,8 +38,14 @@ export type CustomerInformation = {
   Address: Address;
 };
 
-export type ReceiptInformation = {
+export type ReceiptInformationV1 = {
   date: Date;
-  number: string;
   paymentTerms: string;
+  number: string;
+};
+
+export type ReceiptInformationV2 = {
+  date: Date;
+  paymentTerms: string;
+  receiptNumber: string;
 };

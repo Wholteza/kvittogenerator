@@ -3,7 +3,7 @@ import { CellConfig, jsPDF, TextOptionsLight } from "jspdf";
 import {
   CompanyInformation,
   CustomerInformation,
-  ReceiptInformation,
+  ReceiptInformationV2,
 } from "./types";
 import { ReceiptRowViewModel } from "./domain/receipt-row";
 import { RecieptTotalInformationViewModel } from "./domain/receipt-total";
@@ -131,7 +131,7 @@ const usePdf = () => {
       companyInformation: CompanyInformation,
       customerInformation: CustomerInformation,
       logotype: string,
-      receiptInformation: ReceiptInformation,
+      receiptInformation: ReceiptInformationV2,
       receiptRows: ReceiptRowViewModel[],
       receiptTotalInformation: RecieptTotalInformationViewModel
     ) => {
@@ -269,7 +269,7 @@ const usePdf = () => {
           type: "body",
         },
         {
-          text: receiptInformation.number,
+          text: receiptInformation.receiptNumber,
           x: columns.right.left,
           type: "body",
         },
@@ -443,7 +443,7 @@ const usePdf = () => {
       ]);
 
       doc.save(
-        `${receiptInformation.number ?? "kvitto"} - ${
+        `${receiptInformation.receiptNumber ?? "kvitto"} - ${
           customerInformation.Identity.Name
         }`
       );

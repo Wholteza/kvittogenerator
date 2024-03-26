@@ -258,6 +258,10 @@ hr {
     background-color: $color-primary-light;
     box-shadow: 5px 5px 0rem  $color-primary;
   }
+  &.secondary {
+    background-color: $color-secondary-light;
+    box-shadow: 5px 5px 0rem  $color-primary-light;
+  }
   &:hover{
     filter: brightness(105%);
     cursor: pointer;
