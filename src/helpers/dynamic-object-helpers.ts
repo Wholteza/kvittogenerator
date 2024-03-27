@@ -43,7 +43,7 @@ export type DynamicPropertyInformation = {
 export const generatePropertyInformation = (
   obj: Record<string, never>,
   recursivePropertyPath: string[] = []
-) => {
+): DynamicPropertyInformation[] => {
   const propertyInformations: DynamicPropertyInformation[] = [];
   Object.keys(obj).forEach((key) => {
     const property = obj[key];

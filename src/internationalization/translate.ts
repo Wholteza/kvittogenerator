@@ -25,5 +25,6 @@ export const dictionary: { [key: string]: { [key: string]: string } } = {
     vat: "Moms (SEK)",
     total: "Total (inkl. moms)",
     receiptNumber: "Kvittonummer",
+    receiptGenerator: "Kvittogenerator",
   },
 };
