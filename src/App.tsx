@@ -158,22 +158,16 @@ const App = () => {
   ]);
 
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-evenly",
-        }}
-      >
-        <div>{receiptInformationForm}</div>
-        <div>{customerInformationForm}</div>
-        <div>
-          {currentReceiptRowForm}
-          <button onClick={handleOnAddRow}>Lägg till</button>
-        </div>
-      </div>
-      <div style={{ display: "flex" }}>
+    <div
+      style={{
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <div style={{ display: "flex", marginTop: 100 }}>
         <div style={{ display: "flex" }}>
           <div>
             <Input value={"A1"} label="Kvittonummer" />
@@ -186,7 +180,7 @@ const App = () => {
           <Input value={new Date()} label="Datum" style={{ marginLeft: 10 }} />
         </div>
         <div
-          style={{ display: "flex", flexDirection: "column", marginLeft: 30 }}
+          style={{ display: "flex", flexDirection: "column", marginLeft: 65 }}
         >
           <div style={{ display: "flex" }}>
             <Input value={"arst"} label="Namn" style={{ marginLeft: 10 }} />
@@ -211,6 +205,33 @@ const App = () => {
           </div>
         </div>
       </div>
+      <div style={{ display: "flex", marginTop: 20 }}>
+        <div style={{ display: "flex" }}>
+          <Input value={"arst"} label="Datum" />
+          <Input
+            value={"arst"}
+            label="Beskrivning"
+            style={{ marginLeft: 10 }}
+          />
+        </div>
+        <div style={{ display: "flex" }}>
+          <Input
+            value={"Stad"}
+            label="À-pris (inkl. moms)"
+            style={{ marginLeft: 10 }}
+          />
+          <Input
+            value={"Gatuadress"}
+            label="Moms %"
+            style={{ marginLeft: 10 }}
+          />
+          <Input
+            value={"Postnummer"}
+            label="Antal"
+            style={{ marginLeft: 10 }}
+          />
+        </div>
+      </div>
       <div>
         {receiptRows.map((row, index) => (
           <div style={{ display: "flex" }}>
@@ -227,124 +248,5 @@ const App = () => {
       </div>
     </div>
   );
-
-  return (
-    <>
-      {form === forms.menu ? (
-        <></>
-      ) : (
-        <div className="container-without-padding">
-          <div className="inputs">
-            <button
-              className="button primary"
-              onClick={() => setForm(forms.menu)}
-            >
-              Tillbaka till menyn
-            </button>
-          </div>
-        </div>
-      )}
-
-      {form === forms.menu ? (
-        <div className="container">
-          <div className="inputs">
-            <h1>{translate("receiptGenerator")}</h1>
-            <div style={{ marginBottom: 20 }}>{receiptInformationForm}</div>
-            <button className="button" onClick={() => setForm(forms.customer)}>
-              Redigera kund
-            </button>
-            <button className="button" onClick={() => setForm(forms.rows)}>
-              Redigera rader
-            </button>
-            <button className="button" onClick={handleOnClickGeneratePdf}>
-              Generera PDF
-            </button>
-            <button
-              className="button secondary"
-              onClick={() => setForm(forms.company)}
-            >
-              Redigera företag
-            </button>
-          </div>
-        </div>
-      ) : (
-        <></>
-      )}
-
-      {form === forms.company ? (
-        <div className="container">
-          <div className="inputs">
-            {companyInformationForm}
-            {file.length ? (
-              <button
-                className="button remove-logotype-button"
-                onClick={() => setFile("")}
-              >
-                Ta bort logotyp
-              </button>
-            ) : (
-              <>
-                <button
-                  style={{ marginTop: "1rem" }}
-                  className="button"
-                  onClick={() => formElementRef?.current?.click()}
-                >
-                  Ladda upp logotyp
-                </button>
-                <input
-                  className="button"
-                  type="file"
-                  onChange={onFileSelected}
-                  name="logotype"
-                  ref={formElementRef}
-                />
-              </>
-            )}
-            {file.length ? <img src={file} className="logotype" /> : <></>}
-          </div>
-        </div>
-      ) : (
-        <></>
-      )}
-
-      {form === forms.customer ? (
-        <div className="container">
-          <div className="inputs">{customerInformationForm}</div>
-        </div>
-      ) : (
-        <></>
-      )}
-
-      {form === forms.rows ? (
-        <div className="container">
-          <div className="inputs">
-            {currentReceiptRowForm}
-            <button
-              className="button primary add-button"
-              onClick={handleOnAddRow}
-            >
-              Lägg till
-            </button>
-            {receiptRows.length ? <hr /> : <></>}
-            {receiptRows.map((row, index) => (
-              <div className="receipt-row">
-                <div className="description">{row.description}</div>
-                <div className="amount">{row.amount}st</div>
-                <button
-                  className="receipt-row-remove-button"
-                  onClick={() => handleOnRemoveRow(index)}
-                >
-                  X
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <></>
-      )}
-    </>
-  );
 };
-
 export default App;
