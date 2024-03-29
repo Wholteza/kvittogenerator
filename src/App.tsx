@@ -19,8 +19,8 @@ import {
 } from "./domain/receipt-total";
 import { parseWithDateHydration } from "./helpers/parse-helpers";
 import { useLocalStorageMigrations } from "./hooks/use-local-storage-migrations";
-import translate from "./internationalization/translate";
 import Input from "./components/input";
+import { StyleConstants } from "./style/constants";
 
 const testCompanyInformation: CompanyInformation = {
   Identity: {
@@ -205,7 +205,8 @@ const App = () => {
           </div>
         </div>
       </div>
-      <div style={{ display: "flex", marginTop: 20 }}>
+      <hr style={{ maxWidth: StyleConstants.widths.contentMaxWidth }} />
+      <div style={{ display: "flex", marginTop: 0 }}>
         <div style={{ display: "flex" }}>
           <Input value={"arst"} label="Datum" />
           <Input
