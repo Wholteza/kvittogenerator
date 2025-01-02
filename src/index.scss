@@ -1,11 +1,11 @@
 @import "@fontsource/ubuntu-mono";
 
-$color-primary:  #9381FF;
-$color-primary-light:  #B8B8FF;
-$color-background:  #F8F7FF;
-$color-secondary-light:  #FFEEDD;
-$color-secondary:  #FFD8BE;
-$color-secondary-text:  color-mix(in srgb, #FFD8BE 40%, black);
+$color-primary: #9381FF;
+$color-primary-light: #B8B8FF;
+$color-background: #F8F7FF;
+$color-secondary-light: #FFEEDD;
+$color-secondary: #FFD8BE;
+$color-secondary-text: color-mix(in srgb, #FFD8BE 40%, black);
 
 @mixin font-family {
   font-family: 'Ubuntu Mono';
@@ -13,7 +13,7 @@ $color-secondary-text:  color-mix(in srgb, #FFD8BE 40%, black);
   font-weight: 400;
 }
 
-@mixin secondary-text-color{
+@mixin secondary-text-color {
   color: $color-secondary;
 }
 
@@ -29,17 +29,24 @@ $color-secondary-text:  color-mix(in srgb, #FFD8BE 40%, black);
 
 
 @keyframes fade {
-  from {opacity: 0;}
-  to {opacity: 1;}
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
+
 @keyframes fade-in-from-right {
   from {
     opacity: 0;
     position: relative;
     left: 100px;
   }
-  to { 
-    opacity: 1; 
+
+  to {
+    opacity: 1;
     left: 0;
   }
 }
@@ -65,7 +72,7 @@ h1 {
 }
 
 
-body { 
+body {
   @include font-family();
   background-color: $color-background;
 
@@ -74,6 +81,7 @@ body {
   overflow-x: hidden;
   width: 100vw;
   height: 100vh;
+
   @media (min-width: 768px) {
     margin: 0 auto;
   }
@@ -86,22 +94,23 @@ hr {
   border-radius: 1rem;
 
 }
-.container-without-padding{
+
+.container-without-padding {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 1rem 1rem 0rem 1rem;
   left: -5px;
-  position:relative;
+  position: relative;
 }
 
 
-.remove-logotype-button{
+.remove-logotype-button {
   margin-top: 1rem;
 }
 
 .container {
-  position:relative;
+  position: relative;
   left: -5px;
   padding: 0rem 1rem;
   display: flex;
@@ -116,53 +125,56 @@ hr {
   border-radius: 0.5rem;
   border-color: rgba($color: #000000, $alpha: 0);
   text-indent: 1rem;
-  box-shadow: 5px 5px 0rem  $color-secondary;
+  box-shadow: 5px 5px 0rem $color-secondary;
   background-color: $color-secondary-light;
   @include font-family();
   font-weight: 900;
-  color: #333;  
+  color: #333;
   display: flex;
   padding: 1rem;
   box-sizing: border-box;
   @include fade-in-from-right-animation();
 
-  .description{
+  .description {
     margin: auto;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
   }
+
   .amount {
     margin: auto;
     flex-shrink: 2;
   }
-  .receipt-row-remove-button{
+
+  .receipt-row-remove-button {
     border: 5px solid rgba(#000000, 0);
     border-radius: 5px;
     background-color: $color-primary;
     color: $color-secondary-light;
     box-shadow: 4px 4px 0 $color-secondary;
 
-    &:hover{
+    &:hover {
       filter: brightness(105%);
       cursor: pointer;
     }
-    
+
 
   }
 }
 
-.inputs{
+.inputs {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 300px;
+
   .logotype {
     @include fade-in-animation();
     margin-top: 0.5rem;
     width: 70%;
-    border-color:  $color-secondary-light;
+    border-color: $color-secondary-light;
     border-width: 5px;
     border-radius: 0.5rem;
     border-style: solid;
@@ -170,9 +182,11 @@ hr {
     background-color: $color-secondary-light;
 
   }
+
   div {
     width: 100%;
   }
+
   label {
     color: $color-secondary-text;
     font-weight: 600;
@@ -182,6 +196,7 @@ hr {
     left: 15px;
     z-index: 100;
   }
+
   input {
     width: 100%;
     flex: 1;
@@ -191,40 +206,47 @@ hr {
     border-radius: 0.5rem;
     border-color: rgba($color: #000000, $alpha: 0);
     text-indent: 1rem;
-    box-shadow: 5px 5px 0rem  $color-secondary;
+    box-shadow: 5px 5px 0rem $color-secondary;
     background-color: $color-secondary-light;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-weight: 900;
     color: #333;
-    &[type=date]{
+
+    &[type=date] {
       text-indent: 0.5rem;
     }
-    &[type=file]{
+
+    &[type=file] {
       width: 0.1px;
       height: 0.1px;
       opacity: 0;
       overflow: hidden;
       position: absolute;
       z-index: -1;
-      &:focus + label {
+
+      &:focus+label {
         outline: 1px dotted #000;
         outline: -webkit-focus-ring-color auto 5px;
       }
-      & + label {
+
+      &+label {
         pointer-events: none;
       }
-      
+
     }
+
     &:hover {
       filter: brightness(105%);
       cursor: pointer;
     }
+
     &:focus {
       outline: none;
       outline-offset: 0;
-      
+
     }
-    &[type=number]::-webkit-inner-spin-button, 
+
+    &[type=number]::-webkit-inner-spin-button,
     &[type=number]::-webkit-outer-spin-button {
       -webkit-appearance: none;
       margin: 0;
@@ -246,23 +268,27 @@ hr {
   border-radius: 0.5rem;
   border-color: rgba($color: #000000, $alpha: 0);
   text-indent: 1rem;
-  box-shadow: 5px 5px 0rem  $color-secondary;
+  box-shadow: 5px 5px 0rem $color-secondary;
   color: #333;
   font-weight: 600;
   background-color: $color-secondary-light;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
   &:focus {
     outline: none;
   }
+
   &.primary {
     background-color: $color-primary-light;
-    box-shadow: 5px 5px 0rem  $color-primary;
+    box-shadow: 5px 5px 0rem $color-primary;
   }
+
   &.secondary {
     background-color: $color-secondary-light;
-    box-shadow: 5px 5px 0rem  $color-primary-light;
+    box-shadow: 5px 5px 0rem $color-primary-light;
   }
-  &:hover{
+
+  &:hover {
     filter: brightness(105%);
     cursor: pointer;
   }
