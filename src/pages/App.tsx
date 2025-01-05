@@ -3,24 +3,24 @@ import {
   CompanyInformation,
   CustomerInformation,
   ReceiptInformationV2,
-} from "./types";
-import useForm from "./hooks/use-form/use-form";
-import useLocalStorage from "./use-local-storage";
-import usePdf from "./use-pdf";
+} from "~/types"
+import useForm from "~/hooks/use-form/use-form";
+import useLocalStorage from "~/use-local-storage";
+import usePdf from "~/use-pdf";
 import {
   ReceiptRow,
   ReceiptRowFormModel,
   toViewModel,
-} from "./domain/receipt-row";
+} from "~/domain/receipt-row";
 import {
   RecieptTotalInformationViewModel,
   calculateReceiptTotal,
   toReceiptTotalViewModel,
-} from "./domain/receipt-total";
-import { parseWithDateHydration } from "./helpers/parse-helpers";
-import { useLocalStorageMigrations } from "./hooks/use-local-storage-migrations";
-import Input from "./components/input";
-import { StyleConstants } from "./style/constants";
+} from "~/domain/receipt-total";
+import { parseWithDateHydration } from "~/helpers/parse-helpers";
+import { useLocalStorageMigrations } from "~/hooks/use-local-storage-migrations";
+import Input from "~/components/input";
+import { StyleConstants } from "~/style/constants";
 
 const testCompanyInformation: CompanyInformation = {
   Identity: {
