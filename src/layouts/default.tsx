@@ -8,11 +8,10 @@ const Layout = () => {
     <div className="default-layout--container">
       <div className="menu">
         <img src="/logotype.webp"></img>
-        <Link to={"/"} className="link">Home</Link>
-        <Link to={"/old"} className="link">old</Link>
+        <Link to={"/"} className="link">Hem</Link>
+        <Link to={"/old"} className="link">Äldre version</Link>
       </div>
       <div className="content">
-        content
         <Outlet />
       </div>
     </div>
