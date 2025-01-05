@@ -75,7 +75,7 @@ const forms = {
   menu: "menu",
 } as const;
 
-const App = () => {
+const Old = () => {
   useLocalStorageMigrations(1);
 
   const [companyInformationForm, companyInformation] =
@@ -250,4 +250,4 @@ const App = () => {
     </div>
   );
 };
-export default App;
+export default Old;
