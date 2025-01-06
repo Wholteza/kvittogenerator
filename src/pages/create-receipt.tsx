@@ -4,8 +4,14 @@ import { faTrashCan, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import "./create-receipt.scss";
 import Button from "~components/button";
+import { useContext } from "react";
+import CustomerContext from "~contexts/customer-context";
+import TextInput from "~components/text-input";
 
 const CreateReceipt = () => {
+  const { state: customer, setState: setCustomer } =
+    useContext(CustomerContext);
+
   const rows = [
     { date: new Date(), description: "Test", price: 0, tax: 0, amount: 0 },
     { date: new Date(), description: "Test", price: 0, tax: 0, amount: 0 },
@@ -24,11 +30,56 @@ const CreateReceipt = () => {
       </div>
       <Typography size="subheading">Kunddata</Typography>
       <div className="receipt-data">
-        <Input label="Namn" value="" />
-        <Input label="Personnummer" value="" />
-        <Input label="Gatuadress" value="" />
-        <Input label="Postnummer" value="" />
-        <Input label="Stad" value="" />
+        <TextInput
+          label="Namn"
+          value={customer.Identity.Name}
+          onChange={(v) =>
+            setCustomer({
+              ...customer,
+              Identity: { ...customer.Identity, Name: v },
+            })
+          }
+        />
+        <TextInput
+          label="Personnummer"
+          value={customer.Identity.OrganizationNumber}
+          onChange={(v) =>
+            setCustomer({
+              ...customer,
+              Identity: { ...customer.Identity, OrganizationNumber: v },
+            })
+          }
+        />
+        <TextInput
+          label="Gatuadress"
+          value={customer.Address.Street}
+          onChange={(v) =>
+            setCustomer({
+              ...customer,
+              Address: { ...customer.Address, Street: v },
+            })
+          }
+        />
+        <TextInput
+          label="Postnummer"
+          value={customer.Address.ZipCode}
+          onChange={(v) =>
+            setCustomer({
+              ...customer,
+              Address: { ...customer.Address, ZipCode: v },
+            })
+          }
+        />
+        <TextInput
+          label="Stad"
+          value={customer.Address.City}
+          onChange={(v) =>
+            setCustomer({
+              ...customer,
+              Address: { ...customer.Address, City: v },
+            })
+          }
+        />
       </div>
       <Typography size="subheading">Kvittorader</Typography>
       <div className="receipt-rows-form">

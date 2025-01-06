@@ -13,6 +13,10 @@ import CompanyContext, {
 } from "~contexts/company-context";
 import useLocalStorage from "~use-local-storage";
 import CreateReceipt from "~pages/create-receipt";
+import { CustomerInformation } from "~types";
+import CustomerContext, {
+  initialCustomerInformation,
+} from "~contexts/customer-context";
 
 const AppWrapper = () => {
   // TODO: Move to hook
@@ -41,26 +45,39 @@ const AppWrapper = () => {
       initialCompanyInformation
     );
 
+  const [customerInformation, setCustomerInformation] =
+    useLocalStorage<CustomerInformation>(
+      "customer-information-context",
+      initialCustomerInformation
+    );
+
   return (
     <CompanyContext.Provider
       value={{ state: companyInformation, setState: setCompanyInformation }}
     >
-      <DeviceContext.Provider value={deviceContextProps}>
-        <BrowserRouter>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route index element={<Home />}></Route>
-              <Route path="/old" element={<Old />}></Route>
-              <Route path="/login" element={<Login />}></Route>
-              <Route
-                path="/company-information"
-                element={<CompanyInformation />}
-              ></Route>
-              <Route path="/create-receipt" element={<CreateReceipt />}></Route>
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </DeviceContext.Provider>
+      <CustomerContext.Provider
+        value={{ state: customerInformation, setState: setCustomerInformation }}
+      >
+        <DeviceContext.Provider value={deviceContextProps}>
+          <BrowserRouter>
+            <Routes>
+              <Route element={<Layout />}>
+                <Route index element={<Home />}></Route>
+                <Route path="/old" element={<Old />}></Route>
+                <Route path="/login" element={<Login />}></Route>
+                <Route
+                  path="/company-information"
+                  element={<CompanyInformation />}
+                ></Route>
+                <Route
+                  path="/create-receipt"
+                  element={<CreateReceipt />}
+                ></Route>
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </DeviceContext.Provider>
+      </CustomerContext.Provider>
     </CompanyContext.Provider>
   );
 };
