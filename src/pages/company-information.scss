@@ -1,0 +1,14 @@
+@import "/src/vars.scss";
+
+.page-company-information{
+  .form-section {
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    @media ($tablet) {
+      grid-template-columns: 50% 50%;
+    }
+    @media ($phone) {
+      grid-template-columns: 100%;
+    }
+  }
+}

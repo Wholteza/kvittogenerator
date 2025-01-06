@@ -1,83 +1,29 @@
-import { useCallback, useMemo } from "react";
-import translate from "../internationalization/translate";
-import {
-  DynamicPropertyInformation,
-  generatePropertyInformation,
-} from "../helpers/dynamic-object-helpers";
-import {
-  getFormValueBasedOnPropertyInformation,
-  getTypedValueFromEvent,
-} from "../hooks/use-form/use-form-helpers";
-
+import { ChangeEventHandler } from "react";
 import "./input.scss";
 
-type Props<T> = {
+type Props = {
   label?: string;
-  value: T;
-  onChange?: (value: T) => void;
-  style?: React.CSSProperties;
+  value: string | number;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
   className?: string;
 };
 
-const input = <T,>({
-  value,
-  label,
-  onChange,
-  style,
-  className,
-}: Props<T>): JSX.Element => {
-  const handleOnChange = useCallback(
-    (
-      field: DynamicPropertyInformation,
-      event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-      const value = getTypedValueFromEvent(field, event) as T;
-      onChange?.(value);
-    },
-    []
+const Input = ({ value, label, onChange, className }: Props): JSX.Element => {
+  return (
+    <div className="input">
+      <label htmlFor={label}>
+        {label}
+        <input
+          className={` ${className}`}
+          id={label}
+          name={label}
+          value={value}
+          placeholder={label}
+          onChange={onChange}
+        />
+      </label>
+    </div>
   );
-
-  const form = useMemo<JSX.Element>(() => {
-    const fieldDefinition = generatePropertyInformation({
-      [label ?? "value"]: value,
-    } as Record<string, never>)?.[0];
-    if (!fieldDefinition) return <></>;
-
-    const formValue = getFormValueBasedOnPropertyInformation(
-      fieldDefinition,
-      value as Record<string, never>
-    );
-
-    return (
-      <div
-        key={fieldDefinition.propertyPath.join(".")}
-        style={style}
-        className="input"
-      >
-        <label htmlFor={translate(fieldDefinition.propertyPath.join("."))}>
-          {translate(fieldDefinition.name)}
-          <input
-            className={` ${className}`}
-            id={translate(fieldDefinition.propertyPath.join("."))}
-            name={translate(fieldDefinition.propertyPath.join("."))}
-            style={{ display: "block" }}
-            value={formValue}
-            placeholder={translate(fieldDefinition.name)}
-            onChange={(event) => handleOnChange(fieldDefinition, event)}
-            type={
-              fieldDefinition.type === "date"
-                ? "date"
-                : fieldDefinition.type === "number"
-                  ? "number"
-                  : "text"
-            }
-          />
-        </label>
-      </div>
-    );
-  }, [handleOnChange, value, label]);
-
-  return form;
 };
 
-export default input;
+export default Input;

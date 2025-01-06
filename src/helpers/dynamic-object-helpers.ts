@@ -29,6 +29,7 @@ export const getValueOnPath = <T>(
 ): T | null => {
   const [key, ...rest] = propertyPath;
   if (!rest.length) {
+    if (typeof dynamicObject !== "object") return dynamicObject as T
     return dynamicObject[key] as T | null;
   }
   return getValueOnPath(dynamicObject[key], rest);

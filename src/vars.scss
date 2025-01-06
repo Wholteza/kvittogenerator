@@ -23,11 +23,11 @@ $distance-large: 8px;
 $distance-xl: 16px;
 $distance-xxl: 24px;
 
-$phone: "max-width: 767px";
-$phone-tablet: "max-width: 1023px";
-$tablet: "min-width: 768 and max-width: 1023px";
-$tablet-desktop: "min-width: 768px";
-$desktop: "min-width: 1024px";
+$phone: "width <= 767px";
+$phone-tablet: "width <= 1023px";
+$tablet: "768px < width < 1023px";
+$tablet-desktop: "768px <= width";
+$desktop: "1024px <= width";
 
 $z-1: 10;
 

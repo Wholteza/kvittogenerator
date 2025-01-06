@@ -16,6 +16,7 @@
       transition: all $transition-duration-fast;
       font-family: 'Ubuntu Mono';
       color: $text-color-primary;
+      display: block;
 
       &:focus {
         // Remove browser default
