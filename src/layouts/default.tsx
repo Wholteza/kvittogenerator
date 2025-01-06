@@ -1,6 +1,10 @@
 import { Outlet } from "react-router";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
-import { faFilePdf, faBars, faUserSlash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFilePdf,
+  faBars,
+  faUserSlash,
+} from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useMemo, useState } from "react";
 import DeviceContext, { DeviceContextProps } from "~contexts/device-context";
 import Link from "~components/link";
@@ -52,12 +56,16 @@ const Layout = () => {
               onClick={() => setMenuIsOpen((prev) => !prev)}
             />
             <Icon className="icon" icon={faFilePdf} size="2x"></Icon>
-            <Typography type="bold" size="large" className="text">
-              Kvittogenerator
-            </Typography>
+            <Link to="/">
+              <Typography type="bold" size="large" className="text">
+                Kvittogenerator
+              </Typography>
+            </Link>
           </div>
           <div className="right-side">
-            <div className="portrait"><Icon icon={faUserSlash} size="xs"></Icon></div>
+            <div className="portrait">
+              <Icon icon={faUserSlash} size="xs"></Icon>
+            </div>
             <Typography>Utloggad</Typography>
           </div>
         </div>

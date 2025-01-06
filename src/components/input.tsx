@@ -24,7 +24,7 @@ const input = <T,>({
   label,
   onChange,
   style,
-  className
+  className,
 }: Props<T>): JSX.Element => {
   const handleOnChange = useCallback(
     (
@@ -49,7 +49,11 @@ const input = <T,>({
     );
 
     return (
-      <div key={fieldDefinition.propertyPath.join(".")} style={style} className="input">
+      <div
+        key={fieldDefinition.propertyPath.join(".")}
+        style={style}
+        className="input"
+      >
         <label htmlFor={translate(fieldDefinition.propertyPath.join("."))}>
           {translate(fieldDefinition.name)}
           <input
