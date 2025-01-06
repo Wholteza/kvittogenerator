@@ -2,33 +2,111 @@
 
 .default-layout--container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   height: 100vh;
   width: 100vw;
   padding: 0;
+  color: $text-color-primary;
 
-  .menu {
-    background-color: #96b0b9;
-    min-width: 200px;
-    max-width: 200px;
-    height: 100vh;
-    position: block;
+  .top-menu {
+    min-height: 50px;
+    background-color: $color-primary;
     display: flex;
-    flex-direction: column;
-    justify-content: start;
+    justify-content: space-between;
     align-items: center;
+    padding: 0 $distance-large 0 $distance-large;
+    box-sizing: border-box;
+    border-style: none;
+    border-bottom: solid;
+    border-width: 1px;
+    border-bottom-color: $color-border;
 
-    img {
-      width: 75%
+
+    .left-side {
+      padding: 0;
+      margin-left: $distance-xl;
+      display: flex;
+      align-items: center;
+
+      .text {
+        margin-left: $distance-xl;
+        text-align: center;
+        display: block;
+      }
+
+      .toggle-menu {
+        border-radius: $distance-normal;
+        border-width: 1px;
+        border-color: $color-border;
+        border-style: solid;
+        padding: $distance-normal;
+        margin-right: $distance-xl;
+        width: $distance-xl;
+        cursor: pointer;
+        &:hover {
+          background-color: $color-primary-light;
+          transition: all;
+          transition-duration: $transition-duration;
+        }
+
+      }
     }
 
-    .link {
-      font-size: $font-size-large;
-      padding: $distance-large;
+    .right-side {
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: $distance-xl;
+      .portrait {
+        margin-right: $distance-large;
+        min-height: $distance-xxl;
+        min-width: $distance-xxl;
+        border-radius: 50%;
+        border-color: $color-border;
+        border-style: solid;
+        border-width: 1px;
+      }
     }
   }
 
-  .content {
-    margin-left: 1rem;
+  .content-container {
+    display: flex;
+    flex-direction: row;
+
+    .left-menu {
+      transition: all;
+      transition-duration: $transition-duration;
+      transition-timing-function: ease-in-out;
+      background-color: $color-primary-light;
+      min-width: 200px;
+      width: 200px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      align-items: center;
+      padding-top: $distance-xl;
+      
+      @media ($phone) { 
+        min-width: 100%;
+      }
+
+      &--closed {
+        width: 0;
+        min-width: 0;
+        opacity: 0;
+      }
+
+      .link {
+        font-size: $font-size-large;
+        padding: $distance-xl $distance-large $distance-xl $distance-large;
+        text-overflow: clip;
+      }
+    }
+
+    .content {
+      padding: 0 $distance-xxl 0 $distance-xxl;
+    }
   }
 }

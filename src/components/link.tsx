@@ -4,7 +4,7 @@ import { Link as RouterLink } from 'react-router'
 import './link.scss'
 
 type Props = {
-  children: string;
+  children: ReactNode;
   to: string;
   className?: string;
 }

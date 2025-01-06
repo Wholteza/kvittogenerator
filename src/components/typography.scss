@@ -1,0 +1,45 @@
+@import "/src/vars.scss";
+
+.typography {
+  color: $text-color-primary;
+
+  &-normal {
+    font-style: normal;
+  }
+
+  &-bold {
+    font-weight: bold;
+  }
+
+  &-size-small {
+    font-size: 0.8rem;
+  }
+
+  &-size-normal {
+    font-size: 1rem;
+  }
+
+  &-size-large {
+    font-size: 1.3rem;
+  }
+
+  &-size-heading {
+    display: block;
+    font-size: 3rem;
+    text-transform: uppercase;
+    padding: $distance-xl 0 $distance-large 0;
+  }
+
+  &-paragraph {
+    display: block;
+    margin: $distance-xl 0 $distance-xl 0;
+  }
+
+  &-uppercase {
+    text-transform: uppercase;
+  }
+
+  &-capitalize {
+    text-transform: capitalize;
+  }
+}
