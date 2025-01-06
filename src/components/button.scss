@@ -1,0 +1,19 @@
+@import "/src/vars.scss";
+
+.button {
+  background-color: $color-primary-light;
+  outline: none;
+  border: 1px solid $color-border;
+  border-radius: $distance-normal;
+  padding: $distance-normal $distance-large;
+  
+  .icon {
+    margin: 0 $distance-normal;
+  }
+
+  &--action {
+    background-color: $color-action;
+    color: $text-color-colorful-light;
+    border-color: $color-action;
+  }
+}

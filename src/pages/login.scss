@@ -1,0 +1,12 @@
+@import "/src/vars.scss";
+
+.page-login {
+  .username {
+    display: block;
+    margin-bottom: $distance-large;
+  }
+  .password {
+    display: block;
+    margin-bottom: $distance-large;
+  }
+}

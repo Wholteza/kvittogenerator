@@ -6,6 +6,7 @@ import Old from "~/pages/Old";
 import Home from "~pages/Home";
 
 import "./index.scss";
+import Login from "~pages/login";
 
 createRoot(document.getElementById("root") as HTMLElement).render(
   <StrictMode>
@@ -14,6 +15,7 @@ createRoot(document.getElementById("root") as HTMLElement).render(
         <Route element={<Layout />}>
           <Route index element={<Home />}></Route>
           <Route path="/old" element={<Old />}></Route>
+          <Route path="/login" element={<Login />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

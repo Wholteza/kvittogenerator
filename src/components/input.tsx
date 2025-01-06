@@ -9,11 +9,14 @@ import {
   getTypedValueFromEvent,
 } from "../hooks/use-form/use-form-helpers";
 
+import "./input.scss";
+
 type Props<T> = {
   label?: string;
   value: T;
   onChange?: (value: T) => void;
   style?: React.CSSProperties;
+  className?: string;
 };
 
 const input = <T,>({
@@ -21,6 +24,7 @@ const input = <T,>({
   label,
   onChange,
   style,
+  className
 }: Props<T>): JSX.Element => {
   const handleOnChange = useCallback(
     (
@@ -45,10 +49,11 @@ const input = <T,>({
     );
 
     return (
-      <div key={fieldDefinition.propertyPath.join(".")} style={style}>
+      <div key={fieldDefinition.propertyPath.join(".")} style={style} className="input">
         <label htmlFor={translate(fieldDefinition.propertyPath.join("."))}>
           {translate(fieldDefinition.name)}
           <input
+            className={` ${className}`}
             id={translate(fieldDefinition.propertyPath.join("."))}
             name={translate(fieldDefinition.propertyPath.join("."))}
             style={{ display: "block" }}
@@ -59,14 +64,14 @@ const input = <T,>({
               fieldDefinition.type === "date"
                 ? "date"
                 : fieldDefinition.type === "number"
-                ? "number"
-                : "text"
+                  ? "number"
+                  : "text"
             }
           />
         </label>
       </div>
     );
-  }, [handleOnChange, value]);
+  }, [handleOnChange, value, label]);
 
   return form;
 };

@@ -1,4 +1,5 @@
 $text-color-primary: #DDD;
+$text-color-colorful-light: #EFEFEF;
 
 $font-size-normal: 1rem;
 $font-size-large: 1.3rem;
@@ -11,7 +12,10 @@ $color-secondary-light: #96b0b9;
 $color-secondary: #FFD8BE;
 $color-secondary-text: color-mix(in srgb, #FFD8BE 40%, black);
 
+$color-action: #005db4;
+
 $color-border: #444444;
+$color-border-active: #09419d;
 
 $distance-small: 2px;
 $distance-normal: 4px;
@@ -28,3 +32,4 @@ $desktop: "min-width: 1024px";
 $z-1: 10;
 
 $transition-duration: 300ms;
+$transition-duration-fast: 150ms;

@@ -260,38 +260,38 @@ hr {
 
 }
 
-.button {
-  @include fade-in-animation();
-  width: 75%;
-  height: 3rem;
-  min-height: 2rem;
-  margin-bottom: 1rem;
-  border-radius: 0.5rem;
-  border-color: rgba($color: #000000, $alpha: 0);
-  text-indent: 1rem;
-  box-shadow: 5px 5px 0rem $color-secondary;
-  color: #333;
-  font-weight: 600;
-  background-color: $color-secondary-light;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-
-  &:focus {
-    outline: none;
-  }
-
-  &.primary {
-    background-color: $color-primary-light;
-    box-shadow: 5px 5px 0rem $color-primary;
-  }
-
-  &.secondary {
-    background-color: $color-secondary-light;
-    box-shadow: 5px 5px 0rem $color-primary-light;
-  }
-
-  &:hover {
-    filter: brightness(105%);
-    cursor: pointer;
-  }
-
-}
+//.button {
+//  @include fade-in-animation();
+//  width: 75%;
+//  height: 3rem;
+//  min-height: 2rem;
+//  margin-bottom: 1rem;
+//  border-radius: 0.5rem;
+//  border-color: rgba($color: #000000, $alpha: 0);
+//  text-indent: 1rem;
+//  box-shadow: 5px 5px 0rem $color-secondary;
+//  color: #333;
+//  font-weight: 600;
+//  background-color: $color-secondary-light;
+//  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+//
+//  &:focus {
+//    outline: none;
+//  }
+//
+//  &.primary {
+//    background-color: $color-primary-light;
+//    box-shadow: 5px 5px 0rem $color-primary;
+//  }
+//
+//  &.secondary {
+//    background-color: $color-secondary-light;
+//    box-shadow: 5px 5px 0rem $color-primary-light;
+//  }
+//
+//  &:hover {
+//    filter: brightness(105%);
+//    cursor: pointer;
+//  }
+//
+//}
