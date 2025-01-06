@@ -58,6 +58,9 @@ const Layout = () => {
           <Link to={"/company-information"} className="link">
             <Typography uppercase>Företagsinformation</Typography>
           </Link>
+          <Link to={"/create-receipt"} className="link">
+            <Typography uppercase>Skapa kvitto</Typography>
+          </Link>
           <Link to={"/old"} className="link">
             <Typography uppercase>Äldre version</Typography>
           </Link>

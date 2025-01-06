@@ -12,6 +12,7 @@ import CompanyContext, {
   initialCompanyInformation,
 } from "~contexts/company-context";
 import useLocalStorage from "~use-local-storage";
+import CreateReceipt from "~pages/create-receipt";
 
 const AppWrapper = () => {
   // TODO: Move to hook
@@ -55,6 +56,7 @@ const AppWrapper = () => {
                 path="/company-information"
                 element={<CompanyInformation />}
               ></Route>
+              <Route path="/create-receipt" element={<CreateReceipt />}></Route>
             </Route>
           </Routes>
         </BrowserRouter>
