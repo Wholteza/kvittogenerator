@@ -1,0 +1,48 @@
+@import "/src/vars.scss";
+
+.page-create-receipt {
+  .receipt-data {
+    display: grid;
+    column-gap: $distance-large;
+    grid-template-columns: 33% 33% 33%;
+    @media ($tablet) {
+      grid-template-columns: 50% 50%;
+    }
+    @media ($phone) {
+      grid-template-columns: 100%;
+    }
+  }
+
+  .receipt-rows-form {
+    display: grid;
+    column-gap: $distance-large;
+    grid-template-columns: 18% 18% 18% 18% 18% 10%;
+    @media ($tablet) {
+      grid-template-columns: 50% 50%;
+    }
+    @media ($phone) {
+      grid-template-columns: 100%;
+    }
+  }
+  .rows {
+    display: grid;
+    grid-template-columns: 100%;
+    .row {
+      background-color: $color-primary-light;
+      border: 1px solid;
+      border-color: $color-border;
+      padding: $distance-large;
+      display: grid;
+      grid-template-columns: 25% 25% 25% 25%;
+      row-gap: $distance-xl;
+      margin: $distance-large 0 0;
+      @media ($phone-tablet) {
+        grid-template-columns: 50% 50%;
+        
+      }
+      .value{
+        margin-top: $distance-normal;
+      }
+    }
+  }
+}
