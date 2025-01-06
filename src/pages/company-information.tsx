@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import TextInput from "~components/text-input";
 import Typography from "~components/typography";
 import { type CompanyInformation } from "~types";
