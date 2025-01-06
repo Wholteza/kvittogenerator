@@ -1,33 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import TextInput from "~components/text-input";
 import Typography from "~components/typography";
 import { type CompanyInformation } from "~types";
 
 import "./company-information.scss";
-
-const initialState: CompanyInformation = {
-  Identity: {
-    Name: "Test AB",
-    OrganizationNumber: "1234",
-    VatNumber: "4231",
-  },
-  ContactInformation: {
-    Email: "",
-    Phone: "",
-    Website: "",
-  },
-  Address: {
-    City: "",
-    Street: "",
-    ZipCode: "",
-  },
-  PaymentInformation: {
-    Bankgiro: "",
-  },
-};
+import CompanyContext from "~contexts/company-context";
 
 const CompanyInformation = () => {
-  const [state, setState] = useState<CompanyInformation>(initialState);
+  const { state, setState } = useContext(CompanyContext);
 
   return (
     <div className="page-company-information">
@@ -38,27 +18,30 @@ const CompanyInformation = () => {
           label="Namn"
           value={state.Identity.Name}
           onChange={(v) =>
-            setState((p) => ({ ...p, Identity: { ...p.Identity, Name: v } }))
+            setState({
+              ...state,
+              Identity: { ...state.Identity, Name: v },
+            })
           }
         />
         <TextInput
-          label="OrganizationNumber"
+          label="Organisationsnummer"
           value={state.Identity.OrganizationNumber}
           onChange={(v) =>
-            setState((p) => ({
-              ...p,
-              Identity: { ...p.Identity, OrganizationNumber: v },
-            }))
+            setState({
+              ...state,
+              Identity: { ...state.Identity, OrganizationNumber: v },
+            })
           }
         />
         <TextInput
-          label="VatNumber"
+          label="Momsnummer"
           value={state.Identity.VatNumber}
           onChange={(v) =>
-            setState((p) => ({
-              ...p,
-              Identity: { ...p.Identity, VatNumber: v },
-            }))
+            setState({
+              ...state,
+              Identity: { ...state.Identity, VatNumber: v },
+            })
           }
         />
       </div>
@@ -68,30 +51,30 @@ const CompanyInformation = () => {
           label="E-post"
           value={state.ContactInformation.Email}
           onChange={(v) =>
-            setState((p) => ({
-              ...p,
-              ContactInformation: { ...p.ContactInformation, Email: v },
-            }))
+            setState({
+              ...state,
+              ContactInformation: { ...state.ContactInformation, Email: v },
+            })
           }
         />
         <TextInput
           label="Telefonnummer"
           value={state.ContactInformation.Phone}
           onChange={(v) =>
-            setState((p) => ({
-              ...p,
-              ContactInformation: { ...p.ContactInformation, Phone: v },
-            }))
+            setState({
+              ...state,
+              ContactInformation: { ...state.ContactInformation, Phone: v },
+            })
           }
         />
         <TextInput
           label="Hemsida"
           value={state.ContactInformation.Website}
           onChange={(v) =>
-            setState((p) => ({
-              ...p,
-              ContactInformation: { ...p.ContactInformation, Website: v },
-            }))
+            setState({
+              ...state,
+              ContactInformation: { ...state.ContactInformation, Website: v },
+            })
           }
         />
       </div>
@@ -101,30 +84,43 @@ const CompanyInformation = () => {
           label="Gatuadress"
           value={state.Address.Street}
           onChange={(v) =>
-            setState((p) => ({
-              ...p,
-              Address: { ...p.Address, Street: v },
-            }))
+            setState({
+              ...state,
+              Address: { ...state.Address, Street: v },
+            })
           }
         />
         <TextInput
           label="Postnummer"
           value={state.Address.ZipCode}
           onChange={(v) =>
-            setState((p) => ({
-              ...p,
-              Address: { ...p.Address, ZipCode: v },
-            }))
+            setState({
+              ...state,
+              Address: { ...state.Address, ZipCode: v },
+            })
           }
         />
         <TextInput
           label="Stad"
           value={state.Address.City}
           onChange={(v) =>
-            setState((p) => ({
-              ...p,
-              Address: { ...p.Address, City: v },
-            }))
+            setState({
+              ...state,
+              Address: { ...state.Address, City: v },
+            })
+          }
+        />
+      </div>
+      <Typography size="subheading">Betalinformation</Typography>
+      <div className="form-section">
+        <TextInput
+          label="Bankgiro"
+          value={state.PaymentInformation.Bankgiro}
+          onChange={(v) =>
+            setState({
+              ...state,
+              PaymentInformation: { ...state.PaymentInformation, Bankgiro: v },
+            })
           }
         />
       </div>

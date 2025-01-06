@@ -8,6 +8,10 @@ import Old from "~pages/Old";
 import "./app-wrapper.scss";
 import { useEffect, useState } from "react";
 import DeviceContext, { DeviceContextProps } from "~contexts/device-context";
+import CompanyContext, {
+  initialCompanyInformation,
+} from "~contexts/company-context";
+import useLocalStorage from "~use-local-storage";
 
 const AppWrapper = () => {
   // TODO: Move to hook
@@ -30,22 +34,32 @@ const AppWrapper = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const [companyInformation, setCompanyInformation] =
+    useLocalStorage<CompanyInformation>(
+      "company-information-context",
+      initialCompanyInformation
+    );
+
   return (
-    <DeviceContext.Provider value={deviceContextProps}>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route index element={<Home />}></Route>
-            <Route path="/old" element={<Old />}></Route>
-            <Route path="/login" element={<Login />}></Route>
-            <Route
-              path="/company-information"
-              element={<CompanyInformation />}
-            ></Route>
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </DeviceContext.Provider>
+    <CompanyContext.Provider
+      value={{ state: companyInformation, setState: setCompanyInformation }}
+    >
+      <DeviceContext.Provider value={deviceContextProps}>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route index element={<Home />}></Route>
+              <Route path="/old" element={<Old />}></Route>
+              <Route path="/login" element={<Login />}></Route>
+              <Route
+                path="/company-information"
+                element={<CompanyInformation />}
+              ></Route>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </DeviceContext.Provider>
+    </CompanyContext.Provider>
   );
 };
 
