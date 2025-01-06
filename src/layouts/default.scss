@@ -66,6 +66,9 @@
         border-color: $color-border;
         border-style: solid;
         border-width: 1px;
+        display: grid;
+        justify-items: center;
+        align-content: center;
       }
     }
   }
@@ -87,9 +90,15 @@
       justify-content: start;
       align-items: center;
       padding-top: $distance-xl;
+
+      border-color: $color-border;
+      border-width: 1px;
+      border-right-style: solid;
+      box-sizing: border-box;
       
       @media ($phone) { 
         min-width: 100%;
+        border: none;
       }
 
       &--closed {

@@ -55,6 +55,13 @@
 
 }
 
+html {
+  font-size: 16px;
+  @media ($phone-tablet){
+    font-size: 12px;
+  }
+}
+
 h1 {
   @include font-family();
   font-weight: 900;
