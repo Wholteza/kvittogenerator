@@ -7,17 +7,12 @@ import Button from "~components/button";
 import { useContext } from "react";
 import CustomerContext from "~contexts/customer-context";
 import TextInput from "~components/text-input";
+import ReceiptContext from "~contexts/receipt-context";
 
 const CreateReceipt = () => {
   const { state: customer, setState: setCustomer } =
     useContext(CustomerContext);
-
-  const rows = [
-    { date: new Date(), description: "Test", price: 0, tax: 0, amount: 0 },
-    { date: new Date(), description: "Test", price: 0, tax: 0, amount: 0 },
-    { date: new Date(), description: "Test", price: 0, tax: 0, amount: 0 },
-    { date: new Date(), description: "Test", price: 0, tax: 0, amount: 0 },
-  ];
+  const { reciept, setReceipt, rows, setRows } = useContext(ReceiptContext);
 
   return (
     <div className="page-create-receipt">

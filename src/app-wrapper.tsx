@@ -13,10 +13,14 @@ import CompanyContext, {
 } from "~contexts/company-context";
 import useLocalStorage from "~use-local-storage";
 import CreateReceipt from "~pages/create-receipt";
-import { CustomerInformation } from "~types";
+import { CustomerInformation, ReceiptInformationV2 } from "~types";
 import CustomerContext, {
   initialCustomerInformation,
 } from "~contexts/customer-context";
+import ReceiptContext, {
+  initialReceiptInformation,
+} from "~contexts/receipt-context";
+import { ReceiptRowFormModel } from "~domain/receipt-row";
 
 const AppWrapper = () => {
   // TODO: Move to hook
@@ -51,6 +55,16 @@ const AppWrapper = () => {
       initialCustomerInformation
     );
 
+  const [receiptInformation, setReceiptInformation] =
+    useLocalStorage<ReceiptInformationV2>(
+      "receipt-information-context-metadata",
+      initialReceiptInformation
+    );
+  const [receiptRows, setReceiptRows] = useLocalStorage<ReceiptRowFormModel[]>(
+    "receipt-information-context-rows",
+    []
+  );
+
   return (
     <CompanyContext.Provider
       value={{ state: companyInformation, setState: setCompanyInformation }}
@@ -58,25 +72,34 @@ const AppWrapper = () => {
       <CustomerContext.Provider
         value={{ state: customerInformation, setState: setCustomerInformation }}
       >
-        <DeviceContext.Provider value={deviceContextProps}>
-          <BrowserRouter>
-            <Routes>
-              <Route element={<Layout />}>
-                <Route index element={<Home />}></Route>
-                <Route path="/old" element={<Old />}></Route>
-                <Route path="/login" element={<Login />}></Route>
-                <Route
-                  path="/company-information"
-                  element={<CompanyInformation />}
-                ></Route>
-                <Route
-                  path="/create-receipt"
-                  element={<CreateReceipt />}
-                ></Route>
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </DeviceContext.Provider>
+        <ReceiptContext.Provider
+          value={{
+            reciept: receiptInformation,
+            setReceipt: setReceiptInformation,
+            rows: receiptRows,
+            setRows: setReceiptRows,
+          }}
+        >
+          <DeviceContext.Provider value={deviceContextProps}>
+            <BrowserRouter>
+              <Routes>
+                <Route element={<Layout />}>
+                  <Route index element={<Home />}></Route>
+                  <Route path="/old" element={<Old />}></Route>
+                  <Route path="/login" element={<Login />}></Route>
+                  <Route
+                    path="/company-information"
+                    element={<CompanyInformation />}
+                  ></Route>
+                  <Route
+                    path="/create-receipt"
+                    element={<CreateReceipt />}
+                  ></Route>
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </DeviceContext.Provider>
+        </ReceiptContext.Provider>
       </CustomerContext.Provider>
     </CompanyContext.Provider>
   );

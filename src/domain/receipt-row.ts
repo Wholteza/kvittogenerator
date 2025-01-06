@@ -2,6 +2,7 @@ import { toTwoDecimalString } from "../helpers/price-helpers";
 import { PriceCalculator } from "./price-calculator";
 
 export type ReceiptRowFormModel = {
+  id?: string;
   date: Date;
   description: string;
   amount: number;

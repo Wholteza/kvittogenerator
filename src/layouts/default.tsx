@@ -47,7 +47,9 @@ const Layout = () => {
           <div className="portrait">
             <Icon icon={faUserSlash} size="xs"></Icon>
           </div>
-          <Typography>Utloggad</Typography>
+          <Link to="/login">
+            <Typography>Utloggad</Typography>
+          </Link>
         </div>
       </div>
       <div className="content-container">
