@@ -20,6 +20,8 @@ import {
 import { parseWithDateHydration } from "./helpers/parse-helpers";
 import { useLocalStorageMigrations } from "./hooks/use-local-storage-migrations";
 
+const customerDefaultState: CustomerInformation = { Address: { City: "", Street: "", ZipCode: "" }, Identity: { Name: "", OrganizationNumber: "" } }
+
 const testCompanyInformation: CompanyInformation = {
   Identity: {
     Name: "",
@@ -249,6 +251,7 @@ const App = () => {
       localStorage.setItem("existingCustomers", JSON.stringify(newCustomers));
       return newCustomers;
     })
+    setSelectedCustomerKey(generateCustomerKey(customer))
     setForm(forms.menu)
   }, [customerInformation, setForm])
 
@@ -265,8 +268,12 @@ const App = () => {
       localStorage.setItem("existingCustomers", JSON.stringify(newCustomers));
       return newCustomers;
     })
+    const newSelectedCustomerKey = Object.keys(existingCustomers ?? {}).find(c => c !== key);
+    setSelectedCustomerKey(newSelectedCustomerKey ?? "");
+    const newSelectedCustomer: CustomerInformation = newSelectedCustomerKey ? existingCustomers?.[newSelectedCustomerKey] ?? customerDefaultState : customerDefaultState;
+    setCustomerInformation(newSelectedCustomer);
     setForm(forms.menu)
-  }, [customerInformation, setForm]);
+  }, [customerInformation, existingCustomers, setCustomerInformation, setForm]);
 
 
 
@@ -292,8 +299,9 @@ const App = () => {
           <div className="inputs">
             <h1>Meny</h1>
             <div style={{ marginBottom: 20 }}>{receiptInformationForm}</div>
-            <select onChange={onCustomerSelected} value={selectedCustomerKey}>
+            <select onChange={onCustomerSelected} value={selectedCustomerKey} style={{ marginBottom: 20 }}>
               {existingCustomerOptions}
+              {existingCustomerOptions.length === 0 ? <option key="empty" value="">Spara din kund</option> : <></>}
             </select>
             <button className="button" onClick={() => setForm(forms.customer)}>
               Redigera kund
@@ -355,8 +363,10 @@ const App = () => {
       {form === forms.customer ? (
         <div className="container">
           <div className="inputs">{customerInformationForm}
-            <button onClick={saveCustomer}>Spara kund</button>
-            <button onClick={deleteCustomer}>Ta bort kund</button>
+            <div style={{ marginTop: "2rem" }}>
+              <button onClick={saveCustomer}>Spara kund</button>
+              <button onClick={deleteCustomer}>Ta bort kund</button>
+            </div>
           </div>
         </div>
       ) : (
