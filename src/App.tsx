@@ -1,4 +1,4 @@
-import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEventHandler, ReactEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CompanyInformation,
   CustomerInformation,
@@ -73,16 +73,22 @@ const forms = {
   menu: "menu",
 } as const;
 
+const generateCustomerKey = (customer: CustomerInformation) => {
+  if (customer.Identity.OrganizationNumber)
+    return `${customer.Identity.Name} (${customer.Identity.OrganizationNumber})`;
+  return customer.Identity.Name
+};
+
 const App = () => {
   useLocalStorageMigrations(1);
 
   const [companyInformationForm, companyInformation] =
     useForm<CompanyInformation>("companyInformation", testCompanyInformation);
-  const [customerInformationForm, customerInformation] =
+  const [customerInformationForm, customerInformation, setCustomerInformation
+  ] =
     useForm<CustomerInformation>(
       "customerInformation",
-      testCustomerInformation
-    );
+      testCustomerInformation);
   const [receiptFormRows, setReceiptRows] = useLocalStorage<
     ReceiptRowFormModel[]
   >("receiptRows", []);
@@ -92,6 +98,8 @@ const App = () => {
     useForm<ReceiptRowFormModel>("currentReceiptRow", testReceiptRow);
   const [form, setForm] = useLocalStorage<string>("selectedForm", forms.menu);
   const [file, setFile] = useLocalStorage<string>("logotype", "");
+
+  const [selectedCustomerKey, setSelectedCustomerKey] = useState<string>(() => "")
 
   const formElementRef = useRef<HTMLInputElement>(null);
 
@@ -125,29 +133,65 @@ const App = () => {
     [receiptRows]
   );
 
-  const [existingCustomers, setExistingCustomer] = useState<Record<string, CustomerInformation>>((): Record<string, CustomerInformation> => {
-    return {};
+  const [existingCustomers, setExistingCustomer] = useState<Record<string, CustomerInformation> | undefined>(() => {
+    return undefined
   })
 
   useEffect(() => {
-    const storedCustomersJson = localStorage.getItem("existingCustomers");
-    const storedCustomers = storedCustomersJson ? JSON.parse(storedCustomersJson) : {};
+    let storedCustomers: Record<string, CustomerInformation>;
+    try {
+      const storedCustomersJson = localStorage.getItem("existingCustomers")
+      storedCustomers = storedCustomersJson ? JSON.parse(storedCustomersJson) : {};
+    }
+    catch (e) {
+      storedCustomers = {};
+    }
 
     const currentCustomers = existingCustomers;
-    const currentCustomersJson = JSON.stringify(existingCustomers);
 
-    if (Object.keys(currentCustomers).length === 0 ||
-      currentCustomersJson === storedCustomersJson) {
+    const stateNeedsInitialization = currentCustomers === undefined;
+    if (stateNeedsInitialization) {
+
+      console.log("State is empty and needs initialization")
+      console.log("Stored customers found:", storedCustomers)
+      console.log("Existing customers found:", currentCustomers)
+      // First we load the stored customer into state.
+      console.log("Setting existing customers to:", storedCustomers)
       setExistingCustomer(storedCustomers);
+
+      // decide how to select currenst customer
+
+      // Try to select the currently edited customer from saved list if it exists
+
+      if (customerInformation?.Identity?.Name) {
+        const key = generateCustomerKey(customerInformation)
+        const storedCustomer = storedCustomers[key];
+        if (storedCustomer) {
+          console.log("Found currently edited customer in stored customers, setting as selected", storedCustomer)
+          setSelectedCustomerKey(key);
+          return;
+        }
+        console.log("Currently edited customer is not a stored customer, selecting \"Unsaved customer\"")
+        setSelectedCustomerKey("Unsaved customer");
+        return;
+      }
+
+      // Otherwise we select the first customer in the stored customers list
+      if (Object.keys(storedCustomers).length === 0) return;
+
+      console.log(`Working with ${Object.keys(storedCustomers).length} stored customers`)
+      const firstCustomer = storedCustomers[Object.keys(storedCustomers)[0]];
+      console.log("Selecting first stored customer:", firstCustomer)
+      setCustomerInformation(firstCustomer);
       return;
     }
 
-    localStorage.setItem("existingCustomers", currentCustomersJson);
-  }, [existingCustomers])
+
+  }, [customerInformation, existingCustomers, setCustomerInformation])
 
   const existingCustomerOptions = useMemo(() => {
-    return Object.keys(existingCustomers).map(k => {
-      return (<option>{k}</option>);
+    return Object.keys(existingCustomers ?? {}).map(k => {
+      return (<option key={k}>{k}</option>);
     })
   }, [existingCustomers]);
 
@@ -181,6 +225,51 @@ const App = () => {
     receiptTotalInformation,
   ]);
 
+  const onCustomerSelected: ChangeEventHandler<HTMLSelectElement> = useCallback((e) => {
+    const selectedValue = e.currentTarget.value
+    console.log("Customer was selected", selectedValue)
+    console.log("value", selectedValue)
+
+    const selectedCustomer = (existingCustomers ?? {})[selectedValue];
+    if (!selectedCustomer) {
+      console.error("The customer selected does not exist.");
+    }
+
+    console.log("Customer was found", selectedCustomer)
+
+    setCustomerInformation(selectedCustomer);
+    setSelectedCustomerKey(selectedValue);
+  }, [existingCustomers, setCustomerInformation]);
+
+  const saveCustomer = useCallback(() => {
+    console.log("Saving customer")
+    const customer = customerInformation;
+    setExistingCustomer((prevCustomers) => {
+      const newCustomers = { ...(prevCustomers ?? {}), [generateCustomerKey(customer)]: customer }
+      localStorage.setItem("existingCustomers", JSON.stringify(newCustomers));
+      return newCustomers;
+    })
+    setForm(forms.menu)
+  }, [customerInformation, setForm])
+
+  const deleteCustomer = useCallback(() => {
+    const customer = customerInformation;
+    const key = generateCustomerKey(customer);
+    setExistingCustomer((prevCustomers) => {
+      const newCustomers = Object.keys(prevCustomers ?? {}).reduce<Record<string, CustomerInformation>>((acc, curr) => {
+        const currKey = curr;
+        const currCustomer = (prevCustomers ?? {})[currKey];
+        if (currKey === key) return acc;
+        return { ...acc, [currKey]: currCustomer }
+      }, {} as Record<string, CustomerInformation>);
+      localStorage.setItem("existingCustomers", JSON.stringify(newCustomers));
+      return newCustomers;
+    })
+    setForm(forms.menu)
+  }, [customerInformation, setForm]);
+
+
+
   return (
     <>
       {form === forms.menu ? (
@@ -203,7 +292,7 @@ const App = () => {
           <div className="inputs">
             <h1>Meny</h1>
             <div style={{ marginBottom: 20 }}>{receiptInformationForm}</div>
-            <select>
+            <select onChange={onCustomerSelected} value={selectedCustomerKey}>
               {existingCustomerOptions}
             </select>
             <button className="button" onClick={() => setForm(forms.customer)}>
@@ -265,7 +354,10 @@ const App = () => {
 
       {form === forms.customer ? (
         <div className="container">
-          <div className="inputs">{customerInformationForm}</div>
+          <div className="inputs">{customerInformationForm}
+            <button onClick={saveCustomer}>Spara kund</button>
+            <button onClick={deleteCustomer}>Ta bort kund</button>
+          </div>
         </div>
       ) : (
         <></>

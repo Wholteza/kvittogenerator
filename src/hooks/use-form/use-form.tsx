@@ -11,7 +11,7 @@ import {
   getTypedValueFromEvent,
 } from "./use-form-helpers";
 
-const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
+const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T, (newValue: T) => void] => {
   const [formState, setFormState] = useLocalStorage<T>(
     `formData-${key}`,
     initialState
@@ -54,8 +54,8 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
                 field.type === "date"
                   ? "date"
                   : field.type === "number"
-                  ? "number"
-                  : "text"
+                    ? "number"
+                    : "text"
               }
             />
           </label>
@@ -64,7 +64,7 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T] => {
     });
   }, [formState, handleOnChange, initialState]);
 
-  return [form, formState];
+  return [form, formState, setFormState];
 };
 
 export default useForm;
