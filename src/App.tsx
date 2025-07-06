@@ -363,44 +363,46 @@ const App = () => {
       {form === forms.customer ? (
         <div className="container">
           <div className="inputs">{customerInformationForm}
-            <div style={{ marginTop: "2rem" }}>
+            <div style={{ marginTop: "2rem", paddingLeft: "2rem", display: "flex", justifyContent: "space-evenly" }}>
               <button onClick={saveCustomer}>Spara kund</button>
               <button onClick={deleteCustomer}>Ta bort kund</button>
             </div>
           </div>
-        </div>
+        </div >
       ) : (
         <></>
       )}
 
-      {form === forms.rows ? (
-        <div className="container">
-          <div className="inputs">
-            {currentReceiptRowForm}
-            <button
-              className="button primary add-button"
-              onClick={handleOnAddRow}
-            >
-              Lägg till
-            </button>
-            {receiptRows.length ? <hr /> : <></>}
-            {receiptRows.map((row, index) => (
-              <div className="receipt-row">
-                <div className="description">{row.description}</div>
-                <div className="amount">{row.amount}st</div>
-                <button
-                  className="receipt-row-remove-button"
-                  onClick={() => handleOnRemoveRow(index)}
-                >
-                  X
-                </button>
-              </div>
-            ))}
+      {
+        form === forms.rows ? (
+          <div className="container">
+            <div className="inputs">
+              {currentReceiptRowForm}
+              <button
+                className="button primary add-button"
+                onClick={handleOnAddRow}
+              >
+                Lägg till
+              </button>
+              {receiptRows.length ? <hr /> : <></>}
+              {receiptRows.map((row, index) => (
+                <div className="receipt-row">
+                  <div className="description">{row.description}</div>
+                  <div className="amount">{row.amount}st</div>
+                  <button
+                    className="receipt-row-remove-button"
+                    onClick={() => handleOnRemoveRow(index)}
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ) : (
-        <></>
-      )}
+        ) : (
+          <></>
+        )
+      }
     </>
   );
 };
