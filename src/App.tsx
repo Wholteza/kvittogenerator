@@ -91,12 +91,12 @@ const App = () => {
     useForm<CustomerInformation>(
       "customerInformation",
       testCustomerInformation);
-  const [receiptFormRows, setReceiptRows] = useLocalStorage<
+  const [receiptFormRows, setReceiptRows, setReceiptRowsViaUpdater] = useLocalStorage<
     ReceiptRowFormModel[]
   >("receiptRows", []);
   const [receiptInformationForm, receiptInformation] =
     useForm<ReceiptInformationV2>("receiptInformation", testReceiptInformation);
-  const [currentReceiptRowForm, currentReceiptRow] =
+  const [currentReceiptRowForm, currentReceiptRow, _setCurrentReceiptRow, setCurrentReceiptRowWithUpdater] =
     useForm<ReceiptRowFormModel>("currentReceiptRow", testReceiptRow);
   const [form, setForm] = useLocalStorage<string>("selectedForm", forms.menu);
   const [file, setFile] = useLocalStorage<string>("logotype", "");
@@ -275,6 +275,13 @@ const App = () => {
     setForm(forms.menu)
   }, [customerInformation, existingCustomers, setCustomerInformation, setForm]);
 
+  // Update dates automatically when the receipt date is updated
+  useEffect(() => {
+    const date = receiptInformation.date;
+    console.log("Updating all dates to:", date)
+    setCurrentReceiptRowWithUpdater((prev) => ({ ...prev, date }));
+    setReceiptRowsViaUpdater((prev) => prev.map((r) => ({ ...r, date })))
+  }, [receiptInformation.date, setCurrentReceiptRowWithUpdater, setReceiptRowsViaUpdater])
 
 
   return (
@@ -387,6 +394,7 @@ const App = () => {
               {receiptRows.length ? <hr /> : <></>}
               {receiptRows.map((row, index) => (
                 <div className="receipt-row">
+                  <div className="description">{`${row.date.getFullYear()}-${(row.date.getMonth() + 1).toLocaleString().padStart(2, "0")}-${(row.date.getDate()).toLocaleString().padStart(2, "0")}`}</div>
                   <div className="description">{row.description}</div>
                   <div className="amount">{row.amount}st</div>
                   <button

@@ -11,8 +11,8 @@ import {
   getTypedValueFromEvent,
 } from "./use-form-helpers";
 
-const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T, (newValue: T) => void] => {
-  const [formState, setFormState] = useLocalStorage<T>(
+const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T, (newValue: T) => void, (valueUpdater: (prev: T) => T) => void] => {
+  const [formState, setFormState, setFormStateViaUpdater] = useLocalStorage<T>(
     `formData-${key}`,
     initialState
   );
@@ -64,7 +64,7 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T, (newValue
     });
   }, [formState, handleOnChange, initialState]);
 
-  return [form, formState, setFormState];
+  return [form, formState, setFormState, setFormStateViaUpdater];
 };
 
 export default useForm;
