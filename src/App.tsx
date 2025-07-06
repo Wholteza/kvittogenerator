@@ -1,4 +1,4 @@
-import { ChangeEventHandler, useCallback, useMemo, useRef } from "react";
+import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CompanyInformation,
   CustomerInformation,
@@ -125,6 +125,32 @@ const App = () => {
     [receiptRows]
   );
 
+  const [existingCustomers, setExistingCustomer] = useState<Record<string, CustomerInformation>>((): Record<string, CustomerInformation> => {
+    return {};
+  })
+
+  useEffect(() => {
+    const storedCustomersJson = localStorage.getItem("existingCustomers");
+    const storedCustomers = storedCustomersJson ? JSON.parse(storedCustomersJson) : {};
+
+    const currentCustomers = existingCustomers;
+    const currentCustomersJson = JSON.stringify(existingCustomers);
+
+    if (Object.keys(currentCustomers).length === 0 ||
+      currentCustomersJson === storedCustomersJson) {
+      setExistingCustomer(storedCustomers);
+      return;
+    }
+
+    localStorage.setItem("existingCustomers", currentCustomersJson);
+  }, [existingCustomers])
+
+  const existingCustomerOptions = useMemo(() => {
+    return Object.keys(existingCustomers).map(k => {
+      return (<option>{k}</option>);
+    })
+  }, [existingCustomers]);
+
   const handleOnRemoveRow = useCallback(
     (index: number) => {
       const copyOfRows = parseWithDateHydration<ReceiptRowFormModel[]>(
@@ -177,6 +203,9 @@ const App = () => {
           <div className="inputs">
             <h1>Meny</h1>
             <div style={{ marginBottom: 20 }}>{receiptInformationForm}</div>
+            <select>
+              {existingCustomerOptions}
+            </select>
             <button className="button" onClick={() => setForm(forms.customer)}>
               Redigera kund
             </button>
