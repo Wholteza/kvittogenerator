@@ -1,4 +1,4 @@
-import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef } from "react";
 import {
   CompanyInformation,
   CustomerInformation,
@@ -19,9 +19,12 @@ import {
 } from "./domain/receipt-total";
 import { parseWithDateHydration } from "./helpers/parse-helpers";
 import { useLocalStorageMigrations } from "./hooks/use-local-storage-migrations";
-import useStoredList from "./hooks/use-stored-list";
+import useStoredValues from "./hooks/use-stored-values";
 
 const customerDefaultState: CustomerInformation = { Address: { City: "", Street: "", ZipCode: "" }, Identity: { Name: "", OrganizationNumber: "" } }
+const serviceDefaultState: ReceiptRowFormModel = {
+  amount: 1, date: new Date(), description: "", pricePerPieceVatIncluded: 0, vatPercentage: 25
+}
 
 const testCompanyInformation: CompanyInformation = {
   Identity: {
@@ -81,11 +84,15 @@ const generateCustomerKey = (customer: CustomerInformation) => {
     return `${customer.Identity.Name} (${customer.Identity.OrganizationNumber})`;
   return customer.Identity.Name
 };
+const generateServiceKey = (row: ReceiptRowFormModel) => {
+  return `${row.description}-${row.amount}st-${row.pricePerPieceVatIncluded}kr-${row.vatPercentage}%`;
+};
 
 const App = () => {
   useLocalStorageMigrations(1);
 
-  const { selectedItem: currentCustomer, addItem: addCustomer, removeItem: removeCustomer, keys: customerKeys, selectedKey: selectedCustomerKey, selectKey: selectCustomerKey, values: customers } = useStoredList<CustomerInformation>("existingCustomers", generateCustomerKey);
+  const { addItem: addCustomer, removeItem: removeCustomer, keys: customerKeys, selectedKey: selectedCustomerKey, selectKey: selectCustomerKey, values: customers } = useStoredValues<CustomerInformation>("existingCustomers", generateCustomerKey);
+  const { addItem: storeService, removeItem: removeService, keys: servicesKeys, selectedKey: selectedServiceKey, selectKey: selectServiceKey, values: services } = useStoredValues<ReceiptRowFormModel>("services", generateServiceKey);
 
   const [companyInformationForm, companyInformation] =
     useForm<CompanyInformation>("companyInformation", testCompanyInformation);
@@ -208,6 +215,30 @@ const App = () => {
     setReceiptRowsViaUpdater((prev) => prev.map((r) => ({ ...r, date })))
   }, [receiptInformation.date, setCurrentReceiptRowWithUpdater, setReceiptRowsViaUpdater])
 
+  const handleOnSaveService = useCallback(() => {
+    const item = currentReceiptRow;
+    storeService(item);
+    selectServiceKey(generateServiceKey(item))
+  }, [currentReceiptRow, storeService, selectServiceKey]);
+
+  const handleOnDeleteService = useCallback(() => {
+    const item = currentReceiptRow;
+    const itemKey = generateServiceKey(item)
+    removeService(item);
+
+    const newItemKey = servicesKeys.find(k => k !== itemKey);
+    const newItem = services.find(s => generateServiceKey(s) === newItemKey)
+    selectServiceKey(newItemKey)
+    setCurrentReceiptRowWithUpdater(() => newItem ?? serviceDefaultState)
+  }, [currentReceiptRow, removeService, servicesKeys, services, selectServiceKey, setCurrentReceiptRowWithUpdater]);
+
+  const handleOnServiceSelected: ChangeEventHandler<HTMLSelectElement> = useCallback((e) => {
+    const key = e.currentTarget.value;
+    const item = services.find(s => generateServiceKey(s) === key) ?? serviceDefaultState;
+    item.date = receiptInformation.date;
+    selectServiceKey(key)
+    setCurrentReceiptRowWithUpdater(() => item)
+  }, [services, selectServiceKey, setCurrentReceiptRowWithUpdater, receiptInformation]);
 
   return (
     <>
@@ -307,14 +338,22 @@ const App = () => {
 
       {
         form === forms.rows ? (
+
           <div className="container">
+            <select value={selectedServiceKey} onChange={handleOnServiceSelected}>{servicesKeys.map(key => (<option key={key}>{key}</option>))}
+              {servicesKeys.length === 0 ? <option key="empty" value="">Spara en tjänst</option> : <></>}
+            </select>
             <div className="inputs">
               {currentReceiptRowForm}
+              <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "1rem" }}>
+                <button onClick={handleOnSaveService}>Spara tjänst</button>
+                <button onClick={handleOnDeleteService}>Ta bort tjänst</button>
+              </div>
               <button
                 className="button primary add-button"
                 onClick={handleOnAddRow}
               >
-                Lägg till
+                Lägg till kvittorad
               </button>
               {receiptRows.length ? <hr /> : <></>}
               {receiptRows.map((row, index) => (

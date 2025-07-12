@@ -13,7 +13,7 @@ type Result<T> = {
   selectKey: (key: string | undefined) => void;
 };
 
-const useStoredList = <T>(key: string, keyBuilder: (item: T) => string): Result<T> => {
+const useStoredValues = <T>(key: string, keyBuilder: (item: T) => string): Result<T> => {
   const [selectedKey, _setKey, setSelectedKey] = useLocalStorage<string | undefined>(`${key}_selected-value`, undefined);
   const [storedValues, _setValues, setStoredValues] = useLocalStorage<StoredRecord<T>>(key, {});
 
@@ -27,12 +27,15 @@ const useStoredList = <T>(key: string, keyBuilder: (item: T) => string): Result<
 
   const removeItem = useCallback((item: T) => {
     setStoredValues((prev: StoredRecord<T>) => {
-      delete prev[keyBuilder(item)]
-      return prev
+      return Object.keys(prev).reduce((acc, currKey) => {
+        const currItem = prev[currKey]
+        if (currKey === keyBuilder(item)) return acc;
+        return { ...acc, [currKey]: currItem }
+      }, {});
     })
   }, [setStoredValues, keyBuilder])
 
-  const values = useMemo<T[]>(() => Object.keys(storedValues).map(k => storedValues[k]), [storedValues])
+  const values = useMemo<T[]>(() => keys.map(k => storedValues[k]), [storedValues, keys])
 
   const selectKey = useCallback((key: string | undefined): void => {
     setSelectedKey(() => (key))
@@ -42,4 +45,4 @@ const useStoredList = <T>(key: string, keyBuilder: (item: T) => string): Result<
 
 }
 
-export default useStoredList;
+export default useStoredValues;
