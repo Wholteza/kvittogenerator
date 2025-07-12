@@ -92,7 +92,7 @@ const App = () => {
   useLocalStorageMigrations(1);
 
   const { addItem: addCustomer, removeItem: removeCustomer, keys: customerKeys, selectedKey: selectedCustomerKey, selectKey: selectCustomerKey, values: customers } = useStoredValues<CustomerInformation>("existingCustomers", generateCustomerKey);
-  const { addItem: storeService, removeItem: removeService, keys: servicesKeys, selectedKey: selectedServiceKey, selectKey: selectServiceKey, values: services } = useStoredValues<ReceiptRowFormModel>("services", generateServiceKey);
+  const { addItem: storeService, removeItem: removeService, keys: servicesKeys, selectedKey: selectedServiceKey, selectKey: selectServiceKey, values: services, selectedItem: selectedService } = useStoredValues<ReceiptRowFormModel>("services", generateServiceKey);
 
   const [companyInformationForm, companyInformation] =
     useForm<CompanyInformation>("companyInformation", testCompanyInformation);
@@ -159,12 +159,16 @@ const App = () => {
   );
 
   const handleOnClickGeneratePdf = useCallback(() => {
+    const rows = [...receiptRows];
+    if (rows.length === 0 && selectedService) {
+      rows.push(ReceiptRow.fromFormModel(selectedService))
+    }
     generatePdf(
       companyInformation,
       customerInformation,
       file,
       receiptInformation,
-      receiptRows.map(toViewModel),
+      rows.map(toViewModel),
       receiptTotalInformation
     );
   }, [
@@ -175,6 +179,7 @@ const App = () => {
     receiptInformation,
     receiptRows,
     receiptTotalInformation,
+    selectedService
   ]);
 
   const onCustomerSelected: ChangeEventHandler<HTMLSelectElement> = useCallback((e) => {
@@ -271,18 +276,23 @@ const App = () => {
                 Redigera kund
               </button>
             </div>
-            <button className="button" onClick={() => setForm(forms.rows)}>
-              Redigera rader
-            </button>
+            <div style={{ display: "flex", justifyContent: "space-evenly", marginBottom: 10 }}>
+              <select value={selectedServiceKey} onChange={handleOnServiceSelected}>{servicesKeys.map(key => (<option key={key}>{key}</option>))}
+                {servicesKeys.length === 0 ? <option key="empty" value="">Spara en tjänst</option> : <></>}
+              </select>
+              <button onClick={() => setForm(forms.rows)}>
+                Redigera rader
+              </button>
+            </div>
             <button className="button" onClick={handleOnClickGeneratePdf}>
-              Generera PDF
+              Generera PDF 📄
             </button>
-            <button
-              className="button secondary"
+            <div
+              style={{ position: "fixed", bottom: 20, left: 20, cursor: "pointer", fontSize: "3rem" }}
               onClick={() => setForm(forms.company)}
             >
-              Redigera företag
-            </button>
+              ⚙️
+            </div>
           </div>
         </div >
       ) : (
