@@ -161,16 +161,16 @@ const App = () => {
   const handleOnClickGeneratePdf = useCallback(() => {
     const rows = [...receiptRows];
     if (rows.length === 0 && selectedService) {
-
       rows.push(ReceiptRow.fromFormModel({ ...selectedService, date: receiptInformation.date }))
     }
+    const total = toReceiptTotalViewModel(calculateReceiptTotal(rows), "kr")
     generatePdf(
       companyInformation,
       customerInformation,
       file,
       receiptInformation,
       rows.map(toViewModel),
-      receiptTotalInformation
+      total
     );
   }, [
     generatePdf,
