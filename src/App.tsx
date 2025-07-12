@@ -262,13 +262,15 @@ const App = () => {
           <div className="inputs">
             <h1>Meny</h1>
             <div style={{ marginBottom: 20 }}>{receiptInformationForm}</div>
-            <select onChange={onCustomerSelected} value={selectedCustomerKey} style={{ marginBottom: 20 }}>
-              {existingCustomerOptions}
-              {existingCustomerOptions.length === 0 ? <option key="empty" value="">Spara din kund</option> : <></>}
-            </select>
-            <button className="button" onClick={() => setForm(forms.customer)}>
-              Redigera kund
-            </button>
+            <div style={{ display: "flex", justifyContent: "space-evenly", marginBottom: 10 }}>
+              <select onChange={onCustomerSelected} value={selectedCustomerKey} style={{}}>
+                {existingCustomerOptions}
+                {existingCustomerOptions.length === 0 ? <option key="empty" value="">Spara din kund</option> : <></>}
+              </select>
+              <button style={{}} onClick={() => setForm(forms.customer)}>
+                Redigera kund
+              </button>
+            </div>
             <button className="button" onClick={() => setForm(forms.rows)}>
               Redigera rader
             </button>
@@ -282,59 +284,63 @@ const App = () => {
               Redigera företag
             </button>
           </div>
-        </div>
-      ) : (
-        <></>
-      )}
-
-      {form === forms.company ? (
-        <div className="container">
-          <div className="inputs">
-            {companyInformationForm}
-            {file.length ? (
-              <button
-                className="button remove-logotype-button"
-                onClick={() => setFile("")}
-              >
-                Ta bort logotyp
-              </button>
-            ) : (
-              <>
-                <button
-                  style={{ marginTop: "1rem" }}
-                  className="button"
-                  onClick={() => formElementRef?.current?.click()}
-                >
-                  Ladda upp logotyp
-                </button>
-                <input
-                  className="button"
-                  type="file"
-                  onChange={onFileSelected}
-                  name="logotype"
-                  ref={formElementRef}
-                />
-              </>
-            )}
-            {file.length ? <img src={file} className="logotype" /> : <></>}
-          </div>
-        </div>
-      ) : (
-        <></>
-      )}
-
-      {form === forms.customer ? (
-        <div className="container">
-          <div className="inputs">{customerInformationForm}
-            <div style={{ marginTop: "2rem", paddingLeft: "2rem", display: "flex", justifyContent: "space-evenly" }}>
-              <button onClick={saveCustomer}>Spara kund</button>
-              <button onClick={deleteCustomer}>Ta bort kund</button>
-            </div>
-          </div>
         </div >
       ) : (
         <></>
       )}
+
+      {
+        form === forms.company ? (
+          <div className="container">
+            <div className="inputs">
+              {companyInformationForm}
+              {file.length ? (
+                <button
+                  className="button remove-logotype-button"
+                  onClick={() => setFile("")}
+                >
+                  Ta bort logotyp
+                </button>
+              ) : (
+                <>
+                  <button
+                    style={{ marginTop: "1rem" }}
+                    className="button"
+                    onClick={() => formElementRef?.current?.click()}
+                  >
+                    Ladda upp logotyp
+                  </button>
+                  <input
+                    className="button"
+                    type="file"
+                    onChange={onFileSelected}
+                    name="logotype"
+                    ref={formElementRef}
+                  />
+                </>
+              )}
+              {file.length ? <img src={file} className="logotype" /> : <></>}
+            </div>
+          </div>
+        ) : (
+          <></>
+        )
+      }
+
+      {
+        form === forms.customer ? (
+          <div className="container">
+            <div className="inputs">{customerInformationForm}
+              <div style={{ marginTop: "2rem", paddingLeft: "2rem", display: "flex", justifyContent: "space-evenly" }}>
+                <button onClick={saveCustomer}>Spara kund</button>
+                <button onClick={deleteCustomer}>Ta bort kund</button>
+              </div>
+            </div>
+          </div >
+        ) : (
+          <></>
+        )
+      }
 
       {
         form === forms.rows ? (
