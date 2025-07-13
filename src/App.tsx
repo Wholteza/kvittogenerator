@@ -20,6 +20,8 @@ import {
 import { parseWithDateHydration } from "./helpers/parse-helpers";
 import { useLocalStorageMigrations } from "./hooks/use-local-storage-migrations";
 import useStoredValues from "./hooks/use-stored-values";
+import ReceiptInformation from "./components/receipt-information";
+import PaymentTermsInput from "./components/payment-terms-input";
 
 const customerDefaultState: CustomerInformation = { Address: { City: "", Street: "", ZipCode: "" }, Identity: { Name: "", OrganizationNumber: "" } }
 const serviceDefaultState: ReceiptRowFormModel = {
@@ -104,7 +106,7 @@ const App = () => {
   const [receiptFormRows, setReceiptRows, setReceiptRowsViaUpdater] = useLocalStorage<
     ReceiptRowFormModel[]
   >("receiptRows", []);
-  const [receiptInformationForm, receiptInformation] =
+  const [receiptInformationForm, receiptInformation, _setReceiptInformation, setReceiptInformation] =
     useForm<ReceiptInformationV2>("receiptInformation", testReceiptInformation);
   const [currentReceiptRowForm, currentReceiptRow, _setCurrentReceiptRow, setCurrentReceiptRowWithUpdater] =
     useForm<ReceiptRowFormModel>("currentReceiptRow", testReceiptRow);
@@ -266,8 +268,8 @@ const App = () => {
       {form === forms.menu ? (
         <div className="container">
           <div className="inputs">
-            <h1>Meny</h1>
-            <div style={{ marginBottom: 20 }}>{receiptInformationForm}</div>
+            <h1>Skapa Kvitto</h1>
+            <ReceiptInformation setReceiptInformation={setReceiptInformation} receiptInformation={receiptInformation} />
             <div style={{ display: "flex", justifyContent: "space-evenly", marginBottom: 10 }}>
               <select onChange={onCustomerSelected} value={selectedCustomerKey} style={{}}>
                 {existingCustomerOptions}
@@ -305,6 +307,7 @@ const App = () => {
           <div className="container">
             <div className="inputs">
               {companyInformationForm}
+              <PaymentTermsInput receiptInformation={receiptInformation} setReceiptInformation={setReceiptInformation} />
               {file.length ? (
                 <button
                   className="button remove-logotype-button"
