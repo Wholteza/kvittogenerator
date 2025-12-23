@@ -11,6 +11,7 @@ type Result<T> = {
   addItem: (item: T) => void;
   removeItem: (item: T) => void;
   selectKey: (key: string | undefined) => void;
+  makeExport: () => StoredRecord<T>;
 };
 
 const useStoredValues = <T>(key: string, keyBuilder: (item: T) => string): Result<T> => {
@@ -41,7 +42,9 @@ const useStoredValues = <T>(key: string, keyBuilder: (item: T) => string): Resul
     setSelectedKey(() => (key))
   }, [setSelectedKey])
 
-  return { selectedItem, selectedKey, keys, addItem, removeItem, values, selectKey }
+  const makeExport = useCallback(() => storedValues, [storedValues])
+
+  return { selectedItem, selectedKey, keys, addItem, removeItem, values, selectKey, makeExport }
 
 }
 

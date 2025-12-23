@@ -93,8 +93,8 @@ const generateServiceKey = (row: ReceiptRowFormModel) => {
 const App = () => {
   useLocalStorageMigrations(1);
 
-  const { addItem: addCustomer, removeItem: removeCustomer, keys: customerKeys, selectedKey: selectedCustomerKey, selectKey: selectCustomerKey, values: customers } = useStoredValues<CustomerInformation>("existingCustomers", generateCustomerKey);
-  const { addItem: storeService, removeItem: removeService, keys: servicesKeys, selectedKey: selectedServiceKey, selectKey: selectServiceKey, values: services, selectedItem: selectedService } = useStoredValues<ReceiptRowFormModel>("services", generateServiceKey);
+  const { addItem: addCustomer, removeItem: removeCustomer, keys: customerKeys, selectedKey: selectedCustomerKey, selectKey: selectCustomerKey, values: customers, makeExport: makeCustomersExport } = useStoredValues<CustomerInformation>("existingCustomers", generateCustomerKey);
+  const { addItem: storeService, removeItem: removeService, keys: servicesKeys, selectedKey: selectedServiceKey, selectKey: selectServiceKey, values: services, selectedItem: selectedService, makeExport: makeRowsExport } = useStoredValues<ReceiptRowFormModel>("services", generateServiceKey);
 
   const [companyInformationForm, companyInformation] =
     useForm<CompanyInformation>("companyInformation", testCompanyInformation);
@@ -116,6 +116,28 @@ const App = () => {
   const formElementRef = useRef<HTMLInputElement>(null);
 
   const { generatePdf } = usePdf();
+
+  const onDownload = useCallback(() => {
+
+    const data = {
+      companyInformation: companyInformation,
+      customers: makeCustomersExport(),
+      rows: makeRowsExport(),
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const date = new Intl.DateTimeFormat("sv-SE").format(new Date());
+    link.href = url;
+    link.download = `receipt_backup-${date}.json`;
+    link.click();
+    link.remove();
+  }, [companyInformation, makeCustomersExport, makeRowsExport])
+
+  const onUpload = () => {
+    console.log("Does not do anything yet.")
+
+  }
 
   const onFileSelected: ChangeEventHandler<HTMLInputElement> = (event) => {
     const file = event.target?.files?.[0];
@@ -295,6 +317,18 @@ const App = () => {
               onClick={() => setForm(forms.company)}
             >
               ⚙️
+            </div>
+            <div
+              style={{ position: "fixed", bottom: 20, left: 80, cursor: "pointer", fontSize: "3rem" }}
+              onClick={() => onDownload()}
+            >
+              📥
+            </div>
+            <div
+              style={{ position: "fixed", bottom: 20, left: 140, cursor: "pointer", fontSize: "3rem" }}
+              onClick={() => onUpload()}
+            >
+              📤
             </div>
           </div>
         </div >
