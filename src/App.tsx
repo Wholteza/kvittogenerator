@@ -19,7 +19,7 @@ import {
 } from "./domain/receipt-total";
 import { parseWithDateHydration } from "./helpers/parse-helpers";
 import { useLocalStorageMigrations } from "./hooks/use-local-storage-migrations";
-import useStoredValues from "./hooks/use-stored-values";
+import useStoredValues, { StoredRecord } from "./hooks/use-stored-values";
 import ReceiptInformation from "./components/receipt-information";
 import PaymentTermsInput from "./components/payment-terms-input";
 
@@ -81,6 +81,12 @@ const forms = {
   menu: "menu",
 } as const;
 
+type Export = {
+  companyInformation: CompanyInformation,
+  customers: StoredRecord<CustomerInformation>,
+  rows: StoredRecord<ReceiptRowFormModel>
+}
+
 const generateCustomerKey = (customer: CustomerInformation) => {
   if (customer.Identity.OrganizationNumber)
     return `${customer.Identity.Name} (${customer.Identity.OrganizationNumber})`;
@@ -93,10 +99,10 @@ const generateServiceKey = (row: ReceiptRowFormModel) => {
 const App = () => {
   useLocalStorageMigrations(1);
 
-  const { addItem: addCustomer, removeItem: removeCustomer, keys: customerKeys, selectedKey: selectedCustomerKey, selectKey: selectCustomerKey, values: customers, makeExport: makeCustomersExport } = useStoredValues<CustomerInformation>("existingCustomers", generateCustomerKey);
-  const { addItem: storeService, removeItem: removeService, keys: servicesKeys, selectedKey: selectedServiceKey, selectKey: selectServiceKey, values: services, selectedItem: selectedService, makeExport: makeRowsExport } = useStoredValues<ReceiptRowFormModel>("services", generateServiceKey);
+  const { addItem: addCustomer, removeItem: removeCustomer, keys: customerKeys, selectedKey: selectedCustomerKey, selectKey: selectCustomerKey, values: customers, makeExport: makeCustomersExport, doImport: doCustomersImport } = useStoredValues<CustomerInformation>("existingCustomers", generateCustomerKey);
+  const { addItem: storeService, removeItem: removeService, keys: servicesKeys, selectedKey: selectedServiceKey, selectKey: selectServiceKey, values: services, selectedItem: selectedService, makeExport: makeRowsExport, doImport: doRowsImport } = useStoredValues<ReceiptRowFormModel>("services", generateServiceKey);
 
-  const [companyInformationForm, companyInformation] =
+  const [companyInformationForm, companyInformation, setCompanyInformation] =
     useForm<CompanyInformation>("companyInformation", testCompanyInformation);
   const [customerInformationForm, customerInformation, setCustomerInformation
   ] =
@@ -134,10 +140,49 @@ const App = () => {
     link.remove();
   }, [companyInformation, makeCustomersExport, makeRowsExport])
 
-  const onUpload = () => {
-    console.log("Does not do anything yet.")
+  const onImportButtonClicked = () => {
+    const ref = document.getElementById("upload");
+    if (!ref) return;
+    ref.click();
+  }
+
+  const onImportFileRead = (result: string) => {
+    const data: Export | null = JSON.parse(result, (key, value) => {
+      const dateKeys = ["date"];
+      if (dateKeys.includes(key)) {
+        return new Date(value)
+      }
+      return value;
+    });
+
+    if (!data) console.error("Backup is corrupt.")
+    if (data?.companyInformation) {
+      console.log("Setting company information from import: ", data.companyInformation);
+      setCompanyInformation(data.companyInformation)
+    }
+    if (data?.rows) {
+      console.log("Setting rows from import: ", data.rows);
+      doRowsImport(data.rows)
+    }
+    if (data?.customers) {
+      console.log("Setting customers from import: ", data.customers);
+      doCustomersImport(data.customers)
+    }
+    console.log(data)
 
   }
+
+  const onImportFileSelected: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const file = event.target?.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.readAsText(file, "utf-8");
+    reader.onload = () => {
+      const result = reader.result;
+      const isString = (x: unknown): x is string => typeof x === "string" && !!x;
+      if (isString(result)) onImportFileRead(result)
+    }
+  };
 
   const onFileSelected: ChangeEventHandler<HTMLInputElement> = (event) => {
     const file = event.target?.files?.[0];
@@ -326,10 +371,13 @@ const App = () => {
             </div>
             <div
               style={{ position: "fixed", bottom: 20, left: 140, cursor: "pointer", fontSize: "3rem" }}
-              onClick={() => onUpload()}
+              onClick={() => onImportButtonClicked()}
             >
               📤
             </div>
+            <input type="file" id="upload" style={{ display: "none" }}
+              onChange={onImportFileSelected}
+            />
           </div>
         </div >
       ) : (

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import useLocalStorage from "../use-local-storage";
 
-type StoredRecord<T> = Record<string, T>;
+export type StoredRecord<T> = Record<string, T>;
 
 type Result<T> = {
   selectedItem: T | undefined;
@@ -12,6 +12,7 @@ type Result<T> = {
   removeItem: (item: T) => void;
   selectKey: (key: string | undefined) => void;
   makeExport: () => StoredRecord<T>;
+  doImport: (data: StoredRecord<T>) => void;
 };
 
 const useStoredValues = <T>(key: string, keyBuilder: (item: T) => string): Result<T> => {
@@ -44,7 +45,11 @@ const useStoredValues = <T>(key: string, keyBuilder: (item: T) => string): Resul
 
   const makeExport = useCallback(() => storedValues, [storedValues])
 
-  return { selectedItem, selectedKey, keys, addItem, removeItem, values, selectKey, makeExport }
+  const doImport = useCallback((data: StoredRecord<T>) => {
+    setStoredValues(() => data);
+  }, [setStoredValues])
+
+  return { selectedItem, selectedKey, keys, addItem, removeItem, values, selectKey, makeExport, doImport }
 
 }
 
