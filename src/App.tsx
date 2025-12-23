@@ -106,7 +106,7 @@ const App = () => {
   const [receiptFormRows, setReceiptRows, setReceiptRowsViaUpdater] = useLocalStorage<
     ReceiptRowFormModel[]
   >("receiptRows", []);
-  const [receiptInformationForm, receiptInformation, _setReceiptInformation, setReceiptInformation] =
+  const [_, receiptInformation, _setReceiptInformation, setReceiptInformation] =
     useForm<ReceiptInformationV2>("receiptInformation", testReceiptInformation);
   const [currentReceiptRowForm, currentReceiptRow, _setCurrentReceiptRow, setCurrentReceiptRowWithUpdater] =
     useForm<ReceiptRowFormModel>("currentReceiptRow", testReceiptRow);
