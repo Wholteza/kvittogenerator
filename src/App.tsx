@@ -22,6 +22,7 @@ import { useLocalStorageMigrations } from "./hooks/use-local-storage-migrations"
 import useStoredValues, { StoredRecord } from "./hooks/use-stored-values";
 import ReceiptInformation from "./components/receipt-information";
 import PaymentTermsInput from "./components/payment-terms-input";
+import { Picker } from "./components/picker";
 
 const customerDefaultState: CustomerInformation = { Address: { City: "", Street: "", ZipCode: "" }, Identity: { Name: "", OrganizationNumber: "" } }
 const serviceDefaultState: ReceiptRowFormModel = {
@@ -346,6 +347,7 @@ const App = () => {
                 Redigera kund
               </button>
             </div>
+            <Picker keys={customerKeys} selectedKey={selectedCustomerKey} onSelected={selectCustomerKey} />
             <div style={{ display: "flex", justifyContent: "space-evenly", marginBottom: 10 }}>
               <select value={selectedServiceKey} onChange={handleOnServiceSelected}>{servicesKeys.map(key => (<option key={key}>{key}</option>))}
                 {servicesKeys.length === 0 ? <option key="empty" value="">Spara en tjänst</option> : <></>}
