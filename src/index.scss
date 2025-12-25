@@ -101,13 +101,7 @@ $height-text-row: 1.5rem;
 }
 
 h1 {
-  @include font-family();
-  font-weight: 900;
-  color: $color-primary-light;
-  text-transform: uppercase;
-  text-shadow: 2px 2px 0 $color-primary;
-  letter-spacing: 0.5rem;
-  font-size: 3rem;
+  color: $aurora-1;
 }
 
 
@@ -222,19 +216,6 @@ label {
   flex-direction: column;
   align-items: center;
   width: 500px;
-
-  .logotype {
-    @include fade-in-animation();
-    margin-top: 0.5rem;
-    width: 70%;
-    border-color: $color-secondary-light;
-    border-width: 5px;
-    border-radius: 0.5rem;
-    border-style: solid;
-    box-shadow: 5px 5px 0 $color-secondary;
-    background-color: $color-secondary-light;
-
-  }
 
   div {
     width: 100%;

@@ -63,3 +63,51 @@
     }
   }
 }
+
+.remove-logotype-button,
+.upload-logotype-button {
+  background-color: transparent;
+  border: solid $color-border $border-m;
+  font-size: $font-m;
+  color: $color-text;
+  padding: $padding-m;
+  margin-bottom: $padding-m;
+
+  &:hover {
+    color: $color-text-inverted;
+    background-color: $color-selected;
+    border: solid $color-selected $border-m;
+  }
+}
+
+.logotype {
+  border: solid $color-border $border-m;
+  width: 100%;
+  padding: $padding-m;
+}
+
+.back-to-menu-button,
+.save-customer-button,
+.delete-customer-button,
+.save-service-button,
+.delete-service-button,
+.add-button,
+.edit-service-selector {
+  background-color: transparent;
+  border: solid $color-border $border-m;
+  font-size: $font-m;
+  color: $color-text;
+  padding: $padding-m;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-text-inverted;
+    background-color: $color-selected;
+    border: solid $color-selected $border-m;
+  }
+}
+
+.add-button,
+.edit-service-selector {
+  margin-top: $padding-l;
+}

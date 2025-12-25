@@ -323,7 +323,7 @@ const App = () => {
         <div className="container-without-padding">
           <div className="inputs">
             <button
-              className="button primary"
+              className="button primary back-to-menu-button"
               onClick={() => setForm(forms.menu)}
             >
               Tillbaka till menyn
@@ -402,13 +402,13 @@ const App = () => {
                 <>
                   <button
                     style={{ marginTop: "1rem" }}
-                    className="button"
+                    className="button upload-logotype-button"
                     onClick={() => formElementRef?.current?.click()}
                   >
                     Ladda upp logotyp
                   </button>
                   <input
-                    className="button"
+                    className="button upload-logotype-input"
                     type="file"
                     onChange={onFileSelected}
                     name="logotype"
@@ -429,8 +429,8 @@ const App = () => {
           <div className="container">
             <div className="inputs">{customerInformationForm}
               <div style={{ marginTop: "2rem", paddingLeft: "2rem", display: "flex", justifyContent: "space-evenly" }}>
-                <button onClick={saveCustomer}>Spara kund</button>
-                <button onClick={deleteCustomer}>Ta bort kund</button>
+                <button className="save-customer-button" onClick={saveCustomer}>Spara kund</button>
+                <button className="delete-customer-button" onClick={deleteCustomer}>Ta bort kund</button>
               </div>
             </div>
           </div >
@@ -443,14 +443,14 @@ const App = () => {
         form === forms.rows ? (
 
           <div className="container">
-            <select value={selectedServiceKey} onChange={handleOnServiceSelected}>{servicesKeys.map(key => (<option key={key}>{key}</option>))}
+            <select className="edit-service-selector" value={selectedServiceKey} onChange={(e) => handleOnServiceSelected(e.target.value)}>{servicesKeys.map(key => (<option key={key}>{key}</option>))}
               {servicesKeys.length === 0 ? <option key="empty" value="">Spara en tjänst</option> : <></>}
             </select>
             <div className="inputs">
               {currentReceiptRowForm}
               <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "1rem" }}>
-                <button onClick={handleOnSaveService}>Spara tjänst</button>
-                <button onClick={handleOnDeleteService}>Ta bort tjänst</button>
+                <button className="save-service-button" onClick={handleOnSaveService}>Spara tjänst</button>
+                <button className="delete-service-button" onClick={handleOnDeleteService}>Ta bort tjänst</button>
               </div>
               <button
                 className="button primary add-button"

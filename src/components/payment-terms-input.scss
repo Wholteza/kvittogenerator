@@ -1,0 +1,29 @@
+@import "../index.scss";
+
+.payment-terms-input-component {
+  box-sizing: border-box;
+  padding: $padding-m 0;
+
+  label {
+    color: $color-text;
+    line-height: $font-m;
+    height: $font-m;
+    padding: $padding-m 0;
+  }
+
+  input {
+    color: $color-text;
+    line-height: $font-m;
+    height: $font-m;
+    padding: $padding-m;
+    background-color: $color-background;
+    font-size: $font-m;
+    border: solid $color-border $border-m;
+    width: 100%;
+
+    &:focus {
+
+      border: solid $color-selected $border-m;
+    }
+  }
+}
