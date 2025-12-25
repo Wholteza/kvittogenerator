@@ -254,13 +254,12 @@ const App = () => {
     selectedService
   ]);
 
-  const onCustomerSelected: ChangeEventHandler<HTMLSelectElement> = useCallback((e) => {
-    const selectedValue = e.currentTarget.value
-    console.log("Customer was selected", selectedValue)
+  const onCustomerSelected = useCallback((key) => {
+    console.log("Customer was selected", key)
 
-    selectCustomerKey(selectedValue);
+    selectCustomerKey(key);
 
-    const customer = customers.find(c => generateCustomerKey(c) === selectedValue);
+    const customer = customers.find(c => generateCustomerKey(c) === key);
     console.log("Found customer", customer);
     setCustomerInformation(customer ?? customerDefaultState)
   }, [selectCustomerKey, setCustomerInformation, customers]);
@@ -271,7 +270,7 @@ const App = () => {
     addCustomer(customer)
     selectCustomerKey(generateCustomerKey(customer))
     setForm(forms.menu)
-  }, [customerInformation, setForm])
+  }, [addCustomer, customerInformation, selectCustomerKey, setForm])
 
   const deleteCustomer = useCallback(() => {
     const customer = customerInformation;
@@ -282,7 +281,7 @@ const App = () => {
     newSelectedCustomer = newSelectedCustomer ?? customerDefaultState;
     setCustomerInformation(newSelectedCustomer);
     setForm(forms.menu)
-  }, [customerInformation, removeCustomer, selectCustomerKey, setCustomerInformation, setForm]);
+  }, [customerInformation, customers, removeCustomer, selectCustomerKey, setCustomerInformation, setForm]);
 
   // Update dates automatically when the receipt date is updated
   useEffect(() => {
@@ -341,7 +340,7 @@ const App = () => {
             <div className="customer-row">
               <label>Kund</label>
               <div className="picker">
-                <Picker title="Välj kund" keys={customerKeys} selectedKey={selectedCustomerKey} onSelected={selectCustomerKey} />
+                <Picker title="Välj kund" keys={customerKeys} selectedKey={selectedCustomerKey} onSelected={onCustomerSelected} />
                 <button onClick={() => setForm(forms.customer)}>
                   📝
                 </button>
