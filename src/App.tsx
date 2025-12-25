@@ -23,6 +23,7 @@ import useStoredValues, { StoredRecord } from "./hooks/use-stored-values";
 import ReceiptInformation from "./components/receipt-information";
 import PaymentTermsInput from "./components/payment-terms-input";
 import { Picker } from "./components/picker";
+import "./app.scss";
 
 const customerDefaultState: CustomerInformation = { Address: { City: "", Street: "", ZipCode: "" }, Identity: { Name: "", OrganizationNumber: "" } }
 const serviceDefaultState: ReceiptRowFormModel = {
@@ -333,23 +334,29 @@ const App = () => {
       )}
 
       {form === forms.menu ? (
-        <div className="container">
-          <div className="inputs">
+        <div className="container menu">
+          <div className="menu-wrapper">
             <h1>Skapa Kvitto</h1>
             <ReceiptInformation setReceiptInformation={setReceiptInformation} receiptInformation={receiptInformation} />
-            <div style={{ display: "flex", justifyContent: "space-evenly", marginBottom: 10, gap: 30 }}>
-              <Picker title="Välj kund" keys={customerKeys} selectedKey={selectedCustomerKey} onSelected={selectCustomerKey} />
-              <button style={{}} onClick={() => setForm(forms.customer)}>
-                Redigera kund
-              </button>
+            <div className="customer-row">
+              <label>Kund</label>
+              <div className="picker">
+                <Picker title="Välj kund" keys={customerKeys} selectedKey={selectedCustomerKey} onSelected={selectCustomerKey} />
+                <button onClick={() => setForm(forms.customer)}>
+                  📝
+                </button>
+              </div>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-evenly", marginBottom: 10, gap: 30 }}>
-              <Picker title="Välj tjänst" keys={servicesKeys} selectedKey={selectedServiceKey} onSelected={handleOnServiceSelected} />
-              <button onClick={() => setForm(forms.rows)}>
-                Redigera rader
-              </button>
+            <div className="service-row">
+              <label>Tjänst</label>
+              <div className="picker">
+                <Picker title="Välj tjänst" keys={servicesKeys} selectedKey={selectedServiceKey} onSelected={handleOnServiceSelected} />
+                <button onClick={() => setForm(forms.rows)}>
+                  📝
+                </button>
+              </div>
             </div>
-            <button className="button" onClick={handleOnClickGeneratePdf}>
+            <button className="generate-pdf-button" onClick={handleOnClickGeneratePdf}>
               Generera PDF 📄
             </button>
             <div

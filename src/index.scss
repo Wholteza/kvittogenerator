@@ -24,6 +24,7 @@ $color-background: $nord-0;
 $color-text: $snowstorm-2;
 $color-text-inverted: $color-background;
 $color-border: $snowstorm-2;
+$color-border-inverted: $color-background;
 $color-border-selected: $snowstorm-2;
 $color-input: $nord-0;
 $color-dialog: $nord-0;
@@ -36,6 +37,7 @@ $color-selected: $aurora-3;
 
 $padding-sm: 5px;
 $padding-m: 10px;
+$padding-l: 20px;
 
 $border-m: 2px;
 
@@ -201,6 +203,20 @@ hr {
   }
 }
 
+input {
+  padding: 0;
+  margin: 0;
+  outline: 0;
+  border: 0;
+}
+
+label {
+  padding: 0;
+  margin: 0;
+  outline: 0;
+  border: 0;
+}
+
 .inputs {
   display: flex;
   flex-direction: column;
@@ -224,15 +240,6 @@ hr {
     width: 100%;
   }
 
-  label {
-    color: $color-secondary-text;
-    font-weight: 600;
-    text-transform: capitalize;
-    position: relative;
-    top: 12px;
-    left: 15px;
-    z-index: 100;
-  }
 
   //   input {
   //     width: 100%;

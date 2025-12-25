@@ -1,15 +1,14 @@
 @import "../index.scss";
 
 .picker-wrapper {
+  width: 100%;
+
   .presenter {
     color: $color-text;
-    background-color: $color-input;
-    box-shadow: none;
-    border-radius: 3px;
-    border-style: solid;
-    border-width: 1px;
-    border-color: $color-border;
-    padding: 8px;
+    background-color: $color-background;
+    border: solid $color-border $border-m;
+    line-height: $font-m;
+    padding: $padding-m;
   }
 
 

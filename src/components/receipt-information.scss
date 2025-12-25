@@ -1,0 +1,22 @@
+@import "../index.scss";
+
+.receipt-information-wrapper {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: $font-m;
+    color: $color-text;
+    line-height: $font-m;
+    padding: $padding-m 0;
+  }
+
+  input {
+    background-color: $color-background;
+    color: $color-text;
+    line-height: $font-m;
+    padding: $padding-m;
+    border: solid $color-border $border-m;
+    font-size: $font-m;
+  }
+}

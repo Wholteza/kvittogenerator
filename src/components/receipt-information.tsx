@@ -1,6 +1,7 @@
 import { formatDisplayDate } from '../helpers/date-helpers';
 import { ChangeEventHandler, useCallback } from 'react'
 import { ReceiptInformationV2 } from 'types';
+import "./receipt-information.scss"
 
 const ReceiptInformation = ({ setReceiptInformation, receiptInformation }: { setReceiptInformation: (updatingMethod: (prev: ReceiptInformationV2) => ReceiptInformationV2) => void, receiptInformation: ReceiptInformationV2 }) => {
 
@@ -12,7 +13,7 @@ const ReceiptInformation = ({ setReceiptInformation, receiptInformation }: { set
     })
   }, [setReceiptInformation])
 
-  return (<div>
+  return (<div className='receipt-information-wrapper'>
     <label>Kvittonummer</label>
     <input onChange={updateField} value={receiptInformation.receiptNumber} id='receiptNumber' placeholder="Kvittonummer" />
     <label>Datum</label>
