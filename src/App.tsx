@@ -338,13 +338,13 @@ const App = () => {
             <h1>Skapa Kvitto</h1>
             <ReceiptInformation setReceiptInformation={setReceiptInformation} receiptInformation={receiptInformation} />
             <div style={{ display: "flex", justifyContent: "space-evenly", marginBottom: 10, gap: 30 }}>
-              <Picker keys={customerKeys} selectedKey={selectedCustomerKey} onSelected={selectCustomerKey} />
+              <Picker title="Välj kund" keys={customerKeys} selectedKey={selectedCustomerKey} onSelected={selectCustomerKey} />
               <button style={{}} onClick={() => setForm(forms.customer)}>
                 Redigera kund
               </button>
             </div>
             <div style={{ display: "flex", justifyContent: "space-evenly", marginBottom: 10, gap: 30 }}>
-              <Picker keys={servicesKeys} selectedKey={selectedServiceKey} onSelected={handleOnServiceSelected} />
+              <Picker title="Välj tjänst" keys={servicesKeys} selectedKey={selectedServiceKey} onSelected={handleOnServiceSelected} />
               <button onClick={() => setForm(forms.rows)}>
                 Redigera rader
               </button>

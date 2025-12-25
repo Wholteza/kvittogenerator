@@ -9,12 +9,13 @@ const Keys = {
 } as const;
 
 type Props = {
+  title: string
   keys: string[]
   selectedKey: string | undefined
   onSelected: (key: string) => void
 }
 
-export const Picker = ({ keys, selectedKey, onSelected }: Props) => {
+export const Picker = ({ keys, selectedKey, onSelected, title }: Props) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const [search, setSearch] = useState<string>("");
@@ -76,22 +77,27 @@ export const Picker = ({ keys, selectedKey, onSelected }: Props) => {
       style={{ flexDirection: "column" }}
     >
       <div className="titlebar">
-        <h3>Välj en kund</h3>
-        <button
-          onClick={() => { closeAndCleanInput() }}
-          className="icon"
-          style={{ width: "1.7rem" }}
-        >❌</button>
+        <div className="title">{title}</div>
+        <div className="actions">
+          <div
+            onClick={() => { closeAndCleanInput() }}
+            className="icon"
+          >❌</div>
+        </div>
       </div>
+      <div className="content">
 
-      <input
-        ref={inputRef}
-        type="text"
-        value={search}
-        onChange={(event) => { setSearch(event.target.value) }}
-      />
-      {filteredKeys.map((k, i) => <div className={`row ${i === normalizedSelectedIndex ? "selected" : ""}`} key={k} onClick={() => { onSelected(k); closeAndCleanInput() }}>{k}</div>)
-      }
+        <input
+          ref={inputRef}
+          type="text"
+          value={search}
+          onChange={(event) => { setSearch(event.target.value) }}
+          placeholder="Sök här.."
+        />
+        <div className="rows">
+          {filteredKeys.map((k, i) => <div className={`row ${i === normalizedSelectedIndex ? "selected" : ""}`} key={k} onClick={() => { onSelected(k); closeAndCleanInput() }}>{k}</div>)
+          }</div>
+      </div>
     </dialog >
   </div >)
 }
