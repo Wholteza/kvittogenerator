@@ -1,0 +1,113 @@
+@import "index.scss";
+
+.menu {
+  .menu-wrapper {
+    display: flex;
+    flex-direction: column;
+
+    .customer-row,
+    .service-row {
+      display: flex;
+      margin-bottom: 10;
+      gap: 30;
+      flex-direction: column;
+
+      label {
+        height: $font-m;
+        line-height: $font-m;
+        padding: $padding-m 0;
+        color: $color-text;
+      }
+
+      .picker {
+        display: flex;
+        flex-direction: row;
+        width: 100cv;
+        box-sizing: border-box;
+
+        button {
+          box-sizing: border-box;
+          background-color: transparent;
+          outline: none;
+          border: solid $color-border $border-m;
+          border-left: none;
+          cursor: pointer;
+          font-size: $font-m;
+
+          &:hover {
+            background-color: $color-selected;
+            color: $color-text-inverted;
+          }
+        }
+      }
+    }
+
+    .generate-pdf-button {
+      background-color: transparent;
+      outline: none;
+      padding: $padding-m;
+      margin-top: $padding-l ;
+      font-size: $font-m;
+      border: solid $color-border $border-m;
+      color: $color-text;
+      width: fit-content;
+      align-self: end;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $color-selected;
+        color: $color-text-inverted;
+        border: solid $color-selected $border-m;
+      }
+
+    }
+  }
+}
+
+.remove-logotype-button,
+.upload-logotype-button {
+  background-color: transparent;
+  border: solid $color-border $border-m;
+  font-size: $font-m;
+  color: $color-text;
+  padding: $padding-m;
+  margin-bottom: $padding-m;
+
+  &:hover {
+    color: $color-text-inverted;
+    background-color: $color-selected;
+    border: solid $color-selected $border-m;
+  }
+}
+
+.logotype {
+  border: solid $color-border $border-m;
+  width: 100%;
+  padding: $padding-m;
+}
+
+.back-to-menu-button,
+.save-customer-button,
+.delete-customer-button,
+.save-service-button,
+.delete-service-button,
+.add-button,
+.edit-service-selector {
+  background-color: transparent;
+  border: solid $color-border $border-m;
+  font-size: $font-m;
+  color: $color-text;
+  padding: $padding-m;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-text-inverted;
+    background-color: $color-selected;
+    border: solid $color-selected $border-m;
+  }
+}
+
+.add-button,
+.edit-service-selector {
+  margin-top: $padding-l;
+}

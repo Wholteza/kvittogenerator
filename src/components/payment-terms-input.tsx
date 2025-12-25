@@ -1,5 +1,6 @@
 import { ChangeEventHandler, useCallback } from 'react'
 import { ReceiptInformationV2 } from 'types';
+import "./payment-terms-input.scss";
 
 const PaymentTermsInput = ({ setReceiptInformation, receiptInformation }: { setReceiptInformation: (updatingMethod: (prev: ReceiptInformationV2) => ReceiptInformationV2) => void, receiptInformation: ReceiptInformationV2 }) => {
 
@@ -11,7 +12,7 @@ const PaymentTermsInput = ({ setReceiptInformation, receiptInformation }: { setR
     })
   }, [setReceiptInformation])
 
-  return (<div>
+  return (<div className="payment-terms-input-component">
     <label>Betalningsvilkor</label>
     <input placeholder="Betalningsvilkor" onChange={updateField} value={receiptInformation.paymentTerms} type='text' id='paymentTerms' />
   </div>)

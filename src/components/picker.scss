@@ -1,0 +1,104 @@
+@import "../index.scss";
+
+.picker-wrapper {
+  width: 100%;
+
+  .presenter {
+    color: $color-text;
+    background-color: $color-background;
+    border: solid $color-border $border-m;
+    line-height: $font-m;
+    padding: $padding-m;
+  }
+
+
+  dialog[open] {
+    display: flex;
+    flex-direction: column;
+    background-color: $color-dialog;
+    border-width: $border-m;
+    border-color: $color-border;
+    justify-content: center;
+    align-items: center;
+    color: $color-text;
+    min-width: 400px;
+    padding: 0;
+
+    .titlebar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0;
+      border-bottom: solid $color-border $border-m;
+
+      .title {
+        padding: $padding-m;
+        height: $height-text-row;
+        line-height: $height-text-row;
+      }
+
+      .actions {
+        width: calc($height-text-row + $padding-m * 2);
+        border-left: solid $color-border $border-m;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .icon {
+          border: none;
+          text-align: center;
+          width: $font-m;
+
+          &:hover {
+            cursor: pointer;
+          }
+
+        }
+      }
+
+    }
+
+    .content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+
+      input[type=text] {
+        color: $color-text;
+        background-color: $color-input;
+        box-shadow: none;
+        font-size: $font-m;
+        height: $height-text-row;
+        margin: 0px;
+        padding: $padding-m;
+        outline: none;
+        border: 0px;
+        vertical-align: baseline;
+        border-bottom: solid $color-border $border-m;
+      }
+    }
+
+    .rows {
+      padding: 0;
+      margin: 0;
+      max-height: 50ch;
+      display: flex;
+      flex-direction: column;
+      overflow-y: scroll;
+
+      .row {
+        padding: $padding-m;
+        font-size: $font-m;
+        border-style: none;
+        cursor: pointer;
+        box-sizing: border-box;
+
+        &.selected,
+        &:hover {
+          background-color: $color-selected;
+          color: $color-text-inverted;
+        }
+      }
+    }
+  }
+}

@@ -13,7 +13,6 @@ import {
   toViewModel,
 } from "./domain/receipt-row";
 import {
-  RecieptTotalInformationViewModel,
   calculateReceiptTotal,
   toReceiptTotalViewModel,
 } from "./domain/receipt-total";
@@ -22,6 +21,8 @@ import { useLocalStorageMigrations } from "./hooks/use-local-storage-migrations"
 import useStoredValues, { StoredRecord } from "./hooks/use-stored-values";
 import ReceiptInformation from "./components/receipt-information";
 import PaymentTermsInput from "./components/payment-terms-input";
+import { Picker } from "./components/picker";
+import "./app.scss";
 
 const customerDefaultState: CustomerInformation = { Address: { City: "", Street: "", ZipCode: "" }, Identity: { Name: "", OrganizationNumber: "" } }
 const serviceDefaultState: ReceiptRowFormModel = {
@@ -207,15 +208,6 @@ const App = () => {
     [receiptFormRows]
   );
 
-  const receiptTotalInformation = useMemo<RecieptTotalInformationViewModel>(
-    () => toReceiptTotalViewModel(calculateReceiptTotal(receiptRows), "kr"),
-    [receiptRows]
-  );
-
-  const existingCustomerOptions = useMemo(() => {
-    return customerKeys.map(k => (<option key={k}>{k}</option>))
-  }, [customerKeys]);
-
   const handleOnRemoveRow = useCallback(
     (index: number) => {
       const copyOfRows = parseWithDateHydration<ReceiptRowFormModel[]>(
@@ -248,17 +240,15 @@ const App = () => {
     file,
     receiptInformation,
     receiptRows,
-    receiptTotalInformation,
     selectedService
   ]);
 
-  const onCustomerSelected: ChangeEventHandler<HTMLSelectElement> = useCallback((e) => {
-    const selectedValue = e.currentTarget.value
-    console.log("Customer was selected", selectedValue)
+  const onCustomerSelected = useCallback((key: string) => {
+    console.log("Customer was selected", key)
 
-    selectCustomerKey(selectedValue);
+    selectCustomerKey(key);
 
-    const customer = customers.find(c => generateCustomerKey(c) === selectedValue);
+    const customer = customers.find(c => generateCustomerKey(c) === key);
     console.log("Found customer", customer);
     setCustomerInformation(customer ?? customerDefaultState)
   }, [selectCustomerKey, setCustomerInformation, customers]);
@@ -269,7 +259,7 @@ const App = () => {
     addCustomer(customer)
     selectCustomerKey(generateCustomerKey(customer))
     setForm(forms.menu)
-  }, [customerInformation, setForm])
+  }, [addCustomer, customerInformation, selectCustomerKey, setForm])
 
   const deleteCustomer = useCallback(() => {
     const customer = customerInformation;
@@ -280,7 +270,7 @@ const App = () => {
     newSelectedCustomer = newSelectedCustomer ?? customerDefaultState;
     setCustomerInformation(newSelectedCustomer);
     setForm(forms.menu)
-  }, [customerInformation, removeCustomer, selectCustomerKey, setCustomerInformation, setForm]);
+  }, [customerInformation, customers, removeCustomer, selectCustomerKey, setCustomerInformation, setForm]);
 
   // Update dates automatically when the receipt date is updated
   useEffect(() => {
@@ -307,8 +297,7 @@ const App = () => {
     setCurrentReceiptRowWithUpdater(() => newItem ?? serviceDefaultState)
   }, [currentReceiptRow, removeService, servicesKeys, services, selectServiceKey, setCurrentReceiptRowWithUpdater]);
 
-  const handleOnServiceSelected: ChangeEventHandler<HTMLSelectElement> = useCallback((e) => {
-    const key = e.currentTarget.value;
+  const handleOnServiceSelected = useCallback((key: string) => {
     const item = services.find(s => generateServiceKey(s) === key) ?? serviceDefaultState;
     item.date = receiptInformation.date;
     selectServiceKey(key)
@@ -323,7 +312,7 @@ const App = () => {
         <div className="container-without-padding">
           <div className="inputs">
             <button
-              className="button primary"
+              className="button primary back-to-menu-button"
               onClick={() => setForm(forms.menu)}
             >
               Tillbaka till menyn
@@ -333,28 +322,29 @@ const App = () => {
       )}
 
       {form === forms.menu ? (
-        <div className="container">
-          <div className="inputs">
+        <div className="container menu">
+          <div className="menu-wrapper">
             <h1>Skapa Kvitto</h1>
             <ReceiptInformation setReceiptInformation={setReceiptInformation} receiptInformation={receiptInformation} />
-            <div style={{ display: "flex", justifyContent: "space-evenly", marginBottom: 10 }}>
-              <select onChange={onCustomerSelected} value={selectedCustomerKey} style={{}}>
-                {existingCustomerOptions}
-                {existingCustomerOptions.length === 0 ? <option key="empty" value="">Spara din kund</option> : <></>}
-              </select>
-              <button style={{}} onClick={() => setForm(forms.customer)}>
-                Redigera kund
-              </button>
+            <div className="customer-row">
+              <label>Kund</label>
+              <div className="picker">
+                <Picker title="Välj kund" keys={customerKeys} selectedKey={selectedCustomerKey} onSelected={onCustomerSelected} />
+                <button onClick={() => setForm(forms.customer)}>
+                  📝
+                </button>
+              </div>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-evenly", marginBottom: 10 }}>
-              <select value={selectedServiceKey} onChange={handleOnServiceSelected}>{servicesKeys.map(key => (<option key={key}>{key}</option>))}
-                {servicesKeys.length === 0 ? <option key="empty" value="">Spara en tjänst</option> : <></>}
-              </select>
-              <button onClick={() => setForm(forms.rows)}>
-                Redigera rader
-              </button>
+            <div className="service-row">
+              <label>Tjänst</label>
+              <div className="picker">
+                <Picker title="Välj tjänst" keys={servicesKeys} selectedKey={selectedServiceKey} onSelected={handleOnServiceSelected} />
+                <button onClick={() => setForm(forms.rows)}>
+                  📝
+                </button>
+              </div>
             </div>
-            <button className="button" onClick={handleOnClickGeneratePdf}>
+            <button className="generate-pdf-button" onClick={handleOnClickGeneratePdf}>
               Generera PDF 📄
             </button>
             <div
@@ -401,13 +391,13 @@ const App = () => {
                 <>
                   <button
                     style={{ marginTop: "1rem" }}
-                    className="button"
+                    className="button upload-logotype-button"
                     onClick={() => formElementRef?.current?.click()}
                   >
                     Ladda upp logotyp
                   </button>
                   <input
-                    className="button"
+                    className="button upload-logotype-input"
                     type="file"
                     onChange={onFileSelected}
                     name="logotype"
@@ -428,8 +418,8 @@ const App = () => {
           <div className="container">
             <div className="inputs">{customerInformationForm}
               <div style={{ marginTop: "2rem", paddingLeft: "2rem", display: "flex", justifyContent: "space-evenly" }}>
-                <button onClick={saveCustomer}>Spara kund</button>
-                <button onClick={deleteCustomer}>Ta bort kund</button>
+                <button className="save-customer-button" onClick={saveCustomer}>Spara kund</button>
+                <button className="delete-customer-button" onClick={deleteCustomer}>Ta bort kund</button>
               </div>
             </div>
           </div >
@@ -442,14 +432,14 @@ const App = () => {
         form === forms.rows ? (
 
           <div className="container">
-            <select value={selectedServiceKey} onChange={handleOnServiceSelected}>{servicesKeys.map(key => (<option key={key}>{key}</option>))}
+            <select className="edit-service-selector" value={selectedServiceKey} onChange={(e) => handleOnServiceSelected(e.target.value)}>{servicesKeys.map(key => (<option key={key}>{key}</option>))}
               {servicesKeys.length === 0 ? <option key="empty" value="">Spara en tjänst</option> : <></>}
             </select>
             <div className="inputs">
               {currentReceiptRowForm}
               <div style={{ display: "flex", justifyContent: "space-evenly", marginTop: "1rem" }}>
-                <button onClick={handleOnSaveService}>Spara tjänst</button>
-                <button onClick={handleOnDeleteService}>Ta bort tjänst</button>
+                <button className="save-service-button" onClick={handleOnSaveService}>Spara tjänst</button>
+                <button className="delete-service-button" onClick={handleOnDeleteService}>Ta bort tjänst</button>
               </div>
               <button
                 className="button primary add-button"

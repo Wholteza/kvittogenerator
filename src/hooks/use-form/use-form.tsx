@@ -10,6 +10,7 @@ import {
   getNewInstanceWithUpdatedProp,
   getTypedValueFromEvent,
 } from "./use-form-helpers";
+import "./use-form.scss";
 
 const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T, (newValue: T) => void, (valueUpdater: (prev: T) => T) => void] => {
   const [formState, setFormState, setFormStateViaUpdater] = useLocalStorage<T>(
@@ -40,7 +41,7 @@ const useForm = <T,>(key: string, initialState: T): [JSX.Element[], T, (newValue
       );
 
       return (
-        <div key={field.propertyPath.join(".")}>
+        <div className="form-field-group" key={field.propertyPath.join(".")}>
           <label htmlFor={translate(field.propertyPath.join("."))}>
             {translate(field.name)}
             <input
