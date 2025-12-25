@@ -13,7 +13,6 @@ import {
   toViewModel,
 } from "./domain/receipt-row";
 import {
-  RecieptTotalInformationViewModel,
   calculateReceiptTotal,
   toReceiptTotalViewModel,
 } from "./domain/receipt-total";
@@ -209,15 +208,6 @@ const App = () => {
     [receiptFormRows]
   );
 
-  const receiptTotalInformation = useMemo<RecieptTotalInformationViewModel>(
-    () => toReceiptTotalViewModel(calculateReceiptTotal(receiptRows), "kr"),
-    [receiptRows]
-  );
-
-  const existingCustomerOptions = useMemo(() => {
-    return customerKeys.map(k => (<option key={k}>{k}</option>))
-  }, [customerKeys]);
-
   const handleOnRemoveRow = useCallback(
     (index: number) => {
       const copyOfRows = parseWithDateHydration<ReceiptRowFormModel[]>(
@@ -250,11 +240,10 @@ const App = () => {
     file,
     receiptInformation,
     receiptRows,
-    receiptTotalInformation,
     selectedService
   ]);
 
-  const onCustomerSelected = useCallback((key) => {
+  const onCustomerSelected = useCallback((key: string) => {
     console.log("Customer was selected", key)
 
     selectCustomerKey(key);
