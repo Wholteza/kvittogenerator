@@ -308,8 +308,7 @@ const App = () => {
     setCurrentReceiptRowWithUpdater(() => newItem ?? serviceDefaultState)
   }, [currentReceiptRow, removeService, servicesKeys, services, selectServiceKey, setCurrentReceiptRowWithUpdater]);
 
-  const handleOnServiceSelected: ChangeEventHandler<HTMLSelectElement> = useCallback((e) => {
-    const key = e.currentTarget.value;
+  const handleOnServiceSelected = useCallback((key: string) => {
     const item = services.find(s => generateServiceKey(s) === key) ?? serviceDefaultState;
     item.date = receiptInformation.date;
     selectServiceKey(key)
@@ -338,20 +337,14 @@ const App = () => {
           <div className="inputs">
             <h1>Skapa Kvitto</h1>
             <ReceiptInformation setReceiptInformation={setReceiptInformation} receiptInformation={receiptInformation} />
-            <div style={{ display: "flex", justifyContent: "space-evenly", marginBottom: 10 }}>
-              <select onChange={onCustomerSelected} value={selectedCustomerKey} style={{}}>
-                {existingCustomerOptions}
-                {existingCustomerOptions.length === 0 ? <option key="empty" value="">Spara din kund</option> : <></>}
-              </select>
+            <div style={{ display: "flex", justifyContent: "space-evenly", marginBottom: 10, gap: 30 }}>
+              <Picker keys={customerKeys} selectedKey={selectedCustomerKey} onSelected={selectCustomerKey} />
               <button style={{}} onClick={() => setForm(forms.customer)}>
                 Redigera kund
               </button>
             </div>
-            <Picker keys={customerKeys} selectedKey={selectedCustomerKey} onSelected={selectCustomerKey} />
-            <div style={{ display: "flex", justifyContent: "space-evenly", marginBottom: 10 }}>
-              <select value={selectedServiceKey} onChange={handleOnServiceSelected}>{servicesKeys.map(key => (<option key={key}>{key}</option>))}
-                {servicesKeys.length === 0 ? <option key="empty" value="">Spara en tjänst</option> : <></>}
-              </select>
+            <div style={{ display: "flex", justifyContent: "space-evenly", marginBottom: 10, gap: 30 }}>
+              <Picker keys={servicesKeys} selectedKey={selectedServiceKey} onSelected={handleOnServiceSelected} />
               <button onClick={() => setForm(forms.rows)}>
                 Redigera rader
               </button>
