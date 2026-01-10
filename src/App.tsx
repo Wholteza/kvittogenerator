@@ -29,6 +29,26 @@ const serviceDefaultState: ReceiptRowFormModel = {
   amount: 1, date: new Date(), description: "", pricePerPieceVatIncluded: 0, vatPercentage: 25
 }
 
+const exampleCustomer: CustomerInformation = {
+  Identity: {
+    Name: "Andersson & Co AB",
+    OrganizationNumber: "556123-4567",
+  },
+  Address: {
+    Street: "Storgatan 12",
+    City: "Stockholm",
+    ZipCode: "111 22",
+  },
+};
+
+const exampleService: ReceiptRowFormModel = {
+  date: new Date(),
+  description: "Konsulttjänst",
+  amount: 1,
+  pricePerPieceVatIncluded: 1250, // 1000 kr ex VAT + 250 kr VAT (25%)
+  vatPercentage: 25,
+};
+
 const testCompanyInformation: CompanyInformation = {
   Identity: {
     Name: "",
@@ -279,6 +299,19 @@ const App = () => {
     setCurrentReceiptRowWithUpdater((prev) => ({ ...prev, date }));
     setReceiptRowsViaUpdater((prev) => prev.map((r) => ({ ...r, date })))
   }, [receiptInformation.date, setCurrentReceiptRowWithUpdater, setReceiptRowsViaUpdater])
+
+  // Add example data on first run when no customers or services exist
+  useEffect(() => {
+    if (customers.length === 0 && services.length === 0) {
+      addCustomer(exampleCustomer);
+      selectCustomerKey(generateCustomerKey(exampleCustomer));
+      setCustomerInformation(exampleCustomer);
+
+      storeService(exampleService);
+      selectServiceKey(generateServiceKey(exampleService));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleOnSaveService = useCallback(() => {
     const item = currentReceiptRow;
