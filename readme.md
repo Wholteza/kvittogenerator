@@ -1,5 +1,8 @@
 # Readme
 
+> **This repository has migrated.** Development now continues at
+> `ssh://git@git.zacke.dev:222/wholteza/kvittogenerator.git`. This GitHub repository is no longer updated.
+
 This is a receipt generator that i built for my own use.
 It's specialized for the information needed on swedish receipts.
 
